@@ -1,0 +1,50 @@
+<section id="simulator" class="simulator island-dark">
+    
+    <div class="simulator-header">
+        <h2>Калькулятор Дохода</h2>
+        <p id="simulatorSubtitle" style="color: var(--text-gray); max-width: 700px; margin: auto;">Выберите свою роль и узнайте, сколько вы можете заработать за год. Будет показан идеальный вариант. Он не гарантирован.</p>
+    </div>
+    <div id="simulatorModeSwitcher" class="simulator-mode-switcher" data-mode="author">
+        <div class="mode-switch-indicator"></div>
+        <button class="mode-switch-btn active" data-mode="author">Я — Автор</button>
+        <button class="mode-switch-btn" data-mode="partner">Я — Партнёр</button>
+    </div>
+    <div class="controls-area">
+        <div class="general-controls">
+            <div class="control-group"><label for="price"><span id="priceLabel">Цена Вашего Продукта</span> <span class="value-display" id="priceValue">$100</span></label><input type="range" id="price" class="slider" min="10" max="2000" value="100" step="10"></div>
+            <div class="control-group"><label for="initialPartners"><span id="initialPartnersLabel">Личных продаж в месяц</span> <span class="value-display" id="initialPartnersValue">10</span></label><input type="range" id="initialPartners" class="slider" min="1" max="100" value="10" step="1"></div>
+            <div class="control-group"><label for="partnerDuplication"><span id="duplicationLabel">Дупликация (продаж партнером)</span> <span class="value-display" id="partnerDuplicationValue">2</span></label><input type="range" id="partnerDuplication" class="slider" min="0" max="10" value="2" step="1" title="Сколько продаж в среднем сделает каждый ваш партнер"></div>
+        </div>
+    </div>
+    <div class="results-grid">
+        <div class="result-column classic">
+            <h3>Классика (1-2 уровня)</h3>
+            <p class="subtitle" id="classicSubtitle">2 уровня: 30% + 5%</p>
+            <div class="simulator-controls">
+                <div class="control-group"><label style="display:flex; justify-content: space-between;">Глубина (уровни) <span class="value-display" id="classicLevelsValue">2</span></label><input type="range" id="classicLevels" class="slider" min="0" max="2" value="2" style="opacity: 0.7;"></div>
+                <div class="control-row" id="classicL1Row"><label for="classicL1">Комиссия ур. 1, %</label><input type="number" id="classicL1" class="number-input" value="30" min="0" max="100" step="1"></div>
+                <div class="control-row" id="classicL2Row"><label for="classicL2">Комиссия ур. 2, %</label><input type="number" id="classicL2" class="number-input" value="5" min="0" max="100" step="1"></div>
+            </div>
+             <div class="metrics-container">
+                <div class="result-item"><div class="label" id="classicPartnersLabel">Партнеров в сети (год)</div><div class="value" id="classicTotalPartners">0</div></div>
+                <div class="income-box"><span class="income-label" id="classicIncomeLabel">Ваш чистый доход</span><div class="income-value" id="classicAuthorIncome">$0</div></div>
+            </div>
+        </div>
+        <div class="result-column sethubble">
+            <h3>🚀 SetHubble (до 10 уровней)</h3>
+            <p class="subtitle" id="sethubbleSubtitle">5 уровней: 40% + 4x5%</p>
+             <div class="simulator-controls">
+                <div class="control-group"><label style="display:flex; justify-content: space-between;">Глубина (уровни) <span class="value-display" id="sethubbleLevelsValue">5</span></label><input type="range" id="sethubbleLevels" class="slider" min="0" max="10" value="5"></div>
+                <div class="control-row" id="sethubbleL1Row"><label for="sethubbleL1">Комиссия ур. 1, %</label><input type="number" id="sethubbleL1" class="number-input" value="40" min="0" max="90" step="1" style="border-color: var(--neon-glow);"></div>
+                <div class="control-row" id="sethubbleL2plusRow"><label for="sethubbleL2plus" id="sethubbleL2plusLabel">Комиссия ур. 2-10, %</label><input type="number" id="sethubbleL2plus" class="number-input" value="5" min="0" max="50" step="1" style="border-color: var(--neon-glow);"></div>
+                <div class="warning" id="sethubbleWarning"></div>
+            </div>
+            <div class="metrics-container">
+                <div class="result-item"><div class="label" id="sethubblePartnersLabel">Партнеров в сети (год)</div><div class="value" id="sethubbleTotalPartners">0</div></div>
+                <div class="income-box"><span class="income-label" id="sethubbleIncomeLabel">Ваш чистый доход</span><div class="income-value" id="sethubbleAuthorIncome">$0</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="conclusion-box"><p id="conclusionText">Передвиньте ползунки, чтобы увидеть магию экспоненциального роста.</p></div>
+    <div class="chart-container"><canvas id="salesChart"></canvas></div>
+</section>

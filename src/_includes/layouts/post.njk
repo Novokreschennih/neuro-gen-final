@@ -1,0 +1,57 @@
+---
+layout: layouts/base.njk
+---
+
+
+<article class="post-content">
+	<h1>{{ title }}</h1>
+
+	{# --- ФИНАЛЬНЫЙ, 100% РАБОЧИЙ БЛОК ДЛЯ ДАТЫ И ТЕГОВ --- #}
+	<div class="post-metadata">
+		<time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time>
+		{# `tags` здесь - это массив slug'ов из Front Matter вашего поста #}
+		{%- if tags %}
+		<div class="tags-list">
+			{# Перебираем теги (slug'и) текущего поста #}
+			{%- for tagSlug in tags | filterTagList %}
+				{# `tagDictionary` - это наш глобальный словарь из _data/tagDictionary.js #}
+				{# Проверяем, есть ли такой slug в нашем словаре #}
+				{%- if tagDictionary[tagSlug] %}
+					{# Формируем URL из slug'а #}
+					{%- set tagUrl %}/tags/{{ tagSlug }}/{% endset %}
+					<a href="{{ tagUrl }}" class="post-tag">
+						{# Отображаем красивое русское имя из нашего словаря #}
+						{{ tagDictionary[tagSlug] }}
+					</a>
+				{%- endif %}
+			{%- endfor %}
+		</div>
+		{%- endif %}
+	</div>
+
+	{{ content | safe }}
+</article>
+
+{# --- НОВЫЙ CTA-БЛОК --- #}
+<section class="cta-block">
+  <h2>Увидели потенциал?</h2>
+  <p>Не просто верьте нам на слово. Рассчитайте свой собственный годовой доход на нашем интерактивном симуляторе.</p>
+  <a href="{{ '/calculator/' | url }}" class="cta-button">Открыть Калькулятор Дохода</a>
+</section>
+
+{# Навигация "Следующий/Предыдущий пост" #}
+{%- set previousPost = collections.posts | getPreviousCollectionItem %}
+{%- set nextPost = collections.posts | getNextCollectionItem %}
+{%- if nextPost or previousPost %}
+<nav class="links-nextprev">
+	{%- if previousPost %}<a class="links-nextprev-prev" href="{{ previousPost.url }}">
+		<span>← Предыдущая</span>
+		<strong>{{ previousPost.data.title }}</strong>
+	</a>{% else %}<span></span>{% endif %}
+
+	{%- if nextPost %}<a class="links-nextprev-next" href="{{ nextPost.url }}">
+		<span>Следующая →</span>
+		<strong>{{ nextPost.data.title }}</strong>
+	</a>{% endif %}
+</nav>
+{%- endif %}

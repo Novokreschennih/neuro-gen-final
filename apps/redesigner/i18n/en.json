@@ -1,0 +1,156 @@
+{
+  "header": {
+    "title": "AI Webpage Redesigner",
+    "logout": "Logout",
+    "settings": "API Key Settings",
+    "help": "Help & Instructions",
+    "legal": "Legal Information"
+  },
+  "selectors": {
+    "aiModel": "AI Model",
+    "designStyle": "Design Style"
+  },
+  "designStyles": {
+    "aiChoice": "AI's Choice",
+    "minimalist": "Minimalist",
+    "monochromatic": "Monochromatic",
+    "glassmorphism": "Glassmorphism",
+    "aurora": "Aurora",
+    "neumorphism": "Neumorphism",
+    "brutalism": "Brutalism",
+    "corporate": "Corporate",
+    "playful": "Playful",
+    "futuristic": "Futuristic"
+  },
+  "history": {
+    "empty": "No history yet. Generate a design to see it here."
+  },
+  "previewCard": {
+    "mobileView": "Mobile View",
+    "desktopView": "Desktop View",
+    "fullScreenView": "Full Screen View",
+    "useAsReference": "Use as Reference"
+  },
+  "appliedPreview": {
+    "reference": "Reference Design",
+    "target": "Target Content",
+    "result": "Result",
+    "placeholder": "<!-- Result will appear here -->",
+    "copy": "Copy Code",
+    "download": "Download HTML",
+    "copied": "Copied!",
+    "copyFailed": "Copy Failed"
+  },
+  "fullScreenPreview": {
+    "copied": "Copied!",
+    "copyFailed": "Failed to copy",
+    "copy": "Copy HTML",
+    "download": "Download",
+    "refining": "Refining design...",
+    "placeholder": "Refine the design... e.g., 'Make all buttons blue' or 'Use a lighter color palette'",
+    "useAsReference": "Use as Reference"
+  },
+  "loader": {
+    "magic": "AI is working its magic..."
+  },
+  "codeInput": {
+    "upload": "Upload File"
+  },
+  "app": {
+    "loadingMessageRedesign": "Generating 3 design variants...",
+    "loadingMessageApply": "Applying design styles...",
+    "errorUnknown": "An unknown error occurred.",
+    "errorRefinement": "An unknown error occurred during refinement.",
+    "errorApiKeyMissing": "API Key is not set. Please set your API key in the settings.",
+    "errorInvalidResponse": "The AI returned an invalid response format. Please try again.",
+    "controlsTitle": "Controls",
+    "tabGenerator": "Generator",
+    "tabHistory": "History",
+    "modeRedesign": "Redesign Page",
+    "modeApply": "Apply Design",
+    "htmlToRedesign": "HTML to Redesign",
+    "referenceHtml": "Reference Design (Style Source)",
+    "targetHtml": "Target Page (Content Source)",
+    "placeholderRedesign": "Paste your HTML or just plain text here...",
+    "placeholderReference": "Paste reference HTML...",
+    "placeholderTarget": "Paste target HTML...",
+    "generating": "Generating...",
+    "generate": "✨ Generate",
+    "welcomeTitle": "Start Creating",
+    "welcomeMessage": "Paste your HTML code or just plain text into the field on the left, select a design style, and click 'Generate' to see the AI's magic.",
+    "generateMore": "✨ Generate More",
+    "loadingMessageMore": "Generating 3 more variants...",
+    "collapseControls": "Collapse controls",
+    "expandControls": "Expand controls"
+  },
+  "landingPage": {
+    "title": "AI Webpage Redesigner",
+    "subtitle": "Instantly transform your raw HTML into stunning, modern designs with the power of generative AI. Your vision, realized in seconds.",
+    "feature1": {
+      "title": "Instant Redesigns",
+      "description": "Transform your HTML into beautiful, production-ready designs with a single click."
+    },
+    "feature2": {
+      "title": "Style Transfer",
+      "description": "Apply the look and feel from any webpage to your own content seamlessly."
+    },
+    "feature3": {
+      "title": "Iterative Refinement",
+      "description": "Chat with the AI to tweak colors, fonts, and layouts until it's perfect."
+    },
+    "ctaButton": "Get Started"
+  },
+  "pinCodePage": {
+    "title": "Enter Access Code",
+    "subtitle": "Please enter your PIN code to continue.",
+    "placeholder": "----",
+    "button": "Unlock",
+    "verifying": "Verifying...",
+    "error": "Invalid PIN Code. Please try again.",
+    "errorNetwork": "Network error. Please check your connection and try again.",
+    "errorUsedOrNotFound": "PIN not found or already used.",
+    "errorAccessDenied": "Access denied for this PIN."
+  },
+  "apiKeyModal": {
+    "title": "API Key Settings",
+    "description": "Your Gemini API key is required to use the app. It's stored securely in your browser's local storage and is never sent anywhere else.",
+    "getApiKeyLink": "Get your API Key from Google AI Studio",
+    "label": "Your Gemini API Key",
+    "placeholder": "Enter your API key",
+    "saveButton": "Save Key"
+  },
+  "helpModal": {
+    "title": "Help",
+    "howItWorksTitle": "How The App Works",
+    "howItWorksContent1": "This application leverages powerful language models from Google (Gemini) to transform your HTML code. When you provide HTML and select a style, we send it to the AI model with a special set of instructions, asking it to act as an expert UI/UX designer and rewrite your styles using Tailwind CSS.",
+    "howItWorksContent2": "The process is fully automated. The AI analyzes your content structure and creatively applies the chosen style while preserving your original text and HTML tags. As a result, you receive several unique design variants in a matter of seconds.",
+    "instructionsTitle": "Instructions",
+    "instructionsPoint1": "1. Redesign Page:",
+    "instructionsText1": "Paste your HTML code into the 'HTML to Redesign' field. Select a design style and an AI model, then click 'Generate'. You will receive multiple design options to choose from.",
+    "instructionsPoint2": "2. Apply Design:",
+    "instructionsText2": "This mode allows you to transfer a design from one page to another. Paste the HTML with the desired design into 'Reference Design', and the HTML with your content into 'Target Page'. The AI will apply the styles from the former to the latter.",
+    "instructionsPoint3": "3. Iterative Refinement:",
+    "instructionsText3": "After generating a design, open it in full-screen view. At the bottom, you will find an input field where you can give the AI commands in natural language (e.g., 'Make all buttons blue') to further refine the design.",
+    "instructionsPoint4": "4. History:",
+    "instructionsText4": "Every generation you create is saved in the 'History' tab. You can return to previous results at any time and continue working with them."
+  },
+  "legalModal": {
+    "title": "Legal Information",
+    "privacyTitle": "Privacy Policy",
+    "privacyDate": "Last updated: July 25, 2024",
+    "privacyIntro": "We take your privacy seriously. This Privacy Policy explains what data we collect, how we use it, and how we protect it when you use the 'AI Webpage Redesigner' ('Application').",
+    "privacyDataTitle": "What Data We Process",
+    "privacyDataContent": "<strong>Your HTML Content:</strong> To perform its functions (redesigning, applying styles), the Application processes the HTML content that you provide.",
+    "privacyStorageTitle": "How We Use Data",
+    "privacyStorageLocal": "<strong>All data is processed ephemerally:</strong> All operations involving your HTML content occur within your browser session on your device.",
+    "privacyStorageContent": "<strong>Content Processing:</strong> The content of your HTML is sent to the Google Gemini API solely for the purpose of generating design variations. We do not store, analyze, or share your content anywhere else. It is only used for the API request and is not retained by us.",
+    "privacyImportant": "<strong>Important:</strong> We do not have access to your HTML content after your session. All processing is handled between your client and the Google API.",
+    "termsTitle": "Terms of Use",
+    "termsIntro": "By using the Application, you agree to the following terms:",
+    "termsAsIs": "<strong>'As Is' Provision:</strong> The Application is provided 'as is', without any warranties. We do not guarantee that its operation will be error-free or that it will meet all your requirements.",
+    "termsApiUse": "<strong>Use of Google Gemini API:</strong> The Application uses the Google Gemini API to generate designs. Your use of this application is also subject to Google's terms of service. You are responsible for the content you process and must ensure it complies with all applicable policies.",
+    "termsLiability": "<strong>Limitation of Liability:</strong> We are not liable for any direct or indirect damages (including data loss, service interruptions, or any other losses) arising from the use or inability to use the Application.",
+    "termsAiResults": "<strong>AI-Generated Results:</strong> The design generation feature uses a third-party service (Google Gemini). We cannot guarantee the accuracy, relevance, or quality of the designs generated by the AI.",
+    "termsChanges": "<strong>Changes to Terms:</strong> We reserve the right to change these terms at any time."
+  }
+}

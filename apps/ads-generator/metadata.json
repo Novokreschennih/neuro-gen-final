@@ -1,0 +1,5 @@
+{
+  "name": "AI Ad Creative Generator for Yandex.Direct",
+  "description": "A web application that uses Google Gemini to generate complete sets of text and image ad creatives for Yandex.Direct campaigns based on user input about their product or service.",
+  "requestFramePermissions": []
+}
