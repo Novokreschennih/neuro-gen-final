@@ -442,3 +442,41 @@ html.light-theme .simulator.island-dark .control-row label {
 		padding: 30px 15px;
 	}
 }
+/* --- ЛОГИКА НОВОГО ПЕРЕКЛЮЧАТЕЛЯ --- */
+
+/* 1. Двигаем синюю плашку вправо при выборе Офлайн */
+#businessTypeSwitcher[data-type="offline"] .mode-switch-indicator {
+    transform: translateX(100%);
+}
+
+/* 2. Стили для отключенной колонки (Классика) */
+.result-column {
+    transition: all 0.4s ease;
+    position: relative;
+}
+
+/* Когда добавлен этот класс, колонка становится прозрачной и неактивной */
+.result-column.is-disabled {
+    opacity: 0.2;
+    pointer-events: none; /* Блокируем клики */
+    filter: grayscale(1); /* Делаем черно-белой */
+}
+
+/* Добавляем надпись поверх отключенной колонки */
+.result-column.is-disabled::after {
+    content: "Недоступно для офлайн-бизнеса";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(15, 23, 42, 0.9);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    z-index: 10;
+    width: 80%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}

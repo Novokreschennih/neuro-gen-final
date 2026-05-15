@@ -1,5 +1,0 @@
-{
-  "name": "AI Webpage Redesigner",
-  "description": "An application that allows users to input HTML code and leverage the Google Gemini API to generate new design variations, apply styles from one element to another, and iteratively improve the results.",
-  "requestFramePermissions": []
-}
