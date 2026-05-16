@@ -1,6 +1,6 @@
 ---
 title: "NeuroGen | Твоя Мультиканальная SaaS-Империя"
-permalink: /join/
+permalink: /index.html
 eleventyExcludeFromCollections: true
 
 ---
@@ -17,68 +17,158 @@ eleventyExcludeFromCollections: true
     <link rel="stylesheet" href="/css/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body { background-color: #050505; color: #ffffff; }
-      .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-      .gradient-text { color: transparent; background-clip: text; -webkit-background-clip: text; background-image: linear-gradient(to right, #06b6d4, #a855f7); }
-      .gradient-text-green { color: transparent; background-clip: text; -webkit-background-clip: text; background-image: linear-gradient(to right, #10b981, #3b82f6); }
-      .gradient-text-orange { color: transparent; background-clip: text; -webkit-background-clip: text; background-image: linear-gradient(to right, #f59e0b, #ef4444); }
-      
-      .animate-blob { animation: blob 7s infinite; }
-      .animation-delay-2000 { animation-delay: 2s; }
-      .animation-delay-4000 { animation-delay: 4s; }
-      @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
-      
-      /* Классы для динамического контента */
-      .role-universal, .role-agent, .role-online, .role-offline { display: none; }
-      /* По умолчанию показываем universal, если JS еще не отработал */
-      .show-universal .role-universal { display: block; }
-      .show-agent .role-agent { display: block; }
-      .show-online .role-online { display: block; }
-      .show-offline .role-offline { display: block; }
-    </style>
+body {
+  background-color: #050505;
+  color: #ffffff;
+}
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.gradient-text {
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(to right, #06b6d4, #a855f7);
+}
+.gradient-text-green {
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(to right, #10b981, #3b82f6);
+}
+.gradient-text-orange {
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(to right, #f59e0b, #ef4444);
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+/* Классы для динамического контента */
+.role-universal,
+.role-agent,
+.role-online,
+.role-offline {
+  display: none;
+}
+/* По умолчанию показываем universal, если JS еще не отработал */
+.show-universal .role-universal {
+  display: block;
+}
+.show-agent .role-agent {
+  display: block;
+}
+.show-online .role-online {
+  display: block;
+}
+.show-offline .role-offline {
+  display: block;
+}
+
+</style>
   </head>
-  <body class="relative min-h-screen flex flex-col items-center p-4 overflow-x-hidden" id="body-container">
-    
+  <body
+    class="relative min-h-screen flex flex-col items-center p-4 overflow-x-hidden"
+    id="body-container"
+  >
     <!-- Фоновые эффекты -->
     <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-      <div class="absolute top-0 -left-4 w-96 h-96 bg-purple-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob"></div>
-      <div class="absolute top-0 -right-4 w-96 h-96 bg-cyan-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob animation-delay-2000"></div>
-      <div class="absolute -bottom-8 left-20 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob animation-delay-4000"></div>
+      <div class="absolute top-0 -left-4 w-96 h-96 bg-purple-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob">
+      </div>
+      <div class="absolute top-0 -right-4 w-96 h-96 bg-cyan-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob animation-delay-2000">
+      </div>
+      <div class="absolute -bottom-8 left-20 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-blob animation-delay-4000">
+      </div>
     </div>
 
     <main class="max-w-5xl mx-auto w-full z-10 pt-4">
-      
       <!-- ============================================== -->
       <!-- БЛОК 1: HERO (ОФФЕР ПОД АУДИТОРИЮ)             -->
       <!-- ============================================== -->
       <section class="text-center py-10 md:py-16">
-        
         <div class="inline-block px-4 py-1.5 rounded-full glass-panel mb-6 text-[11px] md:text-xs font-bold tracking-wide uppercase border-white/10">
-          <span class="role-universal text-cyan-400">🔥 Платформа SetHubble v6.0 | Мультиканальная ИИ-система</span>
-          <span class="role-agent text-blue-400">🕵️‍♂️ Бизнес без вложений | Партнерская экосистема SetHubble</span>
-          <span class="role-online text-purple-400">💻 EdTech & E-commerce | Эквайринг и автоматизация SetHubble</span>
-          <span class="role-offline text-orange-400">🏢 HoReCa & Услуги | Офлайн-маркетинг SetHubble O2O</span>
+          <span class="role-universal text-cyan-400"
+          >🔥 Платформа SetHubble v6.0 | Мультиканальная ИИ-система</span>
+          <span class="role-agent text-blue-400"
+          >🕵️‍♂️ Бизнес без вложений | Партнерская экосистема SetHubble</span>
+          <span class="role-online text-purple-400"
+          >💻 EdTech & E-commerce | Эквайринг и автоматизация SetHubble</span>
+          <span class="role-offline text-orange-400"
+          >🏢 HoReCa & Услуги | Офлайн-маркетинг SetHubble O2O</span>
         </div>
 
         <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight leading-tight">
-          <span class="role-universal">ГОТОВАЯ ИИ-СИСТЕМА ДЛЯ <br/><span class="gradient-text">ПАССИВНОГО ДОХОДА</span></span>
-          <span class="role-agent">СТАНЬ ТЕНЕВЫМ ПАРТНЕРОМ <br/><span class="gradient-text-green">ЛЮБОГО БИЗНЕСА</span></span>
-          <span class="role-online">МОНЕТИЗИРУЙ 100% ТРАФИКА <br/>И ЗАРАБАТЫВАЙ <span class="gradient-text">НА ОТКАЗАХ</span></span>
-          <span class="role-offline">САРАФАННОЕ РАДИО 2.0 <br/>БЕЗ <span class="gradient-text-orange">ЗАТРАТ НА РЕКЛАМУ</span></span>
+          <span class="role-universal">ГОТОВАЯ ИИ-СИСТЕМА ДЛЯ <br /><span
+              class="gradient-text"
+            >ПАССИВНОГО ДОХОДА</span></span>
+          <span class="role-agent">СТАНЬ ТЕНЕВЫМ ПАРТНЕРОМ <br /><span
+              class="gradient-text-green"
+            >ЛЮБОГО БИЗНЕСА</span></span>
+          <span class="role-online">МОНЕТИЗИРУЙ 100% ТРАФИКА <br />И ЗАРАБАТЫВАЙ
+            <span class="gradient-text">НА ОТКАЗАХ</span></span>
+          <span class="role-offline">САРАФАННОЕ РАДИО 2.0 <br />БЕЗ <span
+              class="gradient-text-orange"
+            >ЗАТРАТ НА РЕКЛАМУ</span></span>
         </h1>
 
         <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed">
-          <span class="role-universal">Получи <b>бесплатно</b> готовую SaaS-инфраструктуру. Мы настроим твоего ИИ-клона в Telegram, VK и на сайте за 1 минуту. Нейросети возьмут на себя рутину, а смарт-контракты обеспечат пассивные выплаты со всей глубины твоей сети.</span>
-          <span class="role-agent">Не нужно создавать продукт. Ты оцифровываешь чужие бизнесы (кофейни, блогеров) с помощью нашего бесплатного инструмента. Их клиенты становятся твоей партнерской сетью навсегда.</span>
-          <span class="role-online">Перестань терять деньги на тех, кто посмотрел вебинар, но не купил курс. Преврати "отказников" в агентов, которые будут приносить тебе пассивный доход, даже покупая у твоих конкурентов!</span>
-          <span class="role-offline">Никакой предоплаты за клики и показы. Вы платите процент агенту <b>только после того</b>, как клиент физически пришел и оставил деньги в вашей кассе. Плюс — пассивный доход с онлайн-покупок ваших клиентов вне заведения.</span>
+          <span class="role-universal"
+          >Получи <b>бесплатно</b> готовую SaaS-инфраструктуру. Мы настроим
+            твоего ИИ-клона в Telegram, VK и на сайте за 1 минуту. Нейросети
+            возьмут на себя рутину, а смарт-контракты обеспечат пассивные
+            выплаты со всей глубины твоей сети.</span>
+          <span class="role-agent"
+          >Не нужно создавать продукт. Ты оцифровываешь чужие бизнесы (кофейни,
+            блогеров) с помощью нашего бесплатного инструмента. Их клиенты
+            становятся твоей партнерской сетью навсегда.</span>
+          <span class="role-online"
+          >Перестань терять деньги на тех, кто посмотрел вебинар, но не купил
+            курс. Преврати "отказников" в агентов, которые будут приносить тебе
+            пассивный доход, даже покупая у твоих конкурентов!</span>
+          <span class="role-offline"
+          >Никакой предоплаты за клики и показы. Вы платите процент агенту <b
+            >только после того</b>, как клиент физически пришел и оставил деньги
+            в вашей кассе. Плюс — пассивный доход с онлайн-покупок ваших
+            клиентов вне заведения.</span>
         </p>
 
         <!-- Главная кнопка CTA -->
-        <div class="js-open-modal cursor-pointer relative inline-flex group w-full md:w-auto px-4 md:px-0" role="button" tabindex="0">
-          <div class="absolute transition-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500 rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200"></div>
+        <div
+          class="js-open-modal cursor-pointer relative inline-flex group w-full md:w-auto px-4 md:px-0"
+          role="button"
+          tabindex="0"
+        >
+          <div class="absolute transition-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500 rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200">
+          </div>
           <div class="relative w-full md:w-auto inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white transition-all duration-200 bg-gray-900 rounded-xl gap-3 shadow-2xl">
-            <span class="role-universal role-agent role-online">🚀 ПОЛУЧИТЬ СИСТЕМУ БЕСПЛАТНО</span>
+            <span class="role-universal role-agent role-online"
+            >🚀 ПОЛУЧИТЬ СИСТЕМУ БЕСПЛАТНО</span>
             <span class="role-offline">⚡ СГЕНЕРИРОВАТЬ QR-КОД БЕСПЛАТНО</span>
           </div>
         </div>
@@ -89,11 +179,15 @@ eleventyExcludeFromCollections: true
       <!-- ============================================== -->
       <section class="py-16">
         <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">
-          СИНЕРГИЯ ИНСТРУМЕНТОВ: <br/>
-          <span class="gradient-text">NEUROGEN</span> + <span class="text-white">SETHUBBLE</span>
+          СИНЕРГИЯ ИНСТРУМЕНТОВ: <br />
+          <span class="gradient-text">NEUROGEN</span> + <span class="text-white"
+          >SETHUBBLE</span>
         </h2>
         <p class="text-gray-400 text-center mb-12 max-w-3xl mx-auto">
-          Обычный affiliate-маркетинг мертв. Мы разделили процесс на две части: <b>NeuroGen</b> предоставляет мощное ИТ-оружие (ИИ, сайты, маркетинг), а <b>SetHubble</b> обеспечивает экономику (выплаты, блокчейн, фиксация клиентов).
+          Обычный affiliate-маркетинг мертв. Мы разделили процесс на две части:
+          <b>NeuroGen</b> предоставляет мощное ИТ-оружие (ИИ, сайты, маркетинг),
+          а <b>SetHubble</b> обеспечивает экономику (выплаты, блокчейн, фиксация
+          клиентов).
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -101,20 +195,28 @@ eleventyExcludeFromCollections: true
           <div class="glass-panel p-8 rounded-3xl border-t border-cyan-500/30">
             <div class="flex items-center gap-3 mb-6">
               <div class="text-3xl">🧠</div>
-              <h3 class="text-2xl font-bold text-white">NeuroGen <span class="text-sm font-normal text-gray-400">/ Маркетинг</span></h3>
+              <h3 class="text-2xl font-bold text-white">
+                NeuroGen <span class="text-sm font-normal text-gray-400"
+                >/ Маркетинг</span>
+              </h3>
             </div>
             <ul class="space-y-4">
               <li class="flex items-start gap-3 text-sm text-gray-300">
                 <span class="text-cyan-400 mt-1">✔</span>
-                <span><b>Мультиканальный ИИ-Агент:</b> Твой бот-клон запускается в Telegram, VK, Web и Email. Он сам общается с лидами, закрывает возражения и ведет по воронке.</span>
+                <span><b>Мультиканальный ИИ-Агент:</b> Твой бот-клон запускается
+                  в Telegram, VK, Web и Email. Он сам общается с лидами,
+                  закрывает возражения и ведет по воронке.</span>
               </li>
               <li class="flex items-start gap-3 text-sm text-gray-300">
                 <span class="text-cyan-400 mt-1">✔</span>
-                <span><b>Автоматический Promo-Kit:</b> Генерация рекламных материалов, сайтов-визиток и продающих постов за 1 клик.</span>
+                <span><b>Автоматический Promo-Kit:</b> Генерация рекламных
+                  материалов, сайтов-визиток и продающих постов за 1
+                  клик.</span>
               </li>
               <li class="flex items-start gap-3 text-sm text-gray-300">
                 <span class="text-cyan-400 mt-1">✔</span>
-                <span><b>ИИ-Лаборатория:</b> Инструменты для генерации вирусных сценариев, копирайтинга и настройки автоворонок.</span>
+                <span><b>ИИ-Лаборатория:</b> Инструменты для генерации вирусных
+                  сценариев, копирайтинга и настройки автоворонок.</span>
               </li>
             </ul>
           </div>
@@ -123,23 +225,37 @@ eleventyExcludeFromCollections: true
           <div class="glass-panel p-8 rounded-3xl border-t border-purple-500/30">
             <div class="flex items-center gap-3 mb-6">
               <div class="text-3xl">🏦</div>
-              <h3 class="text-2xl font-bold text-white">SetHubble <span class="text-sm font-normal text-gray-400">/ Экономика</span></h3>
+              <h3 class="text-2xl font-bold text-white">
+                SetHubble <span class="text-sm font-normal text-gray-400"
+                >/ Экономика</span>
+              </h3>
             </div>
             <ul class="space-y-4">
               <li class="flex items-start gap-3 text-sm text-gray-300">
                 <span class="text-purple-400 mt-1">✔</span>
                 <span>
-                  <span class="role-universal role-agent role-online"><b>Тотальная структуризация:</b> Любой человек, перешедший по твоей ссылке, намертво закрепляется за тобой. Если он купит чужой курс или сервис на платформе — ты получишь пассивный %.</span>
-                  <span class="role-offline"><b>Оплата за результат:</b> Никаких авансов за клики. Вы платите процент агенту только после оплаты товара в кассе (инвойсы создаются автоматически).</span>
+                  <span class="role-universal role-agent role-online"><b
+                    >Тотальная структуризация:</b> Любой человек, перешедший по
+                    твоей ссылке, намертво закрепляется за тобой. Если он купит
+                    чужой курс или сервис на платформе — ты получишь пассивный
+                    %.</span>
+                  <span class="role-offline"><b>Оплата за результат:</b> Никаких
+                    авансов за клики. Вы платите процент агенту только после
+                    оплаты товара в кассе (инвойсы создаются
+                    автоматически).</span>
                 </span>
               </li>
               <li class="flex items-start gap-3 text-sm text-gray-300">
                 <span class="text-purple-400 mt-1">✔</span>
-                <span><b>Эффект Мультипликации:</b> Глубокая сеть. Ваши клиенты приводят своих друзей, те — своих. Вы получаете процент с оплат с огромной глубины вашей структуры.</span>
+                <span><b>Эффект Мультипликации:</b> Глубокая сеть. Ваши клиенты
+                  приводят своих друзей, те — своих. Вы получаете процент с
+                  оплат с огромной глубины вашей структуры.</span>
               </li>
               <li class="flex items-start gap-3 text-sm text-gray-300">
                 <span class="text-purple-400 mt-1">✔</span>
-                <span><b>Глобальный Эквайринг:</b> Принимайте и выводите средства в крипте (USDT, TON, BTC). Работает мгновенно в любой стране мира.</span>
+                <span><b>Глобальный Эквайринг:</b> Принимайте и выводите
+                  средства в крипте (USDT, TON, BTC). Работает мгновенно в любой
+                  стране мира.</span>
               </li>
             </ul>
           </div>
@@ -159,11 +275,19 @@ eleventyExcludeFromCollections: true
           <div class="glass-panel p-8 rounded-3xl max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
             <div class="absolute -right-10 -top-10 text-9xl opacity-5">📈</div>
             <div class="flex-1">
-              <h3 class="text-2xl font-bold text-white mb-4">Кейс: Студент и Кофейня (Оцифровка чужого бизнеса)</h3>
+              <h3 class="text-2xl font-bold text-white mb-4">
+                Кейс: Студент и Кофейня (Оцифровка чужого бизнеса)
+              </h3>
               <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                Студент Антон просто скинул ссылку владельцу кофейни у дома. Владелец зарегистрировался (бесплатно) и поставил QR-коды на столики.<br><br>
-                За месяц 800 посетителей кофейни отсканировали код ради скидки. 15 из них оказались предпринимателями и подключили СВОИ бизнесы (автомойку, цветочный магазин) к платформе.<br><br>
-                <b>Итог:</b> Антон не варит кофе и не моет машины. Но он получает пассивный процент с оборота ВСЕЙ этой огромной цепочки, потому что он был первым звеном!
+                Студент Антон просто скинул ссылку владельцу кофейни у дома.
+                Владелец зарегистрировался (бесплатно) и поставил QR-коды на
+                столики.<br><br>
+                За месяц 800 посетителей кофейни отсканировали код ради скидки.
+                15 из них оказались предпринимателями и подключили СВОИ бизнесы
+                (автомойку, цветочный магазин) к платформе.<br><br>
+                <b>Итог:</b> Антон не варит кофе и не моет машины. Но он
+                получает пассивный процент с оборота ВСЕЙ этой огромной цепочки,
+                потому что он был первым звеном!
               </p>
             </div>
           </div>
@@ -174,11 +298,20 @@ eleventyExcludeFromCollections: true
           <div class="glass-panel p-8 rounded-3xl max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
             <div class="absolute -right-10 -top-10 text-9xl opacity-5">💻</div>
             <div class="flex-1">
-              <h3 class="text-2xl font-bold text-white mb-4">Кейс: Блогер Макс (Монетизация "мусора")</h3>
+              <h3 class="text-2xl font-bold text-white mb-4">
+                Кейс: Блогер Макс (Монетизация "мусора")
+              </h3>
               <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                У Макса 10,000 подписчиков. Его курс купили 100 человек. Раньше остальные 9,900 человек просто уходили. <br><br>
-                Макс внедрил SetHubble. 2,500 "отказников" зарегистрировались в его сети бесплатно. Они не купили курс Макса, но начали покупать онлайн-сервисы и продукты других авторов внутри экосистемы.<br><br>
-                <b>Итог:</b> Макс заработал $4,500 пассива за первый месяц на людях, которые у него НИЧЕГО не купили! Плюс, часть его конкурентов оказалась в его сети — теперь он зарабатывает на их продажах.
+                У Макса 10,000 подписчиков. Его курс купили 100 человек. Раньше
+                остальные 9,900 человек просто уходили. <br><br>
+                Макс внедрил SetHubble. 2,500 "отказников" зарегистрировались в
+                его сети бесплатно. Они не купили курс Макса, но начали покупать
+                онлайн-сервисы и продукты других авторов внутри
+                экосистемы.<br><br>
+                <b>Итог:</b> Макс заработал $4,500 пассива за первый месяц на
+                людях, которые у него НИЧЕГО не купили! Плюс, часть его
+                конкурентов оказалась в его сети — теперь он зарабатывает на их
+                продажах.
               </p>
             </div>
           </div>
@@ -189,11 +322,21 @@ eleventyExcludeFromCollections: true
           <div class="glass-panel p-8 rounded-3xl max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
             <div class="absolute -right-10 -top-10 text-9xl opacity-5">🏪</div>
             <div class="flex-1">
-              <h3 class="text-2xl font-bold text-white mb-4">Кейс: Салон красоты "Золотой Парашют"</h3>
+              <h3 class="text-2xl font-bold text-white mb-4">
+                Кейс: Салон красоты "Золотой Парашют"
+              </h3>
               <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                Владелица салона Елена сжигала по 30,000 руб в месяц на таргет. Она отменила рекламу и поставила QR-коды SetHubble на ресепшене.<br><br>
-                Довольные клиентки раздали промокоды подругам (работа за процент). Среди них оказалась владелица соседнего фитнес-клуба, которая тоже подключила свой бизнес в сеть Елены.<br><br>
-                <b>Итог:</b> База клиентов Елены выросла без вложений. Но главное: теперь, когда её клиентки покупают абонементы в фитнес или оплачивают подписки в интернете, Елена получает пассивный доход! Даже если она закроет салон, "цифровая" база продолжит приносить ей деньги.
+                Владелица салона Елена сжигала по 30,000 руб в месяц на таргет.
+                Она отменила рекламу и поставила QR-коды SetHubble на
+                ресепшене.<br><br>
+                Довольные клиентки раздали промокоды подругам (работа за
+                процент). Среди них оказалась владелица соседнего фитнес-клуба,
+                которая тоже подключила свой бизнес в сеть Елены.<br><br>
+                <b>Итог:</b> База клиентов Елены выросла без вложений. Но
+                главное: теперь, когда её клиентки покупают абонементы в фитнес
+                или оплачивают подписки в интернете, Елена получает пассивный
+                доход! Даже если она закроет салон, "цифровая" база продолжит
+                приносить ей деньги.
               </p>
             </div>
           </div>
@@ -204,37 +347,51 @@ eleventyExcludeFromCollections: true
       <!-- БЛОК 4: ЧТО ВХОДИТ В БЕСПЛАТНЫЙ СТАРТ (НОВОЕ)  -->
       <!-- ============================================== -->
       <section class="py-16 relative">
-        <div class="absolute inset-0 bg-purple-900/10 blur-3xl -z-10 rounded-[100px]"></div>
+        <div class="absolute inset-0 bg-purple-900/10 blur-3xl -z-10 rounded-[100px]">
+        </div>
         <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">
           ТВОЙ СТАРТОВЫЙ <span class="gradient-text">АРСЕНАЛ ($0)</span>
         </h2>
         <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-          Мы выдаем тебе полностью рабочую инфраструктуру бесплатно. Забирай инструменты, запускай трафик и зарабатывай первые деньги.
+          Мы выдаем тебе полностью рабочую инфраструктуру бесплатно. Забирай
+          инструменты, запускай трафик и зарабатывай первые деньги.
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           <div class="glass-panel p-6 rounded-3xl border-t border-gray-700 hover:bg-white/5 transition-all text-center">
             <div class="text-5xl mb-4">🤖</div>
-            <h3 class="text-lg font-bold text-white mb-2">Мультиканальный ИИ-Бот</h3>
-            <p class="text-xs text-gray-400">Системный бот NeuroGen готов принимать твоих клиентов в Telegram, VK и на сайте. Он сам проведет презентацию.</p>
+            <h3 class="text-lg font-bold text-white mb-2">
+              Мультиканальный ИИ-Бот
+            </h3>
+            <p class="text-xs text-gray-400">
+              Системный бот NeuroGen готов принимать твоих клиентов в Telegram,
+              VK и на сайте. Он сам проведет презентацию.
+            </p>
           </div>
-          
+
           <div class="glass-panel p-6 rounded-3xl border-t border-gray-700 hover:bg-white/5 transition-all text-center">
             <div class="text-5xl mb-4">🔗</div>
             <h3 class="text-lg font-bold text-white mb-2">Вечная Партнерка</h3>
-            <p class="text-xs text-gray-400">Личный крипто-кошелек SetHubble и партнерская ссылка. Ты сразу получаешь <b>25% комиссии</b> с личных продаж системы.</p>
+            <p class="text-xs text-gray-400">
+              Личный крипто-кошелек SetHubble и партнерская ссылка. Ты сразу
+              получаешь <b>25% комиссии</b> с личных продаж системы.
+            </p>
           </div>
 
           <div class="glass-panel p-6 rounded-3xl border-t border-gray-700 hover:bg-white/5 transition-all text-center">
             <div class="text-5xl mb-4">📱</div>
             <h3 class="text-lg font-bold text-white mb-2">Базовый Promo-Kit</h3>
-            <p class="text-xs text-gray-400">Генератор персональных QR-кодов и ссылок для интеграции онлайн и офлайн. Твой магнит для трафика.</p>
+            <p class="text-xs text-gray-400">
+              Генератор персональных QR-кодов и ссылок для интеграции онлайн и
+              офлайн. Твой магнит для трафика.
+            </p>
           </div>
         </div>
 
         <div class="text-center mt-10">
           <p class="text-sm text-cyan-400 font-bold tracking-wide">
-            💡 Как масштабировать этот арсенал в 10 раз и получать 50% прибыли?<br>Смотри внутри системы после активации!
+            💡 Как масштабировать этот арсенал в 10 раз и получать 50%
+            прибыли?<br>Смотри внутри системы после активации!
           </p>
         </div>
       </section>
@@ -247,17 +404,30 @@ eleventyExcludeFromCollections: true
           ЧАСТЫЕ <span class="gradient-text">ВОПРОСЫ</span>
         </h2>
         <div class="max-w-3xl mx-auto space-y-4">
-          
           <div class="glass-panel rounded-xl overflow-hidden border-gray-800">
             <details class="group">
               <summary class="flex justify-between items-center cursor-pointer p-6 font-bold text-lg">
-                <span class="role-universal role-agent role-online">В чем подвох? Почему старт бесплатный?</span>
-                <span class="role-offline">Как работает оплата за результат? Это законно?</span>
-                <span class="transition group-open:rotate-180 text-cyan-400">▼</span>
+                <span class="role-universal role-agent role-online"
+                >В чем подвох? Почему старт бесплатный?</span>
+                <span class="role-offline"
+                >Как работает оплата за результат? Это законно?</span>
+                <span class="transition group-open:rotate-180 text-cyan-400"
+                >▼</span>
               </summary>
               <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">
-                <span class="role-universal role-agent role-online">Мы — гибридная SaaS платформа. Блокчейн SetHubble берет крошечный процент только с успешных транзакций внутри сети (при выводе средств). Если ты не зарабатываешь — мы тоже. Поэтому IT-инструменты NeuroGen для старта бесплатны. Мы зарабатываем вместе с тобой.</span>
-                <span class="role-offline">Абсолютно легально! Клиент платит вам в кассу в рублях (как обычно, с выдачей фискального чека). Вы предоставляете ему скидку по QR-коду, а агентское вознаграждение (за нового клиента) оплачивается позже автоматически с вашего личного крипто-кошелька в USDT. Ваше юр.лицо крипты не касается. Бухгалтерия в безопасности.</span>
+                <span class="role-universal role-agent role-online"
+                >Мы — гибридная SaaS платформа. Блокчейн SetHubble берет
+                  крошечный процент только с успешных транзакций внутри сети
+                  (при выводе средств). Если ты не зарабатываешь — мы тоже.
+                  Поэтому IT-инструменты NeuroGen для старта бесплатны. Мы
+                  зарабатываем вместе с тобой.</span>
+                <span class="role-offline"
+                >Абсолютно легально! Клиент платит вам в кассу в рублях (как
+                  обычно, с выдачей фискального чека). Вы предоставляете ему
+                  скидку по QR-коду, а агентское вознаграждение (за нового
+                  клиента) оплачивается позже автоматически с вашего личного
+                  крипто-кошелька в USDT. Ваше юр.лицо крипты не касается.
+                  Бухгалтерия в безопасности.</span>
               </div>
             </details>
           </div>
@@ -265,13 +435,26 @@ eleventyExcludeFromCollections: true
           <div class="glass-panel rounded-xl overflow-hidden border-gray-800">
             <details class="group">
               <summary class="flex justify-between items-center cursor-pointer p-6 font-bold text-lg">
-                <span class="role-universal role-agent role-online">Я не ИТ-специалист. Справлюсь с настройкой?</span>
-                <span class="role-offline">Сложно ли это внедрить админис��раторам и кассирам?</span>
-                <span class="transition group-open:rotate-180 text-cyan-400">▼</span>
+                <span class="role-universal role-agent role-online"
+                >Я не ИТ-специалист. Справлюсь с настройкой?</span>
+                <span class="role-offline"
+                >Сложно ли это внедрить админис��раторам и кассирам?</span>
+                <span class="transition group-open:rotate-180 text-cyan-400"
+                >▼</span>
               </summary>
               <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">
-                <span class="role-universal role-agent role-online">Да! Тебе понадобится ровно 1 минута. Заходишь в Telegram или Web-чат, отправляешь боту API-ключ. ВСЁ. Сервера, базы данных, промпты нейросетей, интеграция с SetHubble — всё это поднимается в нашем облаке абсолютно автоматически. Тебе остается только раскидывать ссылку.</span>
-                <span class="role-offline">Внедрение занимает 5 минут. Вам не нужно устанавливать тяжелый софт на онлайн-кассы или обучать персонал сложным программам. Вы просто сканируете промокоды с телефонов гостей. Всё остальное система сделает сама в смартфонах ваших клиентов.</span>
+                <span class="role-universal role-agent role-online"
+                >Да! Тебе понадобится ровно 1 минута. Заходишь в Telegram или
+                  Web-чат, отправляешь боту API-ключ. ВСЁ. Сервера, базы данных,
+                  промпты нейросетей, интеграция с SetHubble — всё это
+                  поднимается в нашем облаке абсолютно автоматически. Тебе
+                  остается только раскидывать ссылку.</span>
+                <span class="role-offline"
+                >Внедрение занимает 5 минут. Вам не нужно устанавливать тяжелый
+                  софт на онлайн-кассы или обучать персонал сложным программам.
+                  Вы просто сканируете промокоды с телефонов гостей. Всё
+                  остальное система сделает сама в смартфонах ваших
+                  клиентов.</span>
               </div>
             </details>
           </div>
@@ -280,14 +463,18 @@ eleventyExcludeFromCollections: true
             <details class="group">
               <summary class="flex justify-between items-center cursor-pointer p-6 font-bold text-lg">
                 Нужны ли вложения на старте?
-                <span class="transition group-open:rotate-180 text-cyan-400">▼</span>
+                <span class="transition group-open:rotate-180 text-cyan-400"
+                >▼</span>
               </summary>
               <div class="px-6 pb-6 text-gray-400 text-sm leading-relaxed">
-                Нет, старт абсолютно бесплатный. Ты получаешь реферальную ссылку, рабочую ИИ-воронку и возможность зарабатывать 25% комиссии с первых дней. Позже, когда заработаешь первые деньги, ты сможешь проапгрейдить систему внутри кабинета, чтобы открыть профессиональные инструменты и увеличить доход.
+                Нет, старт абсолютно бесплатный. Ты получаешь реферальную
+                ссылку, рабочую ИИ-воронку и возможность зарабатывать 25%
+                комиссии с первых дней. Позже, когда заработаешь первые деньги,
+                ты сможешь проапгрейдить систему внутри кабинета, чтобы открыть
+                профессиональные инструменты и увеличить доход.
               </div>
             </details>
           </div>
-
         </div>
       </section>
 
@@ -306,9 +493,14 @@ eleventyExcludeFromCollections: true
                 <span>🔴</span> КРАСНАЯ ТАБЛЕТКА
               </div>
               <p class="text-sm text-gray-400">
-                Закрыть страницу. 
-                <span class="role-universal role-agent role-online">Продолжить сжигать бюджеты. Работать 24/7 и смотреть, как нейросети забирают твою профессию, а конкуренты перехватывают рынок.</span>
-                <span class="role-offline">Продолжить платить авансом за показы в Яндексе и смотреть, как клиенты уходят к конкурентам после первого визита.</span>
+                Закрыть страницу.
+                <span class="role-universal role-agent role-online"
+                >Продолжить сжигать бюджеты. Работать 24/7 и смотреть, как
+                  нейросети забирают твою профессию, а конкуренты перехватывают
+                  рынок.</span>
+                <span class="role-offline"
+                >Продолжить платить авансом за показы в Яндексе и смотреть, как
+                  клиенты уходят к конкурентам после первого визита.</span>
               </p>
             </div>
             <div class="p-6 rounded-2xl bg-black/40 border border-gray-800 hover:border-cyan-500/50 transition-colors">
@@ -317,16 +509,27 @@ eleventyExcludeFromCollections: true
               </div>
               <p class="text-sm text-gray-400">
                 Нажать кнопку. Потратить 60 секунд на инициализацию.
-                <span class="role-universal role-agent role-online">Оцифровать свою сеть, автоматизировать продажи и забирать пассивную прибыль со всего рынка (даже с отказов).</span>
-                <span class="role-offline">Получить готовый QR-код и превратить каждого гостя в постоянного клиента и партнера, приносящего пассивный доход.</span>
+                <span class="role-universal role-agent role-online"
+                >Оцифровать свою сеть, автоматизировать продажи и забирать
+                  пассивную прибыль со всего рынка (даже с отказов).</span>
+                <span class="role-offline"
+                >Получить готовый QR-код и превратить каждого гостя в
+                  постоянного клиента и партнера, приносящего пассивный
+                  доход.</span>
               </p>
             </div>
           </div>
 
-          <div class="js-open-modal cursor-pointer relative inline-flex group w-full md:w-auto" role="button" tabindex="0">
-            <div class="absolute transition-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500 rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200"></div>
+          <div
+            class="js-open-modal cursor-pointer relative inline-flex group w-full md:w-auto"
+            role="button"
+            tabindex="0"
+          >
+            <div class="absolute transition-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500 rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200">
+            </div>
             <div class="relative w-full md:w-auto inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white transition-all duration-200 bg-gray-900 rounded-xl gap-3">
-              <span class="role-universal role-agent role-online">⚡ РАЗВЕРНУТЬ ИНФРАСТРУКТУРУ</span>
+              <span class="role-universal role-agent role-online"
+              >⚡ РАЗВЕРНУТЬ ИНФРАСТРУКТУРУ</span>
               <span class="role-offline">⚡ ПОЛУЧИТЬ СИСТЕМУ БЕСПЛАТНО</span>
             </div>
           </div>
@@ -334,20 +537,30 @@ eleventyExcludeFromCollections: true
       </section>
     </main>
 
-    
-
     <!-- FOOTER -->
     <footer class="w-full max-w-5xl mx-auto py-8 text-center text-gray-600 text-xs border-t border-gray-800/50 mt-10">
-      <div id="partner-badge" class="hidden justify-center items-center gap-2 mb-4">
-        <span class="text-gray-500 uppercase tracking-wider">SetHubble ID партнера:</span>
-        <span id="partner-name" class="font-bold text-gray-400 tracking-widest"></span>
+      <div
+        id="partner-badge"
+        class="hidden justify-center items-center gap-2 mb-4"
+      >
+        <span class="text-gray-500 uppercase tracking-wider"
+        >SetHubble ID партнера:</span>
+        <span
+          id="partner-name"
+          class="font-bold text-gray-400 tracking-widest"
+        ></span>
       </div>
       <div id="footer-text" class="mb-4">
-        NEUROGEN © 2026 | Платформа партнерских программ и SaaS-экосистема нового поколения
+        NEUROGEN © 2026 | Платформа партнерских программ и SaaS-экосистема
+        нового поколения
       </div>
       <div class="flex justify-center gap-6">
-        <a href="https://t.me/sethubble_support" class="hover:text-cyan-400 transition-colors">Поддержка (Support)</a>
-        <a href="#" class="hover:text-cyan-400 transition-colors">Публичная оферта</a>
+        <a
+          href="https://t.me/sethubble_support"
+          class="hover:text-cyan-400 transition-colors"
+        >Поддержка (Support)</a>
+        <a href="#" class="hover:text-cyan-400 transition-colors"
+        >Публичная оферта</a>
       </div>
     </footer>
     {% include "partials/registration-modal.njk" %}
