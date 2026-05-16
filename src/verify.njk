@@ -112,7 +112,7 @@ eleventyExcludeFromCollections: true
       </div>
       <h1>Ошибка верификации</h1>
       <p id="errorMessage">Ссылка недействительна или срок её действия истёк.</p>
-      <a href="/join/" class="btn-primary">Попробовать снова</a>
+      <a href="/" class="btn-primary">Попробовать снова</a>
     </div>
   </div>
 
@@ -150,7 +150,7 @@ eleventyExcludeFromCollections: true
           loadingEl.classList.add("hidden");
           successEl.classList.remove("hidden");
           setTimeout(() => {
-            window.location.href = "/join/?step=channels";
+            window.location.href = "/?step=channels";
           }, 1500);
         } else {
           showError(data.error || "Неизвестная ошибка.");
