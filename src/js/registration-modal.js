@@ -124,20 +124,30 @@ document.addEventListener("DOMContentLoaded", () => {
 		localStorage.getItem("neurogen_email_submitted") === "true";
 
 	function openModal() {
+		// --- СБРОС СОСТОЯНИЙ (Фикс наложения) ---
+		const blocks = [stepEmail, stepChoice, document.getElementById("email-submitted")];
+		blocks.forEach(block => { if(block) block.classList.add("hidden"); });
+
+		// Разблокируем кнопку, если она зависла в режиме "ОТПРАВКА"
+		const submitEmailBtn = document.getElementById("submitEmailBtn");
+		if (submitEmailBtn) {
+			submitEmailBtn.disabled = false;
+			submitEmailBtn.innerHTML = "ПРОДОЛЖИТЬ";
+		}
+
 		modal.classList.remove("hidden");
+		// Плавное появление
 		setTimeout(() => {
 			modal.classList.remove("opacity-0");
 			modalContent.classList.add("modal-enter-active");
 		}, 10);
 
-		if ((emailVerified && storedEmail) || urlStep === "channels") {
-			stepEmail.classList.add("hidden");
+		// --- ЛОГИКА ОТОБРАЖЕНИЯ НУЖНОГО ШАГА ---
+		if (urlStep === "channels") {
 			stepChoice.classList.remove("hidden");
-			const emailSubmittedEl = document.getElementById("email-submitted");
-			if (emailSubmittedEl) emailSubmittedEl.classList.add("hidden");
 		} else {
+			// Если мы открываем окно заново, всегда показываем ввод Email (Шаг 1)
 			stepEmail.classList.remove("hidden");
-			stepChoice.classList.add("hidden");
 			emailInput.focus();
 		}
 	}
