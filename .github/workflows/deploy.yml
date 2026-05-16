@@ -34,3 +34,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.YC_SECRET_KEY }}
           AWS_S3_ENDPOINT: "https://storage.yandexcloud.net"
           SOURCE_DIR: "_site"
+          
