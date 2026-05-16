@@ -16,7 +16,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20" # Обновили до 20 для стабильности
+          cache: 'npm'       # Добавили кэширование для ускорения деплоя
 
       - name: Install dependencies
         run: npm install
@@ -33,5 +34,5 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.YC_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.YC_SECRET_KEY }}
           AWS_S3_ENDPOINT: "https://storage.yandexcloud.net"
+          AWS_REGION: "ru-central1" # Добавили обязательный регион Яндекса
           SOURCE_DIR: "_site"
-          
