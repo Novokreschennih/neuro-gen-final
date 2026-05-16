@@ -651,7 +651,7 @@ this.style.background =
   captureReferral();
 
   const emailSubmitted = localStorage.getItem("neurogen_email_submitted");
-  const userEmail = localStorage.getItem("neurogen_email");
+  userEmail = localStorage.getItem("neurogen_email");
 
   // Если пользователь не зарегистрирован (нет email в базе браузера)
   if (emailSubmitted !== "true" || !userEmail) {
