@@ -78,61 +78,7 @@ this.style.background =
       </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- ЭКРАН 1: СБОР EMAIL -->
-    <!-- ============================================ -->
-    <div
-      id="screenEmail"
-      class="funnel-screen active flex-col items-center justify-center px-4 min-h-screen"
-    >
-      <div class="max-w-md w-full text-center">
-        <div class="step-indicator justify-center mb-8">
-          <div class="step-dot active"></div>
-          <div class="step-dot"></div>
-          <div class="step-dot"></div>
-          <div class="step-dot"></div>
-          <div class="step-dot"></div>
-        </div>
 
-        <div class="w-20 h-20 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg shadow-purple-500/20">
-          🤖
-        </div>
-
-        <h1 class="text-3xl md:text-4xl font-black mb-4 leading-tight">
-          ПОСТРОЙ СВОЮ <span class="gradient-text">ИИ-СИСТЕМУ</span><br>ЗА 5
-          МИНУТ
-        </h1>
-
-        <p class="text-gray-400 text-sm mb-8 leading-relaxed">
-          NeuroGen AI проведёт тебя через весь процесс — от регистрации до
-          запуска. Просто следуй шагам.
-        </p>
-
-        <form id="emailForm" class="space-y-4">
-          <input
-            type="email"
-            id="funnelEmail"
-            required
-            placeholder="твой@email.com"
-            class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-center text-base"
-          >
-          <button
-            type="submit"
-            id="funnelEmailBtn"
-            class="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold py-4 rounded-xl hover:opacity-90 transition-opacity text-base"
-          >
-            🚀 НАЧАТЬ
-          </button>
-          <p id="emailError" class="text-red-400 text-xs text-center hidden">
-            Пожалуйста, введи корректный email
-          </p>
-        </form>
-
-        <p class="text-[10px] text-gray-600 mt-6">
-          Нажимая кнопку, ты соглашаешься с политикой конфиденциальности.
-        </p>
-      </div>
-    </div>
 
     <!-- ============================================ -->
     <!-- ЭКРАН 2: ВЫБОР КАНАЛОВ -->
@@ -516,7 +462,7 @@ this.style.background =
         renderStepData(data);
       } else if (data.error === "Session not found") {
         // Если сессия потерялась, возвращаем на ввод Email
-        showScreen("screenEmail");
+        window.location.href = "/";
       }
     } catch (err) {
       console.error("Ошибка загрузки шага воронки:", err);
@@ -585,49 +531,7 @@ this.style.background =
     scrollToBottom();
   }
 
-  // === 4. ОБРАБОТКА EMAIL ФОРМЫ ===
-  const emailForm = document.getElementById("emailForm");
-  const emailInput = document.getElementById("funnelEmail");
-  const emailError = document.getElementById("emailError");
-  const emailBtn = document.getElementById("funnelEmailBtn");
 
-  emailForm.addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const email = emailInput.value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      emailError.classList.remove("hidden");
-      return;
-    }
-    emailError.classList.add("hidden");
-    emailBtn.disabled = true;
-    emailBtn.innerHTML = "<span class=\"animate-pulse\">ОТПРАВКА...</span>";
-
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          isEmail: true,
-          email: email,
-          partner_id: referrer,
-          sessionId: currentSessionId,
-        }),
-      });
-      userEmail = email;
-      localStorage.setItem("neurogen_email", email);
-      localStorage.setItem("neurogen_email_submitted", "true");
-
-      // После ввода Email сразу переходим к воронке
-      showScreen("screenTraining");
-      loadWebStep();
-    } catch (err) {
-      console.error("Email save failed");
-      showScreen("screenTraining");
-      loadWebStep();
-    }
-  });
 
   // === 5. ЧАТ И UI ФУНКЦИИ ===
   // === 5. ЧАТ И UI ФУНКЦИИ ===
@@ -743,13 +647,24 @@ this.style.background =
     });
   }
 
-  // === 7. ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ===
+  // === 7. ИНИЦИАЛИЗАЦИЯ И ЖЕСТКИЙ РЕДИРЕКТ (Фикс архитектуры) ===
   captureReferral();
 
   const emailSubmitted = localStorage.getItem("neurogen_email_submitted");
-  if (emailSubmitted === "true") {
-    showScreen("screenTraining");
-    loadWebStep(); // Сразу грузим текущий шаг из БД
+  const userEmail = localStorage.getItem("neurogen_email");
+
+  // Если пользователь не зарегистрирован (нет email в базе браузера)
+  if (emailSubmitted !== "true" || !userEmail) {
+      console.log("[AUTH] Данные регистрации не найдены. Перенаправление на главную...");
+      // Сохраняем информацию о партнере перед уходом, чтобы не потерять рефа
+      if (referrer) localStorage.setItem("neurogen_partner_id", referrer);
+
+      // Мгновенный редирект на главную для захвата Лида (Email + Имя)
+      window.location.href = "/";
+  } else {
+      // Пользователь свой — открываем чат
+      showScreen("screenTraining");
+      loadWebStep();
   }
 
   // === ЭКСПОРТ ДЛЯ HTML ===
