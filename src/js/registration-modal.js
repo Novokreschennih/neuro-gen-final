@@ -166,7 +166,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (e.target === modal) closeModal();
 	});
 
-	if (urlStep === "channels") openModal();
+	if (urlStep === "channels") {
+		if (!emailVerified || !storedEmail) {
+			window.location.href = "/";
+		} else {
+			openModal();
+		}
+	}
 
 	if (emailForm) {
 		emailForm.addEventListener("submit", async (e) => {
