@@ -599,6 +599,13 @@ this.style.background =
   const messageInput = document.getElementById("messageInput");
 
   if (chatFormEl) {
+    messageInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        chatFormEl.dispatchEvent(new Event("submit", { cancelable: true }));
+      }
+    });
+
     chatFormEl.addEventListener("submit", async function(e) {
       e.preventDefault();
       const text = messageInput.value.trim();
