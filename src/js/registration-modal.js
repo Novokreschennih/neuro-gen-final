@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const DEFAULT_BOT = "sethubble_biz_bot";
 	const DEFAULT_PARTNER_ID = "p_qdr";
+	const DEFAULT_PARTNER_AFID = "1123";
 	const BASE_API_URL =
 		"https://d5dsbah1d4ju0glmp9d0.3zvepvee.apigw.yandexcloud.net/";
 	const API_URL = BASE_API_URL + "?action=web-chat";
@@ -30,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// === Инициализация параметров ===
 	let partnerId = null;
+	let partnerAfid = null;
 	let refBot = null;
 	let currentSessionId = localStorage.getItem("neurogen_web_session");
 	if (!currentSessionId) {
@@ -39,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	let encodedId = urlParams.get("page");
 	let refFromUrl = urlParams.get("ref");
+	let afidFromUrl = urlParams.get("afid");
 
 	const fromHex = (hex) => {
 		try {
@@ -67,6 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (!partnerId) {
 		partnerId =
 			localStorage.getItem("neurogen_partner_id") || DEFAULT_PARTNER_ID;
+	}
+
+	if (afidFromUrl && /^\d{1,10}$/.test(afidFromUrl)) {
+		partnerAfid = afidFromUrl.trim();
+		localStorage.setItem("neurogen_partner_afid", partnerAfid);
+	}
+
+	if (!partnerAfid) {
+		partnerAfid =
+			localStorage.getItem("neurogen_partner_afid") || DEFAULT_PARTNER_AFID;
 	}
 
 	const storedBot = localStorage.getItem("neurogen_partner_bot");
@@ -202,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
 						email: email,
 						first_name: name,
 						partner_id: partnerId,
+						afid: partnerAfid,
 						sessionId: currentSessionId,
 						role: userRole,
 					}),
@@ -227,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (btnTgl) {
 		btnTgl.addEventListener("click", () => {
 			window.open(
-				`https://t.me/${refBot}?start=${partnerId}__${currentSessionId}`,
+				`https://t.me/${refBot}?start=${partnerId}__${currentSessionId}|a${partnerAfid}`,
 				"_blank",
 			);
 		});
@@ -237,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (btnVk) {
 		btnVk.addEventListener("click", () => {
 			window.open(
-				`${VK_COMMUNITY_URL}?ref=${partnerId}__${currentSessionId}`,
+				`${VK_COMMUNITY_URL}?ref=${partnerId}__${currentSessionId}|a${partnerAfid}`,
 				"_blank",
 			);
 		});
@@ -247,7 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (btnWb) {
 		btnWb.addEventListener("click", () => {
 			const email = emailInput?.value.trim();
-			let url = `${WEB_CHAT_URL}?ref=${partnerId}&session_id=${currentSessionId}`;
+			let url = `${WEB_CHAT_URL}?ref=${partnerId}&afid=${partnerAfid}&session_id=${currentSessionId}`;
 			if (userRole === "b2b" || userRole === "offline") url += `&role=b2b`;
 			if (email) url += `&email=${encodeURIComponent(email)}`;
 			window.open(url, "_blank");

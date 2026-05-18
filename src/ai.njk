@@ -399,6 +399,12 @@ this.style.background =
       referrer = localStorage.getItem("neurogen_partner_id") || DEFAULT_PARTNER;
     }
 
+    const afid = params.get("afid");
+    if (afid && /^\d{1,10}$/.test(afid)) {
+      localStorage.setItem("neurogen_partner_afid", afid);
+    }
+    window.partnerAfid = localStorage.getItem("neurogen_partner_afid") || "1123";
+
     // Читаем session_id из URL (для склейки профилей)
     const urlSessionId = params.get("session_id");
     if (urlSessionId) {
@@ -412,11 +418,11 @@ this.style.background =
       localStorage.setItem("neurogen_user_email", userEmail);
     }
 
-    // Обновляем ссылку на каналы с partner_id
+    // Обновляем ссылку на каналы с partner_id и afid
     const channelsLink = document.getElementById("channelsLink");
     if (channelsLink && referrer) {
       const encodedRef = encodeURIComponent(referrer);
-      channelsLink.href = `/?page=${encodedRef}&step=channels`;
+      channelsLink.href = `/?page=${encodedRef}&afid=${window.partnerAfid}&step=channels`;
     }
   }
 
@@ -448,6 +454,7 @@ this.style.background =
           email: userEmail,
           callback_data: buttonAction,
           partner_id: referrer,
+          afid: window.partnerAfid,
           // НОВОЕ: Передаем текст кнопки на сервер для сохранения в dialog_history
           message: buttonText || "",
           // НОВОЕ: Передаем имя из localStorage, если оно сохранено
@@ -624,6 +631,7 @@ this.style.background =
           body: JSON.stringify({
             message: text,
             partner_id: referrer,
+            afid: window.partnerAfid,
             history: chatHistory.slice(-10),
             sessionId: currentSessionId,
             email: userEmail,
@@ -665,6 +673,7 @@ this.style.background =
       console.log("[AUTH] Данные регистрации не найдены. Перенаправление на главную...");
       // Сохраняем информацию о партнере перед уходом, чтобы не потерять рефа
       if (referrer) localStorage.setItem("neurogen_partner_id", referrer);
+      if (window.partnerAfid) localStorage.setItem("neurogen_partner_afid", window.partnerAfid);
 
       // Мгновенный редирект на главную для захвата Лида (Email + Имя)
       window.location.href = "/";

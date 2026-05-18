@@ -1646,9 +1646,9 @@ function initUI() {
 // МАРКЕТИНГ: 4 РЕЖИМА ССЫЛОК И ПРЕЗЕНТАЦИЙ
 // =========================================================================
 function getActiveLink() {
-  const base = `https://neuro-gen.ru/?page=${
-    userData?.partner_id || "p_qdr"
-  }`;
+  const partnerId = userData?.partner_id || "p_qdr";
+  const partnerAfid = userData?.inviter_sh_id || "1123";
+  const base = `https://neuro-gen.ru/?page=${partnerId}&afid=${partnerAfid}`;
   if (currentLinkMode === "online") return base + "&role=online";
   if (currentLinkMode === "offline") return base + "&role=b2b";
   if (currentLinkMode === "agent") return base + "&role=agent";

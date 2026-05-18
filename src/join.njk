@@ -565,5 +565,28 @@ body {
     </footer>
     {% include "partials/registration-modal.njk" %}
     <script src="/js/registration-modal.js" defer></script>
+    <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const afid = params.get("afid");
+      if (afid && /^\d{1,10}$/.test(afid)) {
+        localStorage.setItem("neurogen_partner_afid", afid);
+      }
+      const page = params.get("page");
+      if (page) {
+        try {
+          if (/^[0-9a-fA-F]+$/.test(page) && page.length % 2 === 0) {
+            let decoded = "";
+            for (let i = 0; i < page.length; i += 2) {
+              decoded += String.fromCharCode(parseInt(page.substr(i, 2), 16));
+            }
+            if (decoded.length > 1) localStorage.setItem("neurogen_partner_id", decoded.trim());
+          } else {
+            localStorage.setItem("neurogen_partner_id", page.trim());
+          }
+        } catch(e) {}
+      }
+    })();
+    </script>
   </body>
 </html>
