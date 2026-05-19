@@ -593,11 +593,12 @@ this.style.background =
   }
 
   function scrollToBottom() {
-    const chatArea = document.getElementById("trainingContent");
-    if (chatArea) {
-      requestAnimationFrame(() => {
-        chatArea.scrollTop = chatArea.scrollHeight;
-      });
+    const el = document.getElementById("trainingContent");
+    if (!el) return;
+    const threshold = 120;
+    const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    if (distFromBottom < threshold) {
+      requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
     }
   }
 
