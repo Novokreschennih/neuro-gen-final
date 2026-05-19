@@ -1320,7 +1320,17 @@ textarea:focus {
                   <span class="text-xl">📱</span>
                   <div>
                     <p class="text-xs font-bold text-white">Telegram</p>
-                    <p class="text-[10px] text-green-400">Подключён</p>
+                    <p class="text-[10px] text-green-400">Активен</p>
+                  </div>
+                </div>
+                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
+              </div>
+              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">📢</span>
+                  <div>
+                    <p class="text-xs font-bold text-white">VK</p>
+                    <p class="text-[10px] text-green-400">Активен</p>
                   </div>
                 </div>
                 <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
@@ -1335,28 +1345,18 @@ textarea:focus {
                 </div>
                 <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
               </div>
-              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between opacity-60">
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">📢</span>
-                  <div>
-                    <p class="text-xs font-bold text-white">VK</p>
-                    <p class="text-[10px] text-gray-500">Не подключён</p>
-                  </div>
-                </div>
-                <span class="w-2.5 h-2.5 bg-gray-600 rounded-full"></span>
-              </div>
-              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between opacity-60">
+              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <span class="text-xl">📧</span>
                   <div>
                     <p class="text-xs font-bold text-white">Email</p>
-                    <p class="text-[10px] text-gray-500">Не подключён</p>
+                    <p class="text-[10px] text-green-400">Активен</p>
                   </div>
                 </div>
-                <span class="w-2.5 h-2.5 bg-gray-600 rounded-full"></span>
+                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
               </div>
             </div>
-            <p class="text-[11px] text-gray-500 mt-4 text-center">Настройте каналы в Telegram-боте для полной функциональности</p>
+            <p class="text-[11px] text-gray-500 mt-4 text-center">Все каналы работают через центрального бота. PRO-пользователи могут подключить личный бот.</p>
           </div>
 
           <!-- Settings -->
@@ -2171,13 +2171,14 @@ function initProfileTab() {
   document.getElementById("profileReferrals").textContent = parseInt(userData.referrals) || 0;
   document.getElementById("profileEarnings").textContent = "$" + (parseFloat(userData.earnings) || 0).toFixed(2);
 
-  // Telegram link
-  const botName = refLink ? refLink.split("/").pop().split("?")[0] : "sethubble_biz_bot";
-  const tgUrl = `https://t.me/${botName}?start=${userData.partner_id || "p_qdr"}`;
+  // Telegram link — centralized bot (personal bot will come from backend later)
+  const tgBotName = userData?.central_tg_bot || "sethubble_biz_bot";
+  const tgUrl = `https://t.me/${tgBotName}?start=${userData.partner_id || "p_qdr"}`;
   document.getElementById("tgLinkDisplay").textContent = tgUrl;
 
-  // VK link
-  const vkUrl = `https://vk.me/club237421168?ref=${userData.partner_id || "p_qdr"}`;
+  // VK link — centralized community
+  const vkGroupId = userData?.central_vk_group || "237421168";
+  const vkUrl = `https://vk.me/club${vkGroupId}?ref=${userData.partner_id || "p_qdr"}`;
   document.getElementById("vkLinkDisplay").textContent = vkUrl;
 
   // Web link
