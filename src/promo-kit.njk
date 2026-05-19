@@ -230,7 +230,7 @@ eleventyExcludeFromCollections: true
                             
                             <!-- Кнопки быстрых действий -->
                             <div class="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-white/5">
-                                <button onclick="window.open('https://sethubble.ru/academy', '_blank')" class="btn bg-white/5 hover:bg-white/10 p-3 rounded-xl flex items-center gap-3 text-left">
+                                <button onclick="window.open('https://sethubble.ru/academy?token='+webAppJwt, '_blank')" class="btn bg-white/5 hover:bg-white/10 p-3 rounded-xl flex items-center gap-3 text-left">
                                     <span class="text-xl">🎓</span> <span class="text-xs font-bold text-gray-300">Академия</span>
                                 </button>
                                 <button onclick="window.open('https://t.me/sethubble_support', '_blank')" class="btn bg-white/5 hover:bg-white/10 p-3 rounded-xl flex items-center gap-3 text-left">
@@ -530,13 +530,10 @@ eleventyExcludeFromCollections: true
             document.getElementById("header-earnings").textContent = `${parseInt(userData.paid_referrals) || 0} PRO`;
             if(userData.first_name) document.getElementById("userAvatar").textContent = userData.first_name[0].toUpperCase();
 
-            // Stats (Marketing & Empire)
+            // Stats
             document.getElementById("statClicks").textContent = parseInt(userData.clicks) || 0;
             document.getElementById("statLeads").textContent = parseInt(userData.referrals) || 0;
             document.getElementById("statEarnings").textContent = parseInt(userData.paid_referrals) || 0;
-            document.getElementById("p-clicks").textContent = parseInt(userData.clicks) || 0;
-            document.getElementById("p-leads").textContent = parseInt(userData.referrals) || 0;
-            document.getElementById("p-paid").textContent = parseInt(userData.paid_referrals) || 0;
 
             // Empire Tab (Profile)
             if(userData.first_name) {
@@ -675,9 +672,9 @@ eleventyExcludeFromCollections: true
             document.getElementById("about-subtitle").textContent = info.subtitle;
             document.getElementById("about-cards").innerHTML = info.cards.map((c, i) => `
                 <div class="glass-panel p-6 rounded-[2rem] transition-all hover:bg-white/5 ${i===3?'border-t border-purple-500/30':'border-t border-cyan-500/30'}">
-                    <span class="text-4xl block mb-4">${c.icon}</span>
-                    <h3 class="text-sm font-black text-white uppercase tracking-wide mb-2">${c.title}</h3>
-                    <p class="text-[11px] text-gray-400 leading-relaxed">${c.text}</p>
+                    <span class="text-4xl block mb-4">${c.i}</span>
+                    <h3 class="text-sm font-black text-white uppercase tracking-wide mb-2">${c.t}</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed">${c.d}</p>
                 </div>
             `).join('');
             
