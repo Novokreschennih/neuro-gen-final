@@ -368,6 +368,13 @@ textarea:focus {
           >
             <span class="text-lg">💡</span> Презентация
           </button>
+          <button
+            onclick="switchTab('profile')"
+            id="tab-profile"
+            class="nav-tab flex-1 py-2.5 px-4 text-xs font-bold text-gray-400 flex items-center justify-center gap-2 whitespace-nowrap"
+          >
+            <span class="text-lg">👤</span> Профиль
+          </button>
         </div>
       </div>
     </header>
@@ -1168,6 +1175,223 @@ textarea:focus {
             </div>
           </div>
         </div>
+
+        <!-- ========================================== -->
+        <!-- TAB: PROFILE (ЛИЧНЫЙ КАБИНЕТ) -->
+        <!-- ========================================== -->
+        <div id="content-profile" class="hidden animate-fadeInUp space-y-6">
+          <!-- Identity Card -->
+          <div class="glass-panel rounded-3xl p-6 md:p-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500"></div>
+            <div class="flex items-center gap-5 mb-6">
+              <div id="profileAvatar" class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 border-2 border-white/10 flex items-center justify-center text-2xl font-bold text-white shadow-lg shrink-0">
+                👤
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <h3 id="profileName" class="text-lg font-black text-white truncate">Загрузка...</h3>
+                  <button onclick="openEditNameModal()" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors shrink-0" title="Редактировать имя">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.576L16.732 3.732z"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="flex flex-wrap gap-3 mt-1">
+                  <span class="text-[11px] text-gray-500 font-mono">ID: <span id="profileShId" class="text-gray-400">—</span></span>
+                  <span class="text-[11px] text-gray-500 font-mono">Хвост: <span id="profilePartnerId" class="text-gray-400">—</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tariff Status -->
+            <div id="profileTariffFree" class="bg-black/40 border border-gray-700/50 rounded-2xl p-5">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">FREE → PRO</span>
+                <span id="profileXpText" class="text-xs font-bold text-cyan-400">0 / 100 XP</span>
+              </div>
+              <div class="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+                <div id="profileXpBar" class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full transition-all duration-1000" style="width: 0%"></div>
+              </div>
+              <p class="text-[11px] text-gray-500 mt-2">Соберите 100 XP для скидки 50% на PRO</p>
+            </div>
+            <div id="profileTariffPro" class="hidden bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/40 rounded-2xl p-5">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">💎</span>
+                <div>
+                  <span class="text-sm font-black text-white uppercase">PRO Статус активен</span>
+                  <p class="text-[11px] text-purple-400">50% комиссия • CRM • ИИ-приложения</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="glass-panel glass-panel-hover rounded-2xl p-4 text-center">
+              <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Переходы</p>
+              <p id="profileClicks" class="text-xl font-black text-white">0</p>
+            </div>
+            <div class="glass-panel glass-panel-hover rounded-2xl p-4 text-center border-t-2 border-t-blue-500/50">
+              <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">Агенты</p>
+              <p id="profileReferrals" class="text-xl font-black text-blue-400">0</p>
+            </div>
+            <div class="glass-panel glass-panel-hover rounded-2xl p-4 text-center border-t-2 border-t-green-500/50">
+              <p class="text-[10px] text-green-500/80 uppercase font-bold tracking-widest mb-1">Прибыль</p>
+              <p id="profileEarnings" class="text-xl font-black text-green-400">$0</p>
+            </div>
+          </div>
+
+          <!-- Channel Links -->
+          <div class="glass-panel rounded-3xl p-6 md:p-8">
+            <h3 class="text-sm font-black text-white uppercase tracking-wide mb-5 flex items-center gap-2">
+              <span class="text-lg">🔗</span> Мои ссылки
+            </h3>
+
+            <!-- Telegram -->
+            <div class="bg-black/40 rounded-xl p-4 mb-3 border border-white/5">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="text-xl">📱</span>
+                <span class="text-xs font-bold text-white">Telegram-бот</span>
+                <span class="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-bold">Основной</span>
+              </div>
+              <code id="tgLinkDisplay" class="text-[11px] text-cyan-300 break-all font-mono block mb-3">Загрузка...</code>
+              <div class="flex gap-2">
+                <button onclick="copyLink('tgLinkDisplay')" class="btn flex-1 bg-white/10 hover:bg-white/20 py-2.5 rounded-lg font-bold text-[11px] flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  Копировать
+                </button>
+                <button onclick="openLink('tgLinkDisplay')" class="btn bg-white/10 hover:bg-white/20 py-2.5 px-4 rounded-lg font-bold text-[11px] flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- VK -->
+            <div class="bg-black/40 rounded-xl p-4 mb-3 border border-white/5">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="text-xl">📢</span>
+                <span class="text-xs font-bold text-white">VK сообщество</span>
+              </div>
+              <code id="vkLinkDisplay" class="text-[11px] text-cyan-300 break-all font-mono block mb-3">Загрузка...</code>
+              <div class="flex gap-2">
+                <button onclick="copyLink('vkLinkDisplay')" class="btn flex-1 bg-white/10 hover:bg-white/20 py-2.5 rounded-lg font-bold text-[11px] flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  Копировать
+                </button>
+                <button onclick="openLink('vkLinkDisplay')" class="btn bg-white/10 hover:bg-white/20 py-2.5 px-4 rounded-lg font-bold text-[11px] flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Web Link with mode switcher -->
+            <div class="bg-black/40 rounded-xl p-4 border border-white/5">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-xl">🌐</span>
+                <span class="text-xs font-bold text-white">Веб-лендинг</span>
+              </div>
+              <div class="segment-container mb-3">
+                <button onclick="setProfileLinkMode('universal')" id="profile-mode-universal" class="mode-btn active-universal">🌐 Общая</button>
+                <button onclick="setProfileLinkMode('agent')" id="profile-mode-agent" class="mode-btn">🦸‍♂️ Агент</button>
+                <button onclick="setProfileLinkMode('online')" id="profile-mode-online" class="mode-btn">💻 Онлайн</button>
+                <button onclick="setProfileLinkMode('offline')" id="profile-mode-offline" class="mode-btn">🏢 Офлайн</button>
+              </div>
+              <code id="webLinkDisplay" class="text-[11px] text-cyan-300 break-all font-mono block mb-3">Загрузка...</code>
+              <div class="flex gap-2">
+                <button onclick="copyLink('webLinkDisplay')" class="btn flex-1 bg-white/10 hover:bg-white/20 py-2.5 rounded-lg font-bold text-[11px] flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                  Копировать
+                </button>
+                <button onclick="openLink('webLinkDisplay')" class="btn bg-white/10 hover:bg-white/20 py-2.5 px-4 rounded-lg font-bold text-[11px] flex items-center justify-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Channel Status -->
+          <div class="glass-panel rounded-3xl p-6 md:p-8">
+            <h3 class="text-sm font-black text-white uppercase tracking-wide mb-5 flex items-center gap-2">
+              <span class="text-lg">📡</span> Подключённые каналы
+            </h3>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">📱</span>
+                  <div>
+                    <p class="text-xs font-bold text-white">Telegram</p>
+                    <p class="text-[10px] text-green-400">Подключён</p>
+                  </div>
+                </div>
+                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
+              </div>
+              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">🌐</span>
+                  <div>
+                    <p class="text-xs font-bold text-white">Web</p>
+                    <p class="text-[10px] text-green-400">Активен</p>
+                  </div>
+                </div>
+                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
+              </div>
+              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between opacity-60">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">📢</span>
+                  <div>
+                    <p class="text-xs font-bold text-white">VK</p>
+                    <p class="text-[10px] text-gray-500">Не подключён</p>
+                  </div>
+                </div>
+                <span class="w-2.5 h-2.5 bg-gray-600 rounded-full"></span>
+              </div>
+              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between opacity-60">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">📧</span>
+                  <div>
+                    <p class="text-xs font-bold text-white">Email</p>
+                    <p class="text-[10px] text-gray-500">Не подключён</p>
+                  </div>
+                </div>
+                <span class="w-2.5 h-2.5 bg-gray-600 rounded-full"></span>
+              </div>
+            </div>
+            <p class="text-[11px] text-gray-500 mt-4 text-center">Настройте каналы в Telegram-боте для полной функциональности</p>
+          </div>
+
+          <!-- Settings -->
+          <div class="glass-panel rounded-3xl p-6 md:p-8">
+            <h3 class="text-sm font-black text-white uppercase tracking-wide mb-5 flex items-center gap-2">
+              <span class="text-lg">⚙️</span> Настройки
+            </h3>
+            <div class="space-y-3">
+              <button onclick="window.open('https://neuro-gen.ru/crm/?token=' + webAppJwt, '_blank')" class="btn w-full bg-black/40 hover:bg-white/10 border border-white/5 rounded-xl p-4 flex items-center gap-4 text-left transition-colors">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg">📊</div>
+                <div class="flex-1">
+                  <span class="text-sm font-bold text-white block">CRM Дашборд</span>
+                  <span class="text-[11px] text-gray-500">Управление клиентами и рассылками</span>
+                </div>
+                <span class="text-gray-600">→</span>
+              </button>
+              <button onclick="window.open('https://sethubble.ru/academy', '_blank')" class="btn w-full bg-black/40 hover:bg-white/10 border border-white/5 rounded-xl p-4 flex items-center gap-4 text-left transition-colors">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-lg">🎓</div>
+                <div class="flex-1">
+                  <span class="text-sm font-bold text-white block">Академия SetHubble</span>
+                  <span class="text-[11px] text-gray-500">Обучение и NeuroCoins</span>
+                </div>
+                <span class="text-gray-600">→</span>
+              </button>
+              <button onclick="window.open('https://t.me/sethubble_support', '_blank')" class="btn w-full bg-black/40 hover:bg-white/10 border border-white/5 rounded-xl p-4 flex items-center gap-4 text-left transition-colors">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-lg">💬</div>
+                <div class="flex-1">
+                  <span class="text-sm font-bold text-white block">Чат поддержки</span>
+                  <span class="text-[11px] text-gray-500">Вопросы и помощь</span>
+                </div>
+                <span class="text-gray-600">↗</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1394,7 +1618,7 @@ function showToast(message, type = "success") {
 }
 
 function switchTab(tab) {
-  ["marketing", "ai", "about"].forEach(t => {
+  ["marketing", "ai", "about", "profile"].forEach(t => {
     const content = document.getElementById(`content-${t}`);
     const btn = document.getElementById(`tab-${t}`);
     if (content && btn) {
@@ -1640,6 +1864,7 @@ function initUI() {
     if (state.obj) document.getElementById("ui-objection").value = state.obj;
   }
   compilePrompt();
+  initProfileTab();
 }
 
 // =========================================================================
@@ -1906,6 +2131,141 @@ function copyToClipboard(elementId, isDirectText = false) {
   });
 }
 
+// =========================================================================
+// ПРОФИЛЬ: ИНИЦИАЛИЗАЦИЯ И УПРАВЛЕНИЕ
+// =========================================================================
+let currentProfileLinkMode = "universal";
+
+function initProfileTab() {
+  // Avatar
+  const avatarEl = document.getElementById("profileAvatar");
+  if (avatarEl && userData.first_name) {
+    avatarEl.textContent = userData.first_name[0].toUpperCase();
+  }
+
+  // Name
+  const nameEl = document.getElementById("profileName");
+  if (nameEl) nameEl.textContent = userData.first_name || "Партнёр";
+
+  // IDs
+  document.getElementById("profileShId").textContent = userData.sh_user_id || "—";
+  document.getElementById("profilePartnerId").textContent = userData.partner_id || "—";
+
+  // XP Progress
+  const xp = parseInt(userData.xp) || 0;
+  const xpPct = Math.min(xp, 100);
+  document.getElementById("profileXpBar").style.width = xpPct + "%";
+  document.getElementById("profileXpText").textContent = xp + " / 100 XP";
+
+  // Tariff
+  if (userData.is_pro) {
+    document.getElementById("profileTariffPro").classList.remove("hidden");
+    document.getElementById("profileTariffFree").classList.add("hidden");
+  } else {
+    document.getElementById("profileTariffFree").classList.remove("hidden");
+    document.getElementById("profileTariffPro").classList.add("hidden");
+  }
+
+  // Stats
+  document.getElementById("profileClicks").textContent = parseInt(userData.clicks) || 0;
+  document.getElementById("profileReferrals").textContent = parseInt(userData.referrals) || 0;
+  document.getElementById("profileEarnings").textContent = "$" + (parseFloat(userData.earnings) || 0).toFixed(2);
+
+  // Telegram link
+  const botName = refLink ? refLink.split("/").pop().split("?")[0] : "sethubble_biz_bot";
+  const tgUrl = `https://t.me/${botName}?start=${userData.partner_id || "p_qdr"}`;
+  document.getElementById("tgLinkDisplay").textContent = tgUrl;
+
+  // VK link
+  const vkUrl = `https://vk.me/club237421168?ref=${userData.partner_id || "p_qdr"}`;
+  document.getElementById("vkLinkDisplay").textContent = vkUrl;
+
+  // Web link
+  updateProfileWebLink();
+}
+
+function updateProfileWebLink() {
+  const partnerId = userData?.partner_id || "p_qdr";
+  const partnerAfid = userData?.sh_user_id || "1123";
+  const base = `https://neuro-gen.ru/?page=${partnerId}&afid=${partnerAfid}`;
+  let url = base;
+  if (currentProfileLinkMode === "online") url += "&role=online";
+  else if (currentProfileLinkMode === "offline") url += "&role=b2b";
+  else if (currentProfileLinkMode === "agent") url += "&role=agent";
+  else url += "&role=universal";
+  document.getElementById("webLinkDisplay").textContent = url;
+}
+
+function setProfileLinkMode(mode) {
+  currentProfileLinkMode = mode;
+  ["universal", "agent", "online", "offline"].forEach(m => {
+    const btn = document.getElementById(`profile-mode-${m}`);
+    if (btn) {
+      if (m === mode) btn.className = `mode-btn active-${m}`;
+      else btn.className = "mode-btn";
+    }
+  });
+  updateProfileWebLink();
+}
+
+function copyLink(elementId) {
+  const text = document.getElementById(elementId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("Ссылка скопирована!", "success");
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+  });
+}
+
+function openLink(elementId) {
+  const link = document.getElementById(elementId).textContent;
+  if (tg?.openLink) tg.openLink(link);
+  else window.open(link, "_blank");
+}
+
+function openEditNameModal() {
+  const currentName = userData?.first_name || "";
+  const modal = document.createElement("div");
+  modal.className = "fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm";
+  modal.innerHTML = `
+    <div class="glass-panel rounded-3xl p-6 mx-4 w-full max-w-sm animate-fadeInUp">
+      <h3 class="text-lg font-black text-white mb-4">Редактировать имя</h3>
+      <input id="editNameInput" type="text" value="${currentName}" maxlength="30"
+        class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500 transition-colors"
+        placeholder="Ваше имя" />
+      <div class="flex gap-3 mt-4">
+        <button onclick="this.closest('.fixed').remove()" class="btn flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold text-sm text-white">Отмена</button>
+        <button id="saveNameBtn" class="btn flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 py-3 rounded-xl font-bold text-sm text-white">Сохранить</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const input = modal.querySelector("#editNameInput");
+  input.focus();
+  input.select();
+
+  modal.querySelector("#saveNameBtn").addEventListener("click", () => {
+    const newName = input.value.trim();
+    if (newName && newName !== currentName) {
+      document.getElementById("profileName").textContent = newName;
+      document.getElementById("userAvatar").textContent = newName[0].toUpperCase();
+      document.getElementById("profileAvatar").textContent = newName[0].toUpperCase();
+      userData.first_name = newName;
+      showToast("Имя обновлено", "success");
+    }
+    modal.remove();
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") modal.querySelector("#saveNameBtn").click();
+    if (e.key === "Escape") modal.remove();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.remove();
+  });
+}
+
 // === ИИ-КОПИРАЙТЕР (С FALLBACK ШАБЛОНАМИ) ===
 async function generateAIPost() {
   const select = document.getElementById("aiPostTopic");
@@ -2116,7 +2476,9 @@ async function sendTestMessage() {
     "beforeend",
     `<div id="${typingId}" class="p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-gray-200 self-start shadow-md border border-white/5"><div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span><span class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span><span class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></span></div></div>`,
   );
-  area.scrollTop = area.scrollHeight;
+  const threshold = 120;
+  const distFromBottom = area.scrollHeight - area.scrollTop - area.clientHeight;
+  if (distFromBottom < threshold) area.scrollTop = area.scrollHeight;
 
   const btn = document.getElementById("testSendBtn");
   btn.disabled = true;
@@ -2153,7 +2515,9 @@ function appendTestChat(text, isUser) {
   }`;
   div.innerHTML = text.replace(/\n/g, "<br>");
   area.appendChild(div);
-  area.scrollTop = area.scrollHeight;
+  const thr = 120;
+  const dist = area.scrollHeight - area.scrollTop - area.clientHeight;
+  if (dist < thr) area.scrollTop = area.scrollHeight;
 }
 
 document.getElementById("testChatInput").addEventListener("keypress", (e) => {
