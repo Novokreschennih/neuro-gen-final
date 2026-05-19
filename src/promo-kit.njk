@@ -118,56 +118,71 @@ eleventyExcludeFromCollections: true
             <!-- ========================================== -->
             <div id="content-marketing" class="space-y-6 animate-fadeInUp">
                 
-                <div class="glass-panel rounded-3xl p-6 border-l-4 border-l-cyan-500 bg-cyan-500/5">
-                    <h3 class="text-white font-black mb-2 uppercase tracking-wide text-sm">Машинное отделение трафика</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed">Здесь вы создаете точки входа для вашей аудитории. Выберите вектор, скопируйте ссылку или распечатайте QR-код. Система автоматически направит лида по правильной воронке и закрепит его за вами.</p>
+                <!-- Подробная Инструкция -->
+                <div class="glass-panel rounded-3xl p-6 md:p-8 border-l-4 border-l-cyan-500 bg-gradient-to-r from-cyan-500/10 to-transparent">
+                    <h2 class="text-xl font-black mb-4 uppercase tracking-tight text-white flex items-center gap-2">
+                        <span class="text-2xl">⚙️</span> Как работает ваша система?
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        <div>
+                            <div class="text-cyan-400 font-black text-lg mb-2">1. Выбор вектора</div>
+                            <p class="text-sm text-gray-300 leading-relaxed">Система динамически меняет тексты и презентации на лендинге в зависимости от того, кому вы даете ссылку (Блогеру, Владельцу кафе или Новичку).</p>
+                        </div>
+                        <div>
+                            <div class="text-cyan-400 font-black text-lg mb-2">2. Точка входа</div>
+                            <p class="text-sm text-gray-300 leading-relaxed">Раздавайте ссылку в соцсетях или распечатайте QR-код для офлайна. Человек переходит, и система <b>намертво закрепляет его за вами</b>.</p>
+                        </div>
+                        <div>
+                            <div class="text-cyan-400 font-black text-lg mb-2">3. Авто-продажа</div>
+                            <p class="text-sm text-gray-300 leading-relaxed">Вам не нужно ничего объяснять. ИИ-бот сам проконсультирует клиента, закроет возражения и доведет до оплаты. Вы получаете USDT.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <!-- Точка захвата -->
-                    <div class="glass-panel rounded-[2rem] p-6 md:p-8 relative overflow-hidden flex flex-col">
-                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-500"></div>
+                    <div class="glass-panel rounded-[2rem] p-6 md:p-8 relative overflow-hidden flex flex-col border-t border-white/10">
                         <h2 class="text-xl font-black mb-6 uppercase tracking-tight">🎯 Вектор Атаки</h2>
                         
                         <div class="segment-container mb-8">
-                            <button onclick="setLinkMode('universal')" id="mode-universal" class="mode-btn active">🌐 Общая</button>
-                            <button onclick="setLinkMode('agent')" id="mode-agent" class="mode-btn">🦸‍♂️ Агент</button>
-                            <button onclick="setLinkMode('online')" id="mode-online" class="mode-btn">💻 Онлайн</button>
-                            <button onclick="setLinkMode('offline')" id="mode-offline" class="mode-btn">🏢 Офлайн</button>
+                            <button onclick="setLinkMode('universal')" id="m-universal" class="mode-btn active">🌐 Общая</button>
+                            <button onclick="setLinkMode('agent')" id="m-agent" class="mode-btn">🦸‍♂️ Агент</button>
+                            <button onclick="setLinkMode('online')" id="m-online" class="mode-btn">💻 Онлайн</button>
+                            <button onclick="setLinkMode('offline')" id="m-offline" class="mode-btn">🏢 Офлайн</button>
                         </div>
 
                         <div class="flex flex-col md:flex-row items-center gap-6 mb-8 flex-1">
-                            <div id="qrcode" class="qr-container shrink-0 hover:scale-105 transition-transform duration-300"></div>
+                            <div id="qrcode" class="qr-container bg-white p-3 rounded-2xl shrink-0 shadow-2xl"></div>
                             <div class="flex-1 w-full space-y-4">
-                                <div class="bg-black/60 rounded-xl p-4 border border-white/10">
+                                <div class="bg-black/60 rounded-xl p-4 border border-white/5">
                                     <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Ваш персональный шлюз:</p>
                                     <code id="botLinkDisplay" class="text-xs text-cyan-300 break-all font-mono">Загрузка...</code>
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
                                     <button onclick="copyToClipboard('botLinkDisplay')" class="btn bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold text-xs">📋 Копировать</button>
-                                    <button onclick="window.open(document.getElementById('botLinkDisplay').textContent, '_blank')" class="btn bg-white/10 hover:bg-white/20 py-3 rounded-xl font-bold text-xs">↗ Открыть</button>
+                                    <button onclick="openExternalLink('botLinkDisplay')" class="btn bg-white/10 hover:bg-white/20 px-5 rounded-xl font-bold text-xs">↗ Открыть</button>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
-                            <button id="printTableTentBtn" class="btn bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 border border-cyan-500/30 py-4 rounded-xl font-black text-xs uppercase flex items-center justify-center gap-2">
+                        <div class="grid grid-cols-2 gap-3 pt-6 border-t border-white/5 mt-auto">
+                            <button id="printTableTentBtn" class="btn bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 border border-cyan-500/30 py-4 rounded-xl font-black text-xs uppercase flex items-center justify-center gap-2 transition-colors">
                                 🖨 Печать Флаера
                             </button>
-                            <button id="createPdfBtn" class="btn bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 border border-purple-500/30 py-4 rounded-xl font-black text-xs uppercase flex items-center justify-center gap-2">
+                            <button id="createPdfBtn" class="btn bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 border border-purple-500/30 py-4 rounded-xl font-black text-xs uppercase flex items-center justify-center gap-2 transition-colors">
                                 📄 Вшить в PDF
                             </button>
                         </div>
                     </div>
 
                     <!-- Нейро-копирайтер -->
-                    <div class="glass-panel rounded-[2rem] p-6 md:p-8 flex flex-col">
-                        <h2 class="text-xl font-black mb-1 uppercase tracking-tight">📝 Нейро-Копирайтер</h2>
-                        <p class="text-xs text-gray-400 mb-6">ИИ сгенерирует нативный продающий пост с вашей ссылкой.</p>
+                    <div class="glass-panel rounded-[2rem] p-6 md:p-8 flex flex-col border-t border-white/10">
+                        <h2 class="text-xl font-black mb-2 uppercase tracking-tight">📝 Нейро-Копирайтер</h2>
+                        <p class="text-sm text-gray-400 mb-6">Создание нативных постов под вашу аудиторию. ИИ сам вставит вашу ссылку и призыв к действию.</p>
                         
                         <div class="bg-black/40 rounded-2xl p-6 border border-white/5 flex-1 flex flex-col">
                             <div class="space-y-4 mb-6">
-                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Целевая аудитория поста:</label>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Аудитория поста:</label>
                                 <select id="aiPostTopic" class="w-full bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-4 text-sm text-white outline-none focus:border-cyan-500 cursor-pointer shadow-inner">
                                     <option value="Предприниматели, владельцы бизнеса">Бизнесмены (Офлайн/Онлайн)</option>
                                     <option value="Фрилансеры, дизайнеры, IT-специалисты">IT и Фриланс</option>
@@ -198,58 +213,54 @@ eleventyExcludeFromCollections: true
                 
                 <!-- Статистика -->
                 <div class="grid grid-cols-3 gap-3 md:gap-6">
-                    <div class="glass-panel rounded-2xl p-5 text-center shadow-lg border-t border-white/10">
-                        <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">Переходы</p>
-                        <p id="statClicks" class="text-2xl md:text-4xl font-black text-white">0</p>
+                    <div class="glass-panel rounded-[2rem] p-6 text-center shadow-lg border-t border-white/10">
+                        <p class="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-2">Клики</p>
+                        <p id="statClicks" class="text-3xl md:text-5xl font-black text-white">0</p>
                     </div>
-                    <div class="glass-panel rounded-2xl p-5 text-center shadow-lg border-t-2 border-t-blue-500/50 bg-blue-500/5">
-                        <p class="text-[10px] text-blue-400/80 uppercase font-black tracking-widest mb-1">Агенты</p>
-                        <p id="statLeads" class="text-2xl md:text-4xl font-black text-blue-400">0</p>
+                    <div class="glass-panel rounded-[2rem] p-6 text-center shadow-lg border-t-2 border-t-blue-500/50 bg-blue-500/5">
+                        <p class="text-[10px] text-blue-400/80 uppercase font-black tracking-widest mb-2">Агенты</p>
+                        <p id="statLeads" class="text-3xl md:text-5xl font-black text-blue-400">0</p>
                     </div>
-                    <div class="glass-panel rounded-2xl p-5 text-center shadow-lg border-t-2 border-t-green-500/50 bg-green-500/5">
-                        <p class="text-[10px] text-green-500/80 uppercase font-black tracking-widest mb-1">Оплаты (PRO)</p>
-                        <p id="statEarnings" class="text-2xl md:text-4xl font-black text-green-400">0</p>
+                    <div class="glass-panel rounded-[2rem] p-6 text-center shadow-lg border-t-2 border-t-green-500/50 bg-green-500/5">
+                        <p class="text-[10px] text-green-500/80 uppercase font-black tracking-widest mb-2">Оплаты (PRO)</p>
+                        <p id="statEarnings" class="text-3xl md:text-5xl font-black text-green-400">0</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- ЛЕВАЯ КОЛОНКА (Профиль и Каналы) -->
+                    <!-- ЛЕВАЯ КОЛОНКА -->
                     <div class="space-y-6">
-                        <div class="glass-panel rounded-[2rem] p-6 relative overflow-hidden">
+                        <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden border-t border-white/10">
                             <h3 class="text-sm font-black uppercase tracking-widest text-gray-400 mb-6">👤 Ваш профиль</h3>
-                            <div class="flex items-center gap-4 mb-6">
+                            <div class="flex items-center gap-5 mb-6">
                                 <div id="profAvatar" class="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 border border-white/10 flex items-center justify-center text-2xl font-black shadow-lg">?</div>
                                 <div>
-                                    <h3 id="profName" class="text-lg font-black text-white uppercase mb-1">Загрузка...</h3>
-                                    <div class="flex gap-3 text-[10px] font-mono text-gray-400 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
-                                        <span>ID: <b id="profShId" class="text-white">...</b></span>
-                                        <span>Tail: <b id="profTail" class="text-white">...</b></span>
+                                    <h3 id="profName" class="text-xl font-black text-white uppercase mb-1">Загрузка...</h3>
+                                    <div class="flex gap-3 text-xs font-mono text-gray-400 mt-2">
+                                        <span class="bg-black/40 px-3 py-1 rounded-lg border border-white/5">ID: <b id="profShId" class="text-white">...</b></span>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Кнопки быстрых действий -->
-                            <div class="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-white/5">
-                                <button onclick="window.open('https://sethubble.ru/academy?token='+webAppJwt, '_blank')" class="btn bg-white/5 hover:bg-white/10 p-3 rounded-xl flex items-center gap-3 text-left">
-                                    <span class="text-xl">🎓</span> <span class="text-xs font-bold text-gray-300">Академия</span>
-                                </button>
-                                <button onclick="window.open('https://t.me/sethubble_support', '_blank')" class="btn bg-white/5 hover:bg-white/10 p-3 rounded-xl flex items-center gap-3 text-left">
-                                    <span class="text-xl">💬</span> <span class="text-xs font-bold text-gray-300">Саппорт</span>
+                            <div class="grid grid-cols-1 gap-3 mt-6 pt-6 border-t border-white/5">
+                                <button onclick="window.open('/academy/', '_blank')" class="btn bg-white/5 hover:bg-white/10 p-4 rounded-xl flex items-center justify-between text-left border border-white/5">
+                                    <div class="flex items-center gap-3"><span class="text-2xl">🎓</span> <span class="text-sm font-bold text-white">Академия (Обучение)</span></div>
+                                    <span class="text-gray-500">↗</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Каналы -->
-                        <div class="glass-panel rounded-[2rem] p-6">
+                        <!-- Каналы связи -->
+                        <div class="glass-panel rounded-[2rem] p-8 border-t border-white/10">
                             <h3 class="text-sm font-black uppercase tracking-widest text-gray-400 mb-6">📡 Узлы связи</h3>
-                            <div id="channelGrid" class="grid grid-cols-2 gap-3">
+                            <div id="channelGrid" class="grid grid-cols-2 gap-4">
                                 <!-- Каналы генерируются JS -->
                             </div>
+                            <p class="text-xs text-gray-500 mt-6 text-center">Каналы работают автономно. Вы не пропустите ни одного лида.</p>
                         </div>
                     </div>
 
                     <!-- ПРАВАЯ КОЛОНКА (ТАРИФ И ПРОДАЖА) -->
-                    <div class="glass-panel rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-center relative overflow-hidden bg-gradient-to-b from-[#050510] to-[#0a0a1a]">
+                    <div class="glass-panel rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-center relative overflow-hidden bg-gradient-to-b from-[#050510] to-[#0a0a1a] border-t border-purple-500/20">
                         <div class="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl"></div>
                         
                         <!-- БЛОК ДЛЯ FREE -->
@@ -268,12 +279,16 @@ eleventyExcludeFromCollections: true
                                 </ul>
                             </div>
 
-                            <div class="flex items-center justify-between mb-4 px-2">
-                                <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">NeuroCoins (скидка)</span>
-                                <span id="profXpText" class="text-xs font-bold text-cyan-400">0/100 XP</span>
-                            </div>
-                            <div class="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 mb-6">
-                                <div id="profXpBar" class="h-full bg-gradient-to-r from-cyan-400 to-purple-600 transition-all duration-1000" style="width: 0%"></div>
+                            <!-- XP / NeuroCoins Info -->
+                            <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-6">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold text-blue-300">Ваши NeuroCoins</span>
+                                    <span id="profXpText" class="text-xs font-black text-white">0/100</span>
+                                </div>
+                                <div class="h-2 w-full bg-black/50 rounded-full overflow-hidden mb-2">
+                                    <div id="profXpBar" class="h-full bg-blue-500 transition-all duration-1000" style="width: 0%"></div>
+                                </div>
+                                <p class="text-[10px] text-gray-400">💡 Как получить 100 монет? Пройдите 3 коротких урока в <a href="/academy/" target="_blank" class="text-blue-400 underline">Академии</a>, найдите секретные слова и получите скидку 50% на PRO-статус!</p>
                             </div>
 
                             <a id="btn-upgrade-pro" href="#" target="_blank" class="btn block w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 py-4 rounded-xl font-black text-sm text-center text-white shadow-[0_0_30px_rgba(168,85,247,0.3)] uppercase tracking-wide">
@@ -300,6 +315,7 @@ eleventyExcludeFromCollections: true
             <!-- TAB 3: AI (НЕЙРОЯДРО) -->
             <!-- ========================================== -->
             <div id="content-ai" class="hidden space-y-6 animate-fadeInUp">
+                
                 <!-- Пейволл SaaS -->
                 <div id="ai-paywall" class="hidden glass-panel rounded-[3rem] p-12 text-center border-t border-purple-500/30 relative overflow-hidden">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-purple-600/20 blur-3xl -z-10"></div>
@@ -316,42 +332,17 @@ eleventyExcludeFromCollections: true
                 <!-- Конструктор -->
                 <div id="ai-constructor" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="space-y-6">
-                        <!-- Технические настройки -->
-                        <div class="glass-panel p-6 md:p-8 rounded-[2rem] border-t border-cyan-500/30">
-                            <h3 class="text-sm font-black uppercase text-cyan-400 tracking-widest mb-6">⚙️ Вычислительное ядро</h3>
-                            <div class="space-y-5">
-                                <div>
-                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wide block mb-2">Провайдер API:</label>
-                                    <select id="ai-provider" onchange="updateModelsList()" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm font-medium text-white outline-none cursor-pointer">
-                                        <option value="polza">Polza.ai (РФ, Карты)</option>
-                                        <option value="openrouter">OpenRouter (Крипта)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wide block mb-2">LLM Модель:</label>
-                                    <select id="ai-model" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm font-medium text-white outline-none cursor-pointer"></select>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between items-center mb-2">
-                                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Свой API Ключ (Безлимит):</label>
-                                        <a href="https://neuro-gen.ru/go-polza" target="_blank" class="text-[10px] font-bold text-cyan-400 hover:underline">Где взять? ↗</a>
-                                    </div>
-                                    <input type="password" id="ai-api-key" placeholder="sk-..." class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm font-medium text-white outline-none focus:border-cyan-500 transition-colors" />
-                                </div>
-                                <div>
-                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wide block mb-2">Лимит диалогов/день (0 = ∞):</label>
-                                    <input type="number" id="ai-limit" placeholder="0" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm font-medium text-white outline-none focus:border-cyan-500 transition-colors" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Инженерия промпта -->
+                        
+                        <!-- Инженерия промпта (ВВЕРХУ) -->
                         <div class="glass-panel p-6 md:p-8 rounded-[2rem] border-t border-purple-500/30">
                             <h3 class="text-sm font-black uppercase text-purple-400 tracking-widest mb-6">🎭 Характер бота</h3>
                             
-                            <div class="grid grid-cols-2 gap-3 mb-6">
-                                <button onclick="applyAiPreset('shark')" class="bg-white/5 hover:bg-white/10 border border-white/5 p-3 rounded-xl text-[10px] font-bold uppercase transition-colors text-left"><span class="text-lg block mb-1">🦈</span> Волк продаж</button>
-                                <button onclick="applyAiPreset('friend')" class="bg-white/5 hover:bg-white/10 border border-white/5 p-3 rounded-xl text-[10px] font-bold uppercase transition-colors text-left"><span class="text-lg block mb-1">🤝</span> Эмпат</button>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                                <button onclick="applyAiPreset('shark')" class="bg-black/40 hover:bg-white/10 border border-white/5 p-3 rounded-xl text-[10px] font-bold text-white transition-colors text-center"><span class="text-xl block mb-1">🦈</span> Акула</button>
+                                <button onclick="applyAiPreset('mentor')" class="bg-black/40 hover:bg-white/10 border border-white/5 p-3 rounded-xl text-[10px] font-bold text-white transition-colors text-center"><span class="text-xl block mb-1">🎓</span> Наставник</button>
+                                <button onclick="applyAiPreset('techie')" class="bg-black/40 hover:bg-white/10 border border-white/5 p-3 rounded-xl text-[10px] font-bold text-white transition-colors text-center"><span class="text-xl block mb-1">🤖</span> Технарь</button>
+                                <button onclick="applyAiPreset('friend')" class="bg-black/40 hover:bg-white/10 border border-white/5 p-3 rounded-xl text-[10px] font-bold text-white transition-colors text-center"><span class="text-xl block mb-1">🤝</span> Друг</button>
+                                <button onclick="applyAiPreset('visionary')" class="bg-black/40 hover:bg-white/10 border border-white/5 p-3 rounded-xl text-[10px] font-bold text-white transition-colors text-center"><span class="text-xl block mb-1">🌌</span> Визионер</button>
                             </div>
 
                             <div class="space-y-5">
@@ -362,32 +353,38 @@ eleventyExcludeFromCollections: true
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wide block mb-2">Тон общения:</label>
-                                        <select id="ui-tone" onchange="compilePrompt()" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm text-white outline-none cursor-pointer">
-                                            <option value="Уверенный, давит на выгоду">Агрессивный</option>
-                                            <option value="Эмпатичный, задает вопросы">Заботливый</option>
-                                            <option value="Сухой, оперирует цифрами">Деловой</option>
-                                            <option value="Ироничный, использует реверс. психологию">Дерзкий</option>
-                                        </select>
+                                        <input type="text" id="ui-tone" oninput="compilePrompt()" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm text-white outline-none focus:border-purple-500 transition-colors" placeholder="Напр. Дерзкий">
                                     </div>
                                     <div>
                                         <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wide block mb-2">Главная цель:</label>
-                                        <select id="ui-goal" onchange="compilePrompt()" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm text-white outline-none cursor-pointer">
-                                            <option value="Продать PRO-статус">Продать PRO</option>
-                                            <option value="Убедить зарегистрироваться">Регистрация</option>
-                                            <option value="Закрыть на личный созвон">Созвон</option>
-                                        </select>
+                                        <input type="text" id="ui-goal" oninput="compilePrompt()" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm text-white outline-none focus:border-purple-500 transition-colors" placeholder="Продать PRO">
                                     </div>
-                                </div>
-                                <div>
-                                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wide block mb-2">Если говорят "Дорого":</label>
-                                    <input type="text" id="ui-objection" oninput="compilePrompt()" class="w-full bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-sm text-white outline-none focus:border-purple-500 transition-colors" placeholder="Как ИИ должен отработать?">
                                 </div>
                             </div>
                             
                             <textarea id="ai-prompt-hidden" class="hidden"></textarea>
-                            <button onclick="saveAiSettings()" id="saveAiBtn" class="btn w-full bg-white text-black py-4 rounded-xl font-black text-sm uppercase tracking-wide mt-6 shadow-xl hover:bg-gray-200 transition-colors">
+                            <button onclick="saveAiSettings()" id="saveAiBtn" class="btn w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-black text-sm uppercase tracking-wide mt-6 shadow-xl hover:opacity-90 transition-opacity">
                                 💾 ЗАГРУЗИТЬ В ЯДРО
                             </button>
+                        </div>
+
+                        <!-- Технические настройки (ВНИЗУ) -->
+                        <div class="glass-panel p-6 rounded-[2rem] border-t border-gray-700/50 opacity-80 hover:opacity-100 transition-opacity">
+                            <h3 class="text-xs font-black uppercase text-gray-400 tracking-widest mb-4">⚙️ Системные параметры API</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <select id="ai-provider" onchange="updateModelsList()" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs font-medium text-white outline-none cursor-pointer">
+                                        <option value="polza">Polza.ai (РФ, Карты)</option>
+                                        <option value="openrouter">OpenRouter (Крипта)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select id="ai-model" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs font-medium text-white outline-none cursor-pointer"></select>
+                                </div>
+                                <div>
+                                    <input type="password" id="ai-api-key" placeholder="Свой API Ключ (Безлимит)" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs font-medium text-white outline-none focus:border-gray-500 transition-colors" />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -397,13 +394,13 @@ eleventyExcludeFromCollections: true
                             <div class="p-5 border-b border-white/5 bg-black/40 rounded-t-[2rem] flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
-                                    <span class="text-xs font-black uppercase text-white tracking-widest">Тестовый полигон</span>
+                                    <span class="text-xs font-black uppercase text-white tracking-widest">Чат Симулятор</span>
                                 </div>
                                 <span id="status-date" class="text-[10px] font-bold text-gray-500">Активен</span>
                             </div>
                             <div id="testChatArea" class="flex-1 overflow-y-auto p-5 space-y-4 bg-[#05050f] flex flex-col scroll-smooth">
                                 <div class="p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-gray-300 self-start border border-white/5 shadow-md">
-                                    Ядро инициализировано. Сохрани настройки слева и напиши мне что-нибудь, чтобы проверить характер.
+                                    Ядро инициализировано. Сохрани настройки характера и напиши мне что-нибудь.
                                 </div>
                             </div>
                             <div class="p-4 bg-black/60 rounded-b-[2rem] flex items-center gap-2 border-t border-white/5">
@@ -422,30 +419,32 @@ eleventyExcludeFromCollections: true
             <!-- ========================================== -->
             <div id="content-hub" class="hidden space-y-8 animate-fadeInUp">
                 <!-- NeuroGen Hub Showcase -->
-                <div class="glass-panel rounded-[3rem] p-8 md:p-12 relative overflow-hidden text-center">
+                <div class="glass-panel rounded-[3rem] p-8 md:p-12 relative overflow-hidden text-center border-t border-blue-500/20">
                     <div class="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/10 blur-3xl rounded-full"></div>
-                    <h2 class="text-2xl md:text-4xl font-black mb-2 uppercase tracking-tight text-white">NeuroGen <span class="gradient-text">HUB</span></h2>
-                    <p class="text-sm text-gray-400 mb-10 max-w-lg mx-auto">Ваш личный арсенал премиальных ИИ-приложений. Заменяет маркетолога, дизайнера и программиста.</p>
+                    <h2 class="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tight text-white">NeuroGen <span class="gradient-text">HUB</span></h2>
+                    <p class="text-sm md:text-base text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">Вам больше не нужны маркетолог, дизайнер и программист. Этот арсенал нейросетей закрывает все потребности бизнеса.</p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-left" id="hub-apps-container">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left" id="hub-apps-container">
                         <!-- Apps Inject Here -->
                     </div>
                 </div>
 
-                <!-- Benefits Cards -->
-                <div class="glass-panel rounded-[3rem] p-8 md:p-12">
-                    <div id="about-tag" class="inline-block bg-white/5 text-gray-300 font-bold px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest mb-6 border border-white/10">ИНФО</div>
-                    <h2 id="about-title" class="text-2xl md:text-4xl font-black mb-4 uppercase leading-tight text-white">...</h2>
-                    <p id="about-subtitle" class="text-sm text-gray-400 mb-10 leading-relaxed">...</p>
+                <!-- Benefits Cards (Ниши) -->
+                <div class="glass-panel rounded-[3rem] p-8 md:p-12 border-t border-white/5">
+                    <div class="text-center mb-10">
+                        <div id="about-tag" class="inline-block bg-white/5 text-gray-300 font-bold px-5 py-2 rounded-full text-[10px] uppercase tracking-widest mb-4 border border-white/10">ИНФО</div>
+                        <h2 id="about-title" class="text-2xl md:text-4xl font-black mb-4 uppercase leading-tight text-white">...</h2>
+                        <p id="about-subtitle" class="text-sm text-gray-400 leading-relaxed max-w-2xl mx-auto">...</p>
+                    </div>
 
-                    <div id="about-cards" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="about-cards" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <!-- Cards Inject Here -->
                     </div>
                 </div>
             </div>
 
         </div>
-    </main>
+    </div>
 
     <!-- Скрипты -->
     <script>
@@ -453,10 +452,10 @@ eleventyExcludeFromCollections: true
         // БАЗА ЗНАНИЙ ОФФЕРОВ (ДЛЯ САЙТА И PDF)
         // ==========================================
         const BENEFITS = {
-            universal: { tag: "Экосистема", title: "ИИ-СИСТЕМА ДЛЯ <br><span class='gradient-text'>ПАССИВА</span>", pdfTitle: "ИИ-СИСТЕМА ДЛЯ ПАССИВНОГО ДОХОДА", subtitle: "Готовый IT-бизнес под ключ. Нейросети работают — вы зарабатываете.", cards: [{i:"🤖", t:"ИИ-Клон", d:"Бот сам общается с клиентами, презентует систему и закрывает сделки 24/7."}, {i:"💸", t:"До 50% с продаж", d:"Получайте моментальные выплаты в крипте за каждую продажу системы вашим ботом."}, {i:"🌐", t:"Любой трафик", d:"Подходит для блогеров, офлайн-бизнеса и новичков. Полная автоматизация."}, {i:"🧠", t:"ИИ-Лаборатория", d:"Доступ к премиум-нейросетям NeuroGen для создания сайтов, видео и текстов."}] },
-            agent: { tag: "Твоя Империя", title: "БИЗНЕС БЕЗ <br><span class='gradient-text'>ВЛОЖЕНИЙ</span>", pdfTitle: "КАК ПОСТРОИТЬ СЕТЬ И ВЫЙТИ НА ПАССИВ?", subtitle: "Хватит работать на корпорации. Забирай процент с оборота целых бизнесов.", cards: [{i:"🌍", t:"Эффект Рычага", d:"Строй сеть до 10 уровней. Даешь бизнесу бесплатный инструмент оцифровки, а их клиенты расширяют твою сеть."}, {i:"🏢", t:"Тотальная структура", d:"Один удачный контакт с блогером или магазином может обеспечить тебя на годы."}, {i:"⚡", t:"Бинар и Компрессия", d:"Если кто-то под тобой ленится на бесплатном тарифе, его деньги не сгорают, а оседают в твоем кошельке."}, {i:"🧠", t:"Твой ИИ-клон", d:"Не придется никого уговаривать. Грязную работу по продажам закроет твой ИИ-бот."}] },
-            online: { tag: "Онлайн Бизнес", title: "МОНЕТИЗАЦИЯ <br><span class='gradient-text'>ОТКАЗОВ</span>", pdfTitle: "ПРЕВРАЩАЕМ МУСОРНЫЙ ТРАФИК В ПРИБЫЛЬ", subtitle: "95% аудитории ничего не покупают и уходят к конкурентам. Монетизируй их.", cards: [{i:"🚀", t:"Монетизация Отказов", d:"Дай бесплатный доступ тем, кто не купил твой курс. Они купят другие продукты, а система начислит % тебе."}, {i:"🧲", t:"Заработок на конкурентах", d:"Если твои конкуренты продают свои продукты твоим «отказникам», ты зарабатываешь на продажах конкурента!"}, {i:"🌍", t:"Жесткая привязка", d:"Любой клик по твоей ссылке намертво привязывает человека к тебе на 4 месяца."}, {i:"🧠", t:"ИИ-ассистент", d:"Умный бот проконсультирует учеников и превратит покупателей в лояльных партнеров."}] },
-            offline: { tag: "Сарафанное радио 2.0", title: "ЭФФЕКТ <br><span class='gradient-text'>ТРОЯНСКОГО КОНЯ</span>", pdfTitle: "САРАФАННОЕ РАДИО 2.0 ДЛЯ ВАШЕГО БИЗНЕСА", subtitle: "Сдвиг парадигмы: вы платите за рекламу ТОЛЬКО тогда, когда деньги уже в кассе.", cards: [{i:"🤝", t:"Ловушка и Вирус", d:"Вы ставите QR-код на кассу. Клиент сканирует его ради скидки и становится вашим мотивированным агентом."}, {i:"⚙️", t:"Золотой Парашют", d:"Если ваш клиент пойдет и купит онлайн-курс внутри экосистемы SetHubble — ВЫ получите пассивный процент с его трат!"}, {i:"🎁", t:"Ноль риска", d:"Вы выплачиваете вознаграждение из тех денег, которые клиент УЖЕ оставил в вашей кассе. Нет продажи — нет затрат."}, {i:"🧠", t:"Ваш ИИ-Админ", d:"Встроенный чат-бот общается с вашей аудиторией 24/7, собирает отзывы и расширяет сеть партнеров."}] }
+            universal: { tag: "Экосистема", title: "ИИ-СИСТЕМА ДЛЯ <br><span class='gradient-text'>ПАССИВА</span>", pdfTitle: "ИИ-СИСТЕМА ДЛЯ ПАССИВНОГО ДОХОДА", subtitle: "Готовый IT-бизнес под ключ. Нейросети работают — вы зарабатываете.", cards: [{icon:"🤖", title:"ИИ-Клон", text:"Бот сам общается с клиентами, презентует систему и закрывает сделки 24/7."}, {icon:"💸", title:"До 50% с продаж", text:"Получайте моментальные выплаты в крипте за каждую продажу системы вашим ботом."}, {icon:"🌐", title:"Любой трафик", text:"Подходит для блогеров, офлайн-бизнеса и новичков. Полная автоматизация."}, {icon:"🧠", title:"ИИ-Лаборатория", text:"Доступ к премиум-нейросетям NeuroGen для создания сайтов, видео и текстов."}] },
+            agent: { tag: "Твоя Империя", title: "БИЗНЕС БЕЗ <br><span class='gradient-text'>ВЛОЖЕНИЙ</span>", pdfTitle: "КАК ПОСТРОИТЬ СЕТЬ И ВЫЙТИ НА ПАССИВ?", subtitle: "Хватит работать на корпорации. Забирай процент с оборота целых бизнесов.", cards: [{icon:"🌍", title:"Эффект Рычага", text:"Строй сеть до 10 уровней. Даешь бизнесу бесплатный инструмент оцифровки, а их клиенты расширяют твою сеть."}, {icon:"🏢", title:"Тотальная структура", text:"Один удачный контакт с блогером или магазином может обеспечить тебя на годы."}, {icon:"⚡", title:"Бинар и Компрессия", text:"Если кто-то под тобой ленится на бесплатном тарифе, его деньги не сгорают, а оседают в твоем кошельке."}, {icon:"🧠", title:"Твой ИИ-клон", text:"Не придется никого уговаривать. Грязную работу по продажам закроет твой ИИ-бот."}] },
+            online: { tag: "Онлайн Бизнес", title: "МОНЕТИЗАЦИЯ <br><span class='gradient-text'>ОТКАЗОВ</span>", pdfTitle: "ПРЕВРАЩАЕМ МУСОРНЫЙ ТРАФИК В ПРИБЫЛЬ", subtitle: "95% аудитории ничего не покупают и уходят к конкурентам. Монетизируй их.", cards: [{icon:"🚀", title:"Монетизация Отказов", text:"Дай бесплатный доступ тем, кто не купил твой курс. Они купят другие продукты, а система начислит % тебе."}, {icon:"🧲", title:"Заработок на конкурентах", text:"Если твои конкуренты продают свои продукты твоим «отказникам», ты зарабатываешь на продажах конкурента!"}, {icon:"🌍", title:"Жесткая привязка", text:"Любой клик по твоей ссылке намертво привязывает человека к тебе на 4 месяца."}, {icon:"🧠", title:"ИИ-ассистент", text:"Умный бот проконсультирует учеников и превратит покупателей в лояльных партнеров."}] },
+            offline: { tag: "Сарафанное радио 2.0", title: "ЭФФЕКТ <br><span class='gradient-text'>ТРОЯНСКОГО КОНЯ</span>", pdfTitle: "САРАФАННОЕ РАДИО 2.0 ДЛЯ ВАШЕГО БИЗНЕСА", subtitle: "Сдвиг парадигмы: вы платите за рекламу ТОЛЬКО тогда, когда деньги уже в кассе.", cards: [{icon:"🤝", title:"Ловушка и Вирус", text:"Вы ставите QR-код на кассу. Клиент сканирует его ради скидки и становится вашим мотивированным агентом."}, {icon:"⚙️", title:"Золотой Парашют", text:"Если ваш клиент пойдет и купит онлайн-курс внутри экосистемы SetHubble — ВЫ получите пассивный процент с его трат!"}, {icon:"🎁", title:"Ноль риска", text:"Вы выплачиваете вознаграждение из тех денег, которые клиент УЖЕ оставил в вашей кассе. Нет продажи — нет затрат."}, {icon:"🧠", title:"Ваш ИИ-Админ", text:"Встроенный чат-бот общается с вашей аудиторией 24/7, собирает отзывы и расширяет сеть партнеров."}] }
         };
 
         const STATIC_POSTS = {
@@ -541,7 +540,6 @@ eleventyExcludeFromCollections: true
                 document.getElementById("profName").textContent = userData.first_name;
             }
             document.getElementById("profShId").textContent = userData.sh_user_id || "—";
-            document.getElementById("profTail").textContent = userData.partner_id || "—";
 
             // Payment Link
             const xp = parseInt(userData.xp) || 0;
@@ -583,14 +581,12 @@ eleventyExcludeFromCollections: true
             // AI Settings Load
             if (userData.ai_provider) document.getElementById("ai-provider").value = userData.ai_provider;
             updateModelsList(userData.ai_model);
-            if (userData.user_daily_limit !== undefined) document.getElementById("ai-limit").value = userData.user_daily_limit;
             if (userData.custom_api_key) document.getElementById("ai-api-key").value = userData.custom_api_key;
             if (userData.ai_ui_state) {
                 const state = userData.ai_ui_state;
                 if (state.role) document.getElementById("ui-role").value = state.role;
                 if (state.tone) document.getElementById("ui-tone").value = state.tone;
                 if (state.goal) document.getElementById("ui-goal").value = state.goal;
-                if (state.obj) document.getElementById("ui-objection").value = state.obj;
             }
             compilePrompt();
         }
@@ -656,7 +652,7 @@ eleventyExcludeFromCollections: true
         function setLinkMode(mode) {
             currentLinkMode = mode;
             ["universal", "agent", "online", "offline"].forEach(m => {
-                const btn = document.getElementById(`mode-${m}`);
+                const btn = document.getElementById(`m-${m}`);
                 if (btn) btn.className = m === mode ? `mode-btn active` : "mode-btn";
             });
 
@@ -672,9 +668,9 @@ eleventyExcludeFromCollections: true
             document.getElementById("about-subtitle").textContent = info.subtitle;
             document.getElementById("about-cards").innerHTML = info.cards.map((c, i) => `
                 <div class="glass-panel p-6 rounded-[2rem] transition-all hover:bg-white/5 ${i===3?'border-t border-purple-500/30':'border-t border-cyan-500/30'}">
-                    <span class="text-4xl block mb-4">${c.i}</span>
-                    <h3 class="text-sm font-black text-white uppercase tracking-wide mb-2">${c.t}</h3>
-                    <p class="text-[11px] text-gray-400 leading-relaxed">${c.d}</p>
+                    <span class="text-4xl block mb-4">${c.icon}</span>
+                    <h3 class="text-sm font-black text-white uppercase tracking-wide mb-2">${c.title}</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed">${c.text}</p>
                 </div>
             `).join('');
             
@@ -691,7 +687,7 @@ eleventyExcludeFromCollections: true
             if(cvs) {
                 const img = cvs.toDataURL("image/png"); const d = BENEFITS[currentLinkMode];
                 const w = window.open("", "_blank");
-                w.document.write(`<!DOCTYPE html><html><head><title>Флаер</title><style>@page{size:A4 portrait;margin:0}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;padding:0;background:#fff;width:210mm;height:297mm;overflow:hidden}.container{width:100%;height:100%;padding:15mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:8px solid #f0f0f0}.tag{background:#06b6d4;color:#fff;padding:4px 15px;border-radius:50px;font-weight:800;font-size:14px;text-transform:uppercase;margin-bottom:10mm}h1{font-size:32pt;text-transform:uppercase;margin:0 0 5mm 0;font-weight:900;line-height:1.1;color:#000}p.sub{font-size:18pt;color:#444;margin-bottom:12mm;line-height:1.3;max-width:160mm}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8mm;width:100%;text-align:left;margin-bottom:15mm}.card{border-left:5px solid #06b6d4;padding:10px 15px;background:#f8f8f8;border-radius:0 12px 12px 0}.card h3{margin:0 0 5px 0;font-size:14pt;font-weight:800;color:#000}.card p{margin:0;font-size:11pt;color:#333;line-height:1.3}.qr-sec{width:100%;display:flex;flex-direction:column;align-items:center;margin-top:5mm}.qr-sec h3{margin-bottom:5mm;font-size:20pt;color:#000;font-weight:900;text-transform:uppercase}.qr-box{padding:15px;border:5px dashed #06b6d4;border-radius:25px;background:#fff}.qr-box img{width:60mm;height:60mm}</style></head><body><div class="container"><div class="tag">${d.tag}</div><h1>${d.pdfTitle.replace("<br>"," ")}</h1><p class="sub">${d.subtitle}</p><div class="grid"><div class="card"><h3>${d.cards[0].t}</h3><p>${d.cards[0].d}</p></div><div class="card"><h3>${d.cards[1].t}</h3><p>${d.cards[1].d}</p></div><div class="card"><h3>${d.cards[2].t}</h3><p>${d.cards[2].d}</p></div><div class="card" style="border-color:#a855f7"><h3>${d.cards[3].t}</h3><p>${d.cards[3].d}</p></div></div><div class="qr-sec"><h3>Запусти систему здесь:</h3><div class="qr-box"><img src="${img}"/></div></div></div></body></html>`);
+                w.document.write(`<!DOCTYPE html><html><head><title>Флаер</title><style>@page{size:A4 portrait;margin:0}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;padding:0;background:#fff;width:210mm;height:297mm;overflow:hidden}.container{width:100%;height:100%;padding:15mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:8px solid #f0f0f0}.tag{background:#06b6d4;color:#fff;padding:4px 15px;border-radius:50px;font-weight:800;font-size:14px;text-transform:uppercase;margin-bottom:10mm}h1{font-size:32pt;text-transform:uppercase;margin:0 0 5mm 0;font-weight:900;line-height:1.1;color:#000}p.sub{font-size:18pt;color:#444;margin-bottom:12mm;line-height:1.3;max-width:160mm}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8mm;width:100%;text-align:left;margin-bottom:15mm}.card{border-left:5px solid #06b6d4;padding:10px 15px;background:#f8f8f8;border-radius:0 12px 12px 0}.card h3{margin:0 0 5px 0;font-size:14pt;font-weight:800;color:#000}.card p{margin:0;font-size:11pt;color:#333;line-height:1.3}.qr-sec{width:100%;display:flex;flex-direction:column;align-items:center;margin-top:5mm}.qr-sec h3{margin-bottom:5mm;font-size:20pt;color:#000;font-weight:900;text-transform:uppercase}.qr-box{padding:15px;border:5px dashed #06b6d4;border-radius:25px;background:#fff}.qr-box img{width:60mm;height:60mm}</style></head><body><div class="container"><div class="tag">${d.tag}</div><h1>${d.pdfTitle}</h1><p class="sub">${d.subtitle}</p><div class="grid"><div class="card"><h3>${d.cards[0].title}</h3><p>${d.cards[0].text}</p></div><div class="card"><h3>${d.cards[1].title}</h3><p>${d.cards[1].text}</p></div><div class="card"><h3>${d.cards[2].title}</h3><p>${d.cards[2].text}</p></div><div class="card" style="border-color:#a855f7"><h3>${d.cards[3].title}</h3><p>${d.cards[3].text}</p></div></div><div class="qr-sec"><h3>Запусти систему здесь:</h3><div class="qr-box"><img src="${img}"/></div></div></div></body></html>`);
                 w.document.close(); setTimeout(() => w.print(), 1000);
             }
         });
@@ -728,21 +724,21 @@ eleventyExcludeFromCollections: true
         }
 
         function compilePrompt() {
-            const r = document.getElementById("ui-role").value || "Консультант"; const t = document.getElementById("ui-tone").value; const g = document.getElementById("ui-goal").value; const o = document.getElementById("ui-objection").value;
-            let f = `Ты — ${r}. Общайся в стиле: ${t}. Твоя цель: ${g}.`; if(o) f += ` Если говорят "дорого" или "подумаю", отвечай: ${o}.`;
+            const r = document.getElementById("ui-role").value || "Консультант"; const t = document.getElementById("ui-tone").value; const g = document.getElementById("ui-goal").value;
+            let f = `Ты — ${r}. Общайся в стиле: ${t}. Твоя цель: ${g}.`;
             document.getElementById("ai-prompt-hidden").value = f;
         }
 
         function applyAiPreset(t) {
-            const p = { shark: ["Волк с Уолл-Стрит в крипте", "Агрессивный, давит на выгоду", "Продать PRO-статус", "Смеяться над сомнениями (FOMO)"], friend: ["Заботливый друг", "Эмпатичный, задает вопросы", "Убедить зарегистрироваться", "Мягко отпускать, предлагать помощь"] };
-            document.getElementById("ui-role").value = p[t][0]; document.getElementById("ui-tone").value = p[t][1]; document.getElementById("ui-goal").value = p[t][2]; document.getElementById("ui-objection").value = p[t][3];
+            const p = { shark: ["Волк с Уолл-Стрит в крипте", "Агрессивный, давит на выгоду", "Продать PRO-статус"], mentor: ["Опытный наставник", "Мудрый, спокойный", "Помочь принять верное решение"], techie: ["AI-инженер", "Техничный, точный", "Показать техническое превосходство"], friend: ["Заботливый друг", "Эмпатичный, задает вопросы", "Убедить зарегистрироваться"], visionary: ["Визионер будущего", "Вдохновляющий, масштабный", "Продать идею трансформации"] };
+            document.getElementById("ui-role").value = p[t][0]; document.getElementById("ui-tone").value = p[t][1]; document.getElementById("ui-goal").value = p[t][2];
             compilePrompt(); showToast("Конфигурация загружена");
         }
 
         async function saveAiSettings() {
             const btn = document.getElementById("saveAiBtn"); btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = "⏳ СОХРАНЕНИЕ...";
             try {
-                const res = await fetch(`${BACKEND_URL}/?action=update_ai_settings`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "update_ai_settings", custom_prompt: document.getElementById("ai-prompt-hidden").value, ai_provider: document.getElementById("ai-provider").value, ai_model: document.getElementById("ai-model").value, custom_api_key: document.getElementById("ai-api-key").value.trim(), user_daily_limit: parseInt(document.getElementById("ai-limit").value) || 0, ai_ui_state: { role: document.getElementById("ui-role").value, tone: document.getElementById("ui-tone").value, goal: document.getElementById("ui-goal").value, obj: document.getElementById("ui-objection").value } }) });
+                const res = await fetch(`${BACKEND_URL}/?action=update_ai_settings`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "update_ai_settings", custom_prompt: document.getElementById("ai-prompt-hidden").value, ai_provider: document.getElementById("ai-provider").value, ai_model: document.getElementById("ai-model").value, custom_api_key: document.getElementById("ai-api-key").value.trim(), ai_ui_state: { role: document.getElementById("ui-role").value, tone: document.getElementById("ui-tone").value, goal: document.getElementById("ui-goal").value } }) });
                 if((await res.json()).success) showToast("Ядро обновлено"); else throw new Error();
             } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
         }
