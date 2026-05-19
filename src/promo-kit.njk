@@ -328,10 +328,10 @@ textarea:focus {
                 <span class="text-xs text-gray-400 font-medium">Network</span>
               </div>
               <div class="w-px h-4 bg-white/10"></div>
-              <span
-                class="text-green-400 font-bold text-sm tracking-wide"
-                id="header-earnings"
-              >$0.00</span>
+                <span
+                  class="text-green-400 font-bold text-sm tracking-wide"
+                  id="header-earnings"
+                >0 PRO</span>
             </div>
             <div class="relative group cursor-pointer">
               <div
@@ -460,16 +460,16 @@ textarea:focus {
             </div>
             <div class="glass-panel glass-panel-hover rounded-2xl p-5 border-t-2 border-t-green-500/50 bg-green-500/5 relative overflow-hidden group">
               <div class="absolute -right-4 -bottom-4 text-6xl opacity-[0.03] group-hover:scale-110 transition-transform duration-500">
-                💰
+                💎
               </div>
               <p class="text-[10px] md:text-xs text-green-500/80 uppercase font-bold tracking-widest mb-1 relative z-10">
-                Прибыль
+                Оплаты (PRO+)
               </p>
               <p
                 id="statEarnings"
                 class="text-2xl md:text-4xl font-black text-green-400 relative z-10"
               >
-                $0.00
+                0
               </p>
             </div>
           </div>
@@ -1203,24 +1203,17 @@ textarea:focus {
               </div>
             </div>
 
-            <!-- Tariff Status -->
-            <div id="profileTariffFree" class="bg-black/40 border border-gray-700/50 rounded-2xl p-5">
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">FREE → PRO</span>
-                <span id="profileXpText" class="text-xs font-bold text-cyan-400">0 / 100 XP</span>
-              </div>
-              <div class="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
-                <div id="profileXpBar" class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full transition-all duration-1000" style="width: 0%"></div>
-              </div>
-              <p class="text-[11px] text-gray-500 mt-2">Соберите 100 XP для скидки 50% на PRO</p>
-            </div>
-            <div id="profileTariffPro" class="hidden bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-500/40 rounded-2xl p-5">
+            <!-- Tariff Status (Compact) -->
+            <div id="profileTariffWidget" class="bg-black/40 border border-white/5 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors" onclick="switchTab('marketing')">
               <div class="flex items-center gap-3">
-                <span class="text-2xl">💎</span>
+                <div id="profileTariffIcon" class="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center text-lg">🆓</div>
                 <div>
-                  <span class="text-sm font-black text-white uppercase">PRO Статус активен</span>
-                  <p class="text-[11px] text-purple-400">50% комиссия • CRM • ИИ-приложения</p>
+                  <span class="text-[10px] text-gray-500 uppercase font-bold tracking-widest block mb-0.5">Текущий тариф</span>
+                  <span id="profileTariffName" class="text-sm font-black text-white uppercase">FREE</span>
                 </div>
+              </div>
+              <div class="text-right">
+                <span id="profileTariffAction" class="text-xs font-bold text-cyan-400">Улучшить →</span>
               </div>
             </div>
           </div>
@@ -1236,9 +1229,15 @@ textarea:focus {
               <p id="profileReferrals" class="text-xl font-black text-blue-400">0</p>
             </div>
             <div class="glass-panel glass-panel-hover rounded-2xl p-4 text-center border-t-2 border-t-green-500/50">
-              <p class="text-[10px] text-green-500/80 uppercase font-bold tracking-widest mb-1">Прибыль</p>
-              <p id="profileEarnings" class="text-xl font-black text-green-400">$0</p>
+              <p class="text-[10px] text-green-500/80 uppercase font-bold tracking-widest mb-1">Оплаты</p>
+              <p id="profileEarnings" class="text-xl font-black text-green-400">0</p>
             </div>
+          </div>
+
+          <div class="text-center mb-6">
+             <a href="https://sethubble.com/" target="_blank" class="text-[11px] text-gray-400 hover:text-cyan-400 transition-colors underline decoration-white/20 underline-offset-4">
+                 💰 Проверить баланс USDT и вывести средства в кабинете SetHubble ↗
+             </a>
           </div>
 
           <!-- Channel Links -->
@@ -1314,47 +1313,8 @@ textarea:focus {
             <h3 class="text-sm font-black text-white uppercase tracking-wide mb-5 flex items-center gap-2">
               <span class="text-lg">📡</span> Подключённые каналы
             </h3>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">📱</span>
-                  <div>
-                    <p class="text-xs font-bold text-white">Telegram</p>
-                    <p class="text-[10px] text-green-400">Активен</p>
-                  </div>
-                </div>
-                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
-              </div>
-              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">📢</span>
-                  <div>
-                    <p class="text-xs font-bold text-white">VK</p>
-                    <p class="text-[10px] text-green-400">Активен</p>
-                  </div>
-                </div>
-                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
-              </div>
-              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">🌐</span>
-                  <div>
-                    <p class="text-xs font-bold text-white">Web</p>
-                    <p class="text-[10px] text-green-400">Активен</p>
-                  </div>
-                </div>
-                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
-              </div>
-              <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">📧</span>
-                  <div>
-                    <p class="text-xs font-bold text-white">Email</p>
-                    <p class="text-[10px] text-green-400">Активен</p>
-                  </div>
-                </div>
-                <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
-              </div>
+            <div id="channelsContainer" class="grid grid-cols-2 gap-3">
+              <!-- Каналы генерируются JS -->
             </div>
             <p class="text-[11px] text-gray-500 mt-4 text-center">Все каналы работают через центрального бота. PRO-пользователи могут подключить личный бот.</p>
           </div>
@@ -1753,16 +1713,8 @@ function initUI() {
 
   animateValue("statClicks", 0, parseInt(userData.clicks) || 0, 1500);
   animateValue("statLeads", 0, parseInt(userData.referrals) || 0, 1500);
-  animateValue(
-    "statEarnings",
-    0,
-    parseFloat(userData.earnings) || 0,
-    1500,
-    true,
-  );
-  document.getElementById("header-earnings").textContent = `$${
-    (parseFloat(userData.earnings) || 0).toFixed(2)
-  }`;
+  animateValue("statEarnings", 0, parseInt(userData.paid_referrals) || 0, 1500, false);
+  document.getElementById("header-earnings").textContent = `${parseInt(userData.paid_referrals) || 0} PRO`;
 
   const xp = parseInt(userData.xp) || 0;
   const inviterId = userData.inviter_sh_id || "1123";
@@ -2134,77 +2086,95 @@ function copyToClipboard(elementId, isDirectText = false) {
 // =========================================================================
 // ПРОФИЛЬ: ИНИЦИАЛИЗАЦИЯ И УПРАВЛЕНИЕ
 // =========================================================================
-let currentProfileLinkMode = "universal";
-
 function initProfileTab() {
-  // Avatar
-  const avatarEl = document.getElementById("profileAvatar");
-  if (avatarEl && userData.first_name) {
-    avatarEl.textContent = userData.first_name[0].toUpperCase();
+  if (userData.first_name) {
+    document.getElementById("profileAvatar").textContent = userData.first_name[0].toUpperCase();
+    document.getElementById("profileName").textContent = userData.first_name;
   }
-
-  // Name
-  const nameEl = document.getElementById("profileName");
-  if (nameEl) nameEl.textContent = userData.first_name || "Партнёр";
-
-  // IDs
   document.getElementById("profileShId").textContent = userData.sh_user_id || "—";
   document.getElementById("profilePartnerId").textContent = userData.partner_id || "—";
 
-  // XP Progress
-  const xp = parseInt(userData.xp) || 0;
-  const xpPct = Math.min(xp, 100);
-  document.getElementById("profileXpBar").style.width = xpPct + "%";
-  document.getElementById("profileXpText").textContent = xp + " / 100 XP";
-
-  // Tariff
+  const tIcon = document.getElementById("profileTariffIcon");
+  const tName = document.getElementById("profileTariffName");
+  const tAction = document.getElementById("profileTariffAction");
+  
   if (userData.is_pro) {
-    document.getElementById("profileTariffPro").classList.remove("hidden");
-    document.getElementById("profileTariffFree").classList.add("hidden");
-  } else {
-    document.getElementById("profileTariffFree").classList.remove("hidden");
-    document.getElementById("profileTariffPro").classList.add("hidden");
+    tIcon.textContent = "💎";
+    tIcon.className = "w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-lg";
+    tName.textContent = "PRO Elite";
+    tAction.textContent = "Активен ✓";
+    tAction.className = "text-xs font-bold text-green-400";
   }
 
-  // Stats
   document.getElementById("profileClicks").textContent = parseInt(userData.clicks) || 0;
   document.getElementById("profileReferrals").textContent = parseInt(userData.referrals) || 0;
-  document.getElementById("profileEarnings").textContent = "$" + (parseFloat(userData.earnings) || 0).toFixed(2);
+  document.getElementById("profileEarnings").textContent = parseInt(userData.paid_referrals) || 0;
 
-  // Telegram link — centralized bot (personal bot will come from backend later)
   const tgBotName = userData?.central_tg_bot || "sethubble_biz_bot";
-  const tgUrl = `https://t.me/${tgBotName}?start=${userData.partner_id || "p_qdr"}`;
-  document.getElementById("tgLinkDisplay").textContent = tgUrl;
-
-  // VK link — centralized community
+  document.getElementById("tgLinkDisplay").textContent = `https://t.me/${tgBotName}?start=${userData.partner_id || "p_qdr"}`;
+  
   const vkGroupId = userData?.central_vk_group || "237421168";
-  const vkUrl = `https://vk.me/club${vkGroupId}?ref=${userData.partner_id || "p_qdr"}`;
-  document.getElementById("vkLinkDisplay").textContent = vkUrl;
-
-  // Web link
+  document.getElementById("vkLinkDisplay").textContent = `https://vk.me/club${vkGroupId}?ref=${userData.partner_id || "p_qdr"}`;
+  
   updateProfileWebLink();
+  renderChannelStatuses();
+}
+
+function renderChannelStatuses() {
+  const container = document.getElementById("channelsContainer");
+  const channels = userData.channels || {};
+  
+  const channelMeta = {
+    telegram: { icon: "📱", name: "Telegram", fallback: true },
+    vk: { icon: "📢", name: "ВКонтакте", fallback: true },
+    web: { icon: "🌐", name: "Web-чат", fallback: true },
+    email: { icon: "📧", name: "Email", fallback: false }
+  };
+
+  let html = "";
+  Object.keys(channelMeta).forEach(key => {
+    const meta = channelMeta[key];
+    const isConfigured = channels[key]?.configured || meta.fallback;
+    
+    if (isConfigured) {
+      html += `
+        <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">${meta.icon}</span>
+            <div>
+              <p class="text-xs font-bold text-white">${meta.name}</p>
+              <p class="text-[10px] text-green-400">Активен</p>
+            </div>
+          </div>
+          <span class="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_#22c55e]"></span>
+        </div>`;
+    } else {
+      html += `
+        <div class="bg-black/20 rounded-xl p-4 border border-white/5 flex items-center justify-between opacity-50">
+          <div class="flex items-center gap-3">
+            <span class="text-xl grayscale">${meta.icon}</span>
+            <div>
+              <p class="text-xs font-bold text-gray-500">${meta.name}</p>
+              <p class="text-[10px] text-gray-600">Не подключен</p>
+            </div>
+          </div>
+          <span class="w-2.5 h-2.5 bg-gray-700 rounded-full"></span>
+        </div>`;
+    }
+  });
+  
+  container.innerHTML = html;
 }
 
 function updateProfileWebLink() {
-  const partnerId = userData?.partner_id || "p_qdr";
-  const partnerAfid = userData?.sh_user_id || "1123";
-  const base = `https://neuro-gen.ru/?page=${partnerId}&afid=${partnerAfid}`;
-  let url = base;
-  if (currentProfileLinkMode === "online") url += "&role=online";
-  else if (currentProfileLinkMode === "offline") url += "&role=b2b";
-  else if (currentProfileLinkMode === "agent") url += "&role=agent";
-  else url += "&role=universal";
-  document.getElementById("webLinkDisplay").textContent = url;
+  document.getElementById("webLinkDisplay").textContent = getActiveLink();
 }
 
 function setProfileLinkMode(mode) {
-  currentProfileLinkMode = mode;
+  setLinkMode(mode);
   ["universal", "agent", "online", "offline"].forEach(m => {
     const btn = document.getElementById(`profile-mode-${m}`);
-    if (btn) {
-      if (m === mode) btn.className = `mode-btn active-${m}`;
-      else btn.className = "mode-btn";
-    }
+    if (btn) btn.className = m === mode ? `mode-btn active-${m}` : "mode-btn";
   });
   updateProfileWebLink();
 }
