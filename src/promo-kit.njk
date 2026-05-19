@@ -1647,7 +1647,7 @@ function initUI() {
 // =========================================================================
 function getActiveLink() {
   const partnerId = userData?.partner_id || "p_qdr";
-  const partnerAfid = userData?.inviter_sh_id || "1123";
+  const partnerAfid = userData?.sh_user_id || "1123";
   const base = `https://neuro-gen.ru/?page=${partnerId}&afid=${partnerAfid}`;
   if (currentLinkMode === "online") return base + "&role=online";
   if (currentLinkMode === "offline") return base + "&role=b2b";
@@ -1921,31 +1921,36 @@ async function generateAIPost() {
   btn.innerHTML = "⏳ ГЕНЕРАЦИЯ...";
 
   try {
-    const response = await fetch(BACKEND_URL, {
+    const response = await fetch(`${BACKEND_URL}/?action=generate-post`, {
       method: "POST",
       headers: authHeaders,
       body: JSON.stringify({
         action: "generate-post",
         topic: topic,
         link: getActiveLink(),
-        sessionId: currentSessionId,
       }),
     });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || `HTTP ${response.status}`);
+    }
+
     const data = await response.json();
 
-    if (
-      data.answer && !data.answer.includes("⚠️") && !data.answer.includes("⏳")
-    ) {
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    if (data.answer && !data.answer.includes("⚠️") && !data.answer.includes("⏳")) {
       resText.innerHTML = data.answer.replace(/\n/g, "<br>");
       resBox.classList.remove("hidden");
       resBox.classList.add("animate-fadeInUp");
       showToast("Контент готов!", "success");
     } else {
-      // Fallback на случай исчерпания лимита
-      throw new Error(data.answer || "Лимит");
+      throw new Error(data.answer || "Неизвестная ошибка");
     }
   } catch (e) {
-    // FALLBACK: Использование готовых шаблонов
     const valueKey = select.value;
     if (STATIC_POSTS[valueKey]) {
       const posts = STATIC_POSTS[valueKey];
@@ -1954,9 +1959,9 @@ async function generateAIPost() {
       resText.innerHTML = randomPost.replace(/\n/g, "<br>");
       resBox.classList.remove("hidden");
       resBox.classList.add("animate-fadeInUp");
-      showToast("Применён готовый шаблон (лимит ИИ исчерпан)", "info");
+      showToast(`Шаблон: ${e.message}`, "info");
     } else {
-      showToast("Сбой сети и нет шаблона", "error");
+      showToast(`Ошибка: ${e.message}`, "error");
     }
   } finally {
     btn.innerHTML = original;
