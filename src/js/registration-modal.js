@@ -98,6 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			const btnVK = document.getElementById("btnVK");
 			if (btnVK && !config.vk) btnVK.classList.add("hidden");
+			const btnChoiceVK = document.getElementById("btnChoiceVK");
+			if (btnChoiceVK && !config.vk) btnChoiceVK.classList.add("hidden");
 
 			const badge = document.getElementById("partner-badge");
 			const nameEl = document.getElementById("partner-name");
@@ -138,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	function openModal() {
 		// --- СБРОС СОСТОЯНИЙ (Фикс наложения) ---
-		const blocks = [stepEmail, stepChoice, document.getElementById("email-submitted")];
+		const blocks = [stepEmail, stepChoice, document.getElementById("stepWelcome"), document.getElementById("email-submitted")];
 		blocks.forEach(block => { if(block) block.classList.add("hidden"); });
 
 		// Разблокируем кнопку, если она зависла в режиме "ОТПРАВКА"
@@ -156,10 +158,24 @@ document.addEventListener("DOMContentLoaded", () => {
 		}, 10);
 
 		// --- ЛОГИКА ОТОБРАЖЕНИЯ НУЖНОГО ШАГА ---
+		const isReturning = emailVerified && storedEmail;
+		const userName = localStorage.getItem("neurogen_name");
+
 		if (urlStep === "channels") {
 			stepChoice.classList.remove("hidden");
+		} else if (isReturning) {
+			// Returning user — приветствие + выбор каналов
+			const welcomeBlock = document.getElementById("stepWelcome");
+			if (welcomeBlock) {
+				welcomeBlock.classList.remove("hidden");
+				const nameEl = document.getElementById("welcomeName");
+				if (nameEl) nameEl.textContent = userName || "друг";
+			} else {
+				// Fallback: если welcomeBlock ещё не создан — показываем stepChoice
+				stepChoice.classList.remove("hidden");
+			}
 		} else {
-			// Если мы открываем окно заново, всегда показываем ввод Email (Шаг 1)
+			// New user — ввод Email
 			stepEmail.classList.remove("hidden");
 			emailInput.focus();
 		}
@@ -236,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
-	// Переходы на платформы
+	// Переходы на платформы — stepWelcome (returning user)
 	const btnTgl = document.getElementById("btnTelegram");
 	if (btnTgl) {
 		btnTgl.addEventListener("click", () => {
@@ -260,10 +276,41 @@ document.addEventListener("DOMContentLoaded", () => {
 	const btnWb = document.getElementById("btnWeb");
 	if (btnWb) {
 		btnWb.addEventListener("click", () => {
-			const email = emailInput?.value.trim();
+			const email = storedEmail || emailInput?.value.trim();
 			let url = `${WEB_CHAT_URL}?ref=${partnerId}&afid=${partnerAfid}&session_id=${currentSessionId}`;
 			if (userRole === "b2b" || userRole === "offline") url += `&role=b2b`;
 			if (email) url += `&email=${encodeURIComponent(email)}`;
+			window.open(url, "_blank");
+		});
+	}
+
+	// Переходы на платформы — stepChoice (urlStep=channels)
+	const btnChoiceTgl = document.getElementById("btnChoiceTelegram");
+	if (btnChoiceTgl) {
+		btnChoiceTgl.addEventListener("click", () => {
+			window.open(
+				`https://t.me/${refBot}?start=${partnerId}__${currentSessionId}|a${partnerAfid}`,
+				"_blank",
+			);
+		});
+	}
+
+	const btnChoiceVk = document.getElementById("btnChoiceVK");
+	if (btnChoiceVk) {
+		btnChoiceVk.addEventListener("click", () => {
+			window.open(
+				`${VK_COMMUNITY_URL}?ref=${partnerId}__${currentSessionId}|a${partnerAfid}`,
+				"_blank",
+			);
+		});
+	}
+
+	const btnChoiceWb = document.getElementById("btnChoiceWeb");
+	if (btnChoiceWb) {
+		btnChoiceWb.addEventListener("click", () => {
+			let url = `${WEB_CHAT_URL}?ref=${partnerId}&afid=${partnerAfid}&session_id=${currentSessionId}`;
+			if (userRole === "b2b" || userRole === "offline") url += `&role=b2b`;
+			if (storedEmail) url += `&email=${encodeURIComponent(storedEmail)}`;
 			window.open(url, "_blank");
 		});
 	}
