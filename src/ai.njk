@@ -388,6 +388,19 @@ this.style.background =
     localStorage.setItem("neurogen_web_session", currentSessionId);
   }
 
+  // === 0.5. USER ID ИЗ JWT (уникальный идентификатор, без дубликатов) ===
+  let currentUserId = "";
+  const storedJwt = localStorage.getItem("neurogen_jwt");
+  if (storedJwt) {
+    try {
+      const parts = storedJwt.split(".");
+      const payload = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+      currentUserId = payload.uid || "";
+    } catch (e) {
+      console.warn("[AUTH] Failed to decode JWT:", e);
+    }
+  }
+
   // === 1. ПЕРЕХВАТ РЕФЕРАЛА ===
   function captureReferral() {
     const params = new URLSearchParams(window.location.search);
@@ -451,13 +464,12 @@ this.style.background =
         body: JSON.stringify({
           action: buttonAction ? "click-button" : "get-web-step",
           sessionId: currentSessionId,
+          userId: currentUserId,
           email: userEmail,
           callback_data: buttonAction,
           partner_id: referrer,
           afid: window.partnerAfid,
-          // НОВОЕ: Передаем текст кнопки на сервер для сохранения в dialog_history
           message: buttonText || "",
-          // НОВОЕ: Передаем имя из localStorage, если оно сохранено
           first_name: localStorage.getItem("neurogen_name") || "",
         }),
       });
@@ -635,6 +647,7 @@ this.style.background =
             afid: window.partnerAfid,
             history: chatHistory.slice(-10),
             sessionId: currentSessionId,
+            userId: currentUserId,
             email: userEmail,
           }),
         });
