@@ -178,7 +178,7 @@ eleventyExcludeFromCollections: true
                             <div class="grid grid-cols-3 gap-2">
                                 <button onclick="copyToClipboard('tgLinkDisplay')" class="btn bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 py-2 rounded-lg font-bold text-xs">📋 Копировать</button>
                                 <button onclick="openExternalLink('tgLinkDisplay')" class="btn bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 py-2 rounded-lg font-bold text-xs">↗ Открыть</button>
-                                <button onclick="generateQR('tgLinkDisplay', 'qrcode-tg')" class="btn bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 py-2 rounded-lg font-bold text-xs">📱 QR</button>
+                                <button onclick="generateQR('tgLinkDisplay')" class="btn bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 py-2 rounded-lg font-bold text-xs">📱 QR</button>
                             </div>
                         </div>
 
@@ -192,7 +192,7 @@ eleventyExcludeFromCollections: true
                             <div class="grid grid-cols-3 gap-2">
                                 <button onclick="copyToClipboard('vkLinkDisplay')" class="btn bg-[#0077FF]/10 hover:bg-[#0077FF]/20 py-2 rounded-lg font-bold text-xs">📋 Копировать</button>
                                 <button onclick="openExternalLink('vkLinkDisplay')" class="btn bg-[#0077FF]/10 hover:bg-[#0077FF]/20 py-2 rounded-lg font-bold text-xs">↗ Открыть</button>
-                                <button onclick="generateQR('vkLinkDisplay', 'qrcode-vk')" class="btn bg-[#0077FF]/10 hover:bg-[#0077FF]/20 py-2 rounded-lg font-bold text-xs">📱 QR</button>
+                                <button onclick="generateQR('vkLinkDisplay')" class="btn bg-[#0077FF]/10 hover:bg-[#0077FF]/20 py-2 rounded-lg font-bold text-xs">📱 QR</button>
                             </div>
                         </div>
 
@@ -757,15 +757,20 @@ eleventyExcludeFromCollections: true
             navigator.clipboard.writeText(t).then(() => showToast("Скопировано!"));
         }
 
-        function generateQR(id, containerId) {
+        function openExternalLink(id) {
             const url = document.getElementById(id).textContent;
-            const container = document.getElementById(containerId);
-            if (!container) return;
+            window.open(url, "_blank");
+        }
+
+        function generateQR(id) {
+            const url = document.getElementById(id).textContent;
+            const container = document.getElementById("extra-qr-container");
             container.innerHTML = "";
             try { new QRCode(container, { text: url, width: 180, height: 180, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.H }); } catch(e){}
             const extra = document.getElementById("extra-qr");
             extra.classList.remove("hidden");
-            document.getElementById("extra-qr-title").textContent = `QR: ${id === 'tgLinkDisplay' ? 'Telegram' : 'VK'}`;
+            const label = id === 'tgLinkDisplay' ? 'Telegram' : id === 'vkLinkDisplay' ? 'VK' : 'Ссылка';
+            document.getElementById("extra-qr-title").textContent = `QR-код: ${label}`;
         }
 
         function renderPosts() {
