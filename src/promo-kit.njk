@@ -64,6 +64,8 @@ eleventyExcludeFromCollections: true
         .segment-container { background: rgba(0,0,0,0.5); border-radius: 14px; padding: 4px; display: flex; width: 100%; border: 1px solid rgba(255,255,255,0.05); }
         .mode-btn { transition: all 0.3s ease; border-radius: 10px; flex: 1; text-align: center; font-size: 11px; font-weight: 800; padding: 10px 4px; color: #64748b; }
         .mode-btn.active { background: linear-gradient(135deg, #10b981, #06b6d4); color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); border: 1px solid rgba(255,255,255,0.1); }
+
+        .line-clamp-4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -151,7 +153,8 @@ eleventyExcludeFromCollections: true
                             <button onclick="setLinkMode('offline')" id="m-offline" class="mode-btn">🏢 Офлайн</button>
                         </div>
 
-                        <div class="flex flex-col md:flex-row items-center gap-6 mb-8 flex-1">
+                        <!-- QR Code + Main Link -->
+                        <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
                             <div id="qrcode" class="qr-container bg-white p-3 rounded-2xl shrink-0 shadow-2xl"></div>
                             <div class="flex-1 w-full space-y-4">
                                 <div class="bg-black/60 rounded-xl p-4 border border-white/5">
@@ -165,7 +168,46 @@ eleventyExcludeFromCollections: true
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-3 pt-6 border-t border-white/5 mt-auto">
+                        <!-- Telegram Direct Link -->
+                        <div class="bg-black/40 rounded-xl p-4 border border-[#2AABEE]/20 mb-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">✈️</span>
+                                <p class="text-[10px] text-[#2AABEE] font-bold uppercase tracking-wider">Telegram — прямая ссылка на бота</p>
+                            </div>
+                            <code id="tgLinkDisplay" class="text-xs text-[#2AABEE] break-all font-mono block mb-3">Загрузка...</code>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="copyToClipboard('tgLinkDisplay')" class="btn bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 py-2 rounded-lg font-bold text-xs">📋 Копировать</button>
+                                <button onclick="openExternalLink('tgLinkDisplay')" class="btn bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 py-2 rounded-lg font-bold text-xs">↗ Открыть</button>
+                                <button onclick="generateQR('tgLinkDisplay', 'qrcode-tg')" class="btn bg-[#2AABEE]/10 hover:bg-[#2AABEE]/20 py-2 rounded-lg font-bold text-xs">📱 QR</button>
+                            </div>
+                        </div>
+
+                        <!-- VK Direct Link -->
+                        <div class="bg-black/40 rounded-xl p-4 border border-[#0077FF]/20 mb-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-lg">💬</span>
+                                <p class="text-[10px] text-[#0077FF] font-bold uppercase tracking-wider">VK — прямая ссылка на сообщество</p>
+                            </div>
+                            <code id="vkLinkDisplay" class="text-xs text-[#0077FF] break-all font-mono block mb-3">Загрузка...</code>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="copyToClipboard('vkLinkDisplay')" class="btn bg-[#0077FF]/10 hover:bg-[#0077FF]/20 py-2 rounded-lg font-bold text-xs">📋 Копировать</button>
+                                <button onclick="openExternalLink('vkLinkDisplay')" class="btn bg-[#0077FF]/10 hover:bg-[#0077FF]/20 py-2 rounded-lg font-bold text-xs">↗ Открыть</button>
+                                <button onclick="generateQR('vkLinkDisplay', 'qrcode-vk')" class="btn bg-[#0077FF]/10 hover:bg-[#0077FF]/20 py-2 rounded-lg font-bold text-xs">📱 QR</button>
+                            </div>
+                        </div>
+
+                        <!-- Extra QR codes (hidden by default, shown on demand) -->
+                        <div id="extra-qr" class="hidden mb-6 p-4 bg-black/40 rounded-xl border border-white/5">
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider" id="extra-qr-title">QR-код</p>
+                                <button onclick="document.getElementById('extra-qr').classList.add('hidden')" class="text-gray-500 hover:text-white text-sm">✕</button>
+                            </div>
+                            <div class="flex justify-center">
+                                <div id="extra-qr-container" class="qr-container bg-white p-3 rounded-xl shadow-lg"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3 pt-4 border-t border-white/5 mt-auto">
                             <button id="printTableTentBtn" class="btn bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 border border-cyan-500/30 py-4 rounded-xl font-black text-xs uppercase flex items-center justify-center gap-2 transition-colors">
                                 🖨 Печать Флаера
                             </button>
@@ -178,24 +220,33 @@ eleventyExcludeFromCollections: true
                     <!-- Нейро-копирайтер -->
                     <div class="glass-panel rounded-[2rem] p-6 md:p-8 flex flex-col border-t border-white/10">
                         <h2 class="text-xl font-black mb-2 uppercase tracking-tight">📝 Нейро-Копирайтер</h2>
-                        <p class="text-sm text-gray-400 mb-6">Создание нативных постов под вашу аудиторию. ИИ сам вставит вашу ссылку и призыв к действию.</p>
+                        <p class="text-sm text-gray-400 mb-6">Готовые посты с вашей ссылкой. Выберите аудиторию, скопируйте и публикуйте.</p>
                         
                         <div class="bg-black/40 rounded-2xl p-6 border border-white/5 flex-1 flex flex-col">
+                            <!-- Filter -->
                             <div class="space-y-4 mb-6">
-                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Аудитория поста:</label>
+                                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Фильтр по аудитории:</label>
                                 <select id="aiPostTopic" class="w-full bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-4 text-sm text-white outline-none focus:border-cyan-500 cursor-pointer shadow-inner">
+                                    <option value="all">📋 Все посты</option>
                                     <option value="Предприниматели, владельцы бизнеса">Бизнесмены (Офлайн/Онлайн)</option>
                                     <option value="Фрилансеры, дизайнеры, IT-специалисты">IT и Фриланс</option>
                                     <option value="Блогеры, инфобизнесмены, эксперты">Эксперты и Блогеры</option>
                                     <option value="Сетевики, лидеры MLM">Лидеры сетевого (MLM)</option>
                                     <option value="Студенты и люди в найме, ищущие доп. доход">Найм / Студенты</option>
                                 </select>
-                                <button id="generatePostBtn" onclick="generateAIPost()" class="btn w-full bg-cyan-600 hover:bg-cyan-500 text-white py-4 rounded-xl text-sm font-black uppercase tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-                                    ✨ СГЕНЕРИРОВАТЬ ТЕКСТ
-                                </button>
                             </div>
                             
-                            <div id="aiPostResult" class="hidden flex-1">
+                            <!-- Posts list -->
+                            <div id="postsContainer" class="space-y-3 flex-1 overflow-y-auto max-h-[500px] pr-1">
+                                <!-- Posts injected by JS -->
+                            </div>
+
+                            <!-- AI Generate button (optional) -->
+                            <button id="generatePostBtn" onclick="generateAIPost()" class="btn w-full bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 border border-cyan-500/30 py-3 rounded-xl text-xs font-black uppercase tracking-wide mt-4">
+                                ✨ Сгенерировать новый текст (AI)
+                            </button>
+                            
+                            <div id="aiPostResult" class="hidden flex-1 mt-4">
                                 <div class="h-full p-5 bg-[#05050f] rounded-xl border border-white/10 relative group shadow-inner">
                                     <p id="aiPostText" class="text-sm text-gray-300 leading-relaxed font-medium"></p>
                                     <button onclick="copyToClipboard('aiPostText', false)" class="absolute top-3 right-3 p-2 bg-white/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20">📋</button>
@@ -566,6 +617,7 @@ eleventyExcludeFromCollections: true
             renderChannelStatuses();
             // Links
             setLinkMode('universal');
+            renderPosts();
 
             // AI Status
             const isAiActive = (parseInt(userData.ai_active_until) || 0) > Date.now();
@@ -651,6 +703,18 @@ eleventyExcludeFromCollections: true
             return base + "&role=universal";
         }
 
+        function getTgLink() {
+            const pId = userData?.partner_id || "p_qdr"; const pAfid = userData?.sh_user_id || "1123";
+            const sid = currentSessionId || "";
+            return `https://t.me/sethubble_biz_bot?start=${pId}__${sid}|a${pAfid}`;
+        }
+
+        function getVkLink() {
+            const pId = userData?.partner_id || "p_qdr"; const pAfid = userData?.sh_user_id || "1123";
+            const sid = currentSessionId || "";
+            return `https://vk.me/club237421168?ref=${pId}__${sid}|a${pAfid}`;
+        }
+
         function setLinkMode(mode) {
             currentLinkMode = mode;
             ["universal", "agent", "online", "offline"].forEach(m => {
@@ -662,6 +726,12 @@ eleventyExcludeFromCollections: true
             document.getElementById("botLinkDisplay").textContent = url;
             const qr = document.getElementById("qrcode"); qr.innerHTML = "";
             try { new QRCode(qr, { text: url, width: 140, height: 140, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.H }); } catch(e){}
+
+            // TG and VK direct links
+            const tgUrl = getTgLink();
+            const vkUrl = getVkLink();
+            document.getElementById("tgLinkDisplay").textContent = tgUrl;
+            document.getElementById("vkLinkDisplay").textContent = vkUrl;
 
             // Update Info Tab
             const info = BENEFITS[mode];
@@ -676,6 +746,9 @@ eleventyExcludeFromCollections: true
                 </div>
             `).join('');
             
+            // Refresh posts with current link
+            renderPosts();
+
             if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
         }
 
@@ -683,6 +756,70 @@ eleventyExcludeFromCollections: true
             const t = isText ? id : document.getElementById(id).textContent;
             navigator.clipboard.writeText(t).then(() => showToast("Скопировано!"));
         }
+
+        function generateQR(id, containerId) {
+            const url = document.getElementById(id).textContent;
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = "";
+            try { new QRCode(container, { text: url, width: 180, height: 180, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.H }); } catch(e){}
+            const extra = document.getElementById("extra-qr");
+            extra.classList.remove("hidden");
+            document.getElementById("extra-qr-title").textContent = `QR: ${id === 'tgLinkDisplay' ? 'Telegram' : 'VK'}`;
+        }
+
+        function renderPosts() {
+            const container = document.getElementById("postsContainer");
+            const filter = document.getElementById("aiPostTopic").value;
+            const link = getActiveLink();
+
+            let posts = [];
+            if (filter === "all") {
+                Object.keys(STATIC_POSTS).forEach(topic => {
+                    STATIC_POSTS[topic].forEach((text, idx) => {
+                        posts.push({ topic, text: text.replace("{link}", link), idx });
+                    });
+                });
+            } else {
+                const topicPosts = STATIC_POSTS[filter] || [];
+                topicPosts.forEach((text, idx) => {
+                    posts.push({ topic: filter, text: text.replace("{link}", link), idx });
+                });
+            }
+
+            if (posts.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-500 text-sm py-8">Нет постов для выбранной аудитории</div>`;
+                return;
+            }
+
+            container.innerHTML = posts.map((p, i) => `
+                <div class="bg-[#0a0a0f] rounded-xl border border-white/5 p-4 relative group cursor-pointer hover:border-cyan-500/30 transition-colors" onclick="copyPostText(${i})">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wider truncate max-w-[70%]">${p.topic}</span>
+                        <span class="text-[9px] font-bold text-cyan-500/60">#${p.idx + 1}</span>
+                    </div>
+                    <p class="text-xs text-gray-300 leading-relaxed whitespace-pre-line line-clamp-4">${p.text}</p>
+                    <div class="absolute top-2 right-2 p-1.5 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="text-xs">📋</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Store rendered posts for copy
+            window._renderedPosts = posts;
+        }
+
+        function copyPostText(index) {
+            const posts = window._renderedPosts || [];
+            if (posts[index]) {
+                navigator.clipboard.writeText(posts[index].text).then(() => showToast("Пост скопирован!"));
+            }
+        }
+
+        // Filter change listener
+        document.addEventListener("change", (e) => {
+            if (e.target.id === "aiPostTopic") renderPosts();
+        });
 
         document.getElementById("printTableTentBtn").addEventListener("click", () => {
             const cvs = document.getElementById("qrcode").querySelector("canvas");
