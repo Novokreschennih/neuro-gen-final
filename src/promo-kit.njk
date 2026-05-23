@@ -113,6 +113,16 @@ eleventyExcludeFromCollections: true
             <p class="text-sm text-cyan-400 font-black tracking-widest uppercase">Синхронизация с узлом...</p>
         </div>
 
+        <!-- Overlay истекшей сессии -->
+        <div id="expiredOverlay" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center">
+            <div class="glass-panel rounded-3xl p-10 max-w-md text-center mx-4 border border-red-500/20">
+                <div class="text-5xl mb-6">🔒</div>
+                <h2 class="text-2xl font-bold text-white mb-3">Сессия истекла</h2>
+                <p class="text-gray-400 mb-6 text-sm">Ваш токен доступа устарел. Пожалуйста, откройте приложение заново из бота Telegram или VK.</p>
+                <button onclick="this.closest('#expiredOverlay').classList.add('hidden')" class="px-8 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-sm font-bold transition-all">Закрыть</button>
+            </div>
+        </div>
+
         <div id="mainContent" class="hidden">
             
             <!-- ========================================== -->
@@ -619,6 +629,11 @@ eleventyExcludeFromCollections: true
         const urlParamsAPI = new URLSearchParams(window.location.search);
         const BACKEND_URL = urlParamsAPI.get("api") || "https://d5dsbah1d4ju0glmp9d0.3zvepvee.apigw.yandexcloud.net";
 
+        function showAuthExpiredError() {
+            localStorage.removeItem("neurogen_jwt");
+            document.getElementById("expiredOverlay").classList.remove("hidden");
+        }
+
         function showToast(message, type = "success") {
             const container = document.getElementById("toast-container");
             const toast = document.createElement("div");
@@ -657,8 +672,14 @@ eleventyExcludeFromCollections: true
             try {
                 const res = await fetch(`${BACKEND_URL}/?action=get_partner_link`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "get_partner_link" }) });
                 const data = await res.json();
-                if (data.success) { userData = data.user; initUI(); } else throw new Error(data.error);
-            } catch (error) { document.getElementById("loadingBlock").innerHTML = `<p class="text-red-500 font-bold">⚠️ ${error.message}</p>`; }
+                if (data.token) localStorage.setItem("neurogen_jwt", data.token);
+                if (data.success) { userData = data.user; initUI(); }
+                else if (data.expired) { showAuthExpiredError(); }
+                else throw new Error(data.error);
+            } catch (error) {
+                localStorage.removeItem("neurogen_jwt");
+                document.getElementById("loadingBlock").innerHTML = `<p class="text-red-500 font-bold">⚠️ ${error.message}</p>`;
+            }
         }
 
         function initUI() {

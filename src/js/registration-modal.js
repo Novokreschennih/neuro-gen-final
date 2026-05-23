@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 
 			try {
-				await fetch(API_URL, {
+				const res = await fetch(API_URL, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
@@ -236,6 +236,10 @@ document.addEventListener("DOMContentLoaded", () => {
 						role: userRole,
 					}),
 				});
+				if (res.ok) {
+					const data = await res.json();
+					if (data.token) localStorage.setItem("neurogen_jwt", data.token);
+				}
 			} catch (err) {}
 
 			localStorage.setItem("neurogen_email", email);

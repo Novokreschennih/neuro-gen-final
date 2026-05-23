@@ -477,15 +477,21 @@ this.style.background =
       const data = await response.json();
       removeTyping();
 
+      if (data.token) localStorage.setItem("neurogen_jwt", data.token);
+
       if (data.success) {
         renderStepData(data);
-      } else if (data.error === "Session not found") {
-        // Если сессия потерялась, возвращаем на ввод Email
-        window.location.href = "/";
+      } else {
+        console.error("[FUNNEL ERROR]", data.error);
+        alert(`⚠️ Ошибка базы данных: ${data.error || 'Неизвестная ошибка YDB'}`);
+        if (data.error && data.error.includes("Session not found")) {
+          window.location.href = "/";
+        }
       }
     } catch (err) {
       console.error("Ошибка загрузки шага воронки:", err);
       removeTyping();
+      alert(`⚠️ Сетевая ошибка: ${err.message}`);
     }
   }
 
@@ -653,6 +659,7 @@ this.style.background =
         });
         const data = await response.json();
         removeTyping();
+        if (data.token) localStorage.setItem("neurogen_jwt", data.token);
         addMessage(
           data.answer || "🤖 Я немного задумался. Повтори, пожалуйста!",
           false,

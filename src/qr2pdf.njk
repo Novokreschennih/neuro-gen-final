@@ -172,6 +172,7 @@ eleventyExcludeFromCollections: true
                 if (res.ok) {
                     const data = await res.json();
                     localStorage.setItem('qr2pdf_auth_token', token);
+                    if (data.token) localStorage.setItem('neurogen_jwt', data.token);
                     if (data.user) {
                         document.getElementById('user-name').innerText = data.user.first_name || 'Партнер';
                         document.getElementById('user-avatar').innerText = (data.user.first_name || 'P')[0].toUpperCase();
@@ -188,7 +189,14 @@ eleventyExcludeFromCollections: true
                     if (document.getElementById('qr-link').value) update();
                 } else {
                     localStorage.removeItem('qr2pdf_auth_token');
-                    showAuthError("Сессия истекла. Перейдите из Promo-Kit заново.");
+                    const errData = await res.json().catch(() => ({}));
+                    if (errData.expired) {
+                        document.getElementById('auth-loader').classList.add('hidden');
+                        document.getElementById('auth-error').classList.remove('hidden');
+                        document.getElementById('error-message').innerText = "Сессия истекла. Перейдите из Promo-Kit заново.";
+                    } else {
+                        showAuthError("Сессия истекла. Перейдите из Promo-Kit заново.");
+                    }
                 }
             } catch (e) { showAuthError("Ошибка сервера. Попробуйте позже."); }
         }

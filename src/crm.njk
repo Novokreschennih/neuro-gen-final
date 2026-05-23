@@ -144,6 +144,15 @@ eleventyExcludeFromCollections: true
           <span class="text-xs text-gray-400">Загрузка базы...</span>
         </div>
 
+        <div id="expiredOverlay" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center">
+          <div class="bg-[#0a0a1a] border border-red-500/20 rounded-3xl p-10 max-w-md text-center mx-4">
+            <div class="text-5xl mb-6">🔒</div>
+            <h2 class="text-2xl font-bold text-white mb-3">Сессия истекла</h2>
+            <p class="text-gray-400 mb-6 text-sm">Ваш токен доступа устарел. Пожалуйста, откройте CRM заново из бота.</p>
+            <button onclick="this.closest('#expiredOverlay').classList.add('hidden')" class="px-8 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white text-sm font-bold transition-all">Закрыть</button>
+          </div>
+        </div>
+
         <div id="leadsList" class="hidden"><table class="w-full"><tbody id="leadsBody"></tbody></table></div>
         <div id="noLeads" class="hidden py-12 text-center"><div class="text-4xl mb-2">📭</div><p class="text-sm text-gray-500">Лиды не найдены</p></div>
       </div>
@@ -240,9 +249,14 @@ eleventyExcludeFromCollections: true
             const res = await fetch(`${API_HOST}/?action=get_crm_data`, {
               method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ bot_token: botToken || "" }),
             });
-            if (!res.ok) throw new Error(await res.text() || `HTTP ${res.status}`);
+            const bodyText = await res.text();
+            let bodyParsed;
+            try { bodyParsed = JSON.parse(bodyText); } catch (e) { bodyParsed = null; }
+            if (bodyParsed && bodyParsed.token) localStorage.setItem("neurogen_jwt", bodyParsed.token);
+            if (bodyParsed && bodyParsed.expired) { document.getElementById("expiredOverlay").classList.remove("hidden"); return; }
+            if (!res.ok) throw new Error(bodyText || `HTTP ${res.status}`);
 
-            const data = await res.json();
+            const data = bodyParsed;
             allLeads = data.leads || [];
             updateStats(data.stats, data.channelStats);
             
