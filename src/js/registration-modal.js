@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const Storage = {
 		get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
 		set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) {} },
+		remove: (key) => { try { localStorage.removeItem(key); } catch(e) {} },
 	};
 
 	// === CSS TOGGLE LOGIC (Динамический контент) ===
@@ -308,11 +309,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			const emailSubmitEl = document.getElementById("email-submitted");
 			if (emailSubmitEl) emailSubmitEl.classList.add("hidden");
 			stepEmail.classList.remove("hidden");
+			Storage.remove("neurogen_email_submitted");
+			Storage.remove("neurogen_email_verified");
+			Storage.remove("neurogen_name");
 			const storedEmail = Storage.get("neurogen_email");
 			if (storedEmail && emailInput) emailInput.value = storedEmail;
-			const storedName = Storage.get("neurogen_name");
 			const nameInput = document.getElementById("userName");
-			if (storedName && nameInput) nameInput.value = storedName;
+			if (nameInput) nameInput.value = "";
 			emailInput?.focus();
 		});
 	}
