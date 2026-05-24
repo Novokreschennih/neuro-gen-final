@@ -317,6 +317,62 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 
+	// === ПОДТВЕРЖДЕНИЕ ПО КОДУ ===
+	const verifyCodeBtn = document.getElementById("verifyCodeBtn");
+	const verificationCodeInput = document.getElementById("verificationCode");
+	const verifyCodeStatus = document.getElementById("verifyCodeStatus");
+
+	if (verifyCodeBtn && verificationCodeInput) {
+		const doVerify = async () => {
+			const code = verificationCodeInput.value.trim().toUpperCase();
+			const email = Storage.get("neurogen_email");
+			if (!code || code.length < 4 || !email) {
+				if (verifyCodeStatus) {
+					verifyCodeStatus.textContent = "Введи код из письма";
+					verifyCodeStatus.classList.remove("hidden");
+				}
+				return;
+			}
+			verifyCodeBtn.disabled = true;
+			verifyCodeBtn.innerHTML = '<span class="animate-pulse">⏳</span>';
+			try {
+				const res = await fetch(`${BASE_API_URL}?action=verify-email`, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, code }),
+				});
+				const data = await res.json();
+				if (data.valid) {
+					Storage.set("neurogen_email_verified", "true");
+					if (verifyCodeStatus) {
+						verifyCodeStatus.textContent = "✅ Подтверждено!";
+						verifyCodeStatus.classList.remove("hidden");
+					}
+					setTimeout(() => {
+						window.location.href = "/?step=channels";
+					}, 1000);
+				} else {
+					if (verifyCodeStatus) {
+						verifyCodeStatus.textContent = data.error || "❌ Неверный код";
+						verifyCodeStatus.classList.remove("hidden");
+					}
+				}
+			} catch {
+				if (verifyCodeStatus) {
+					verifyCodeStatus.textContent = "❌ Ошибка сети";
+					verifyCodeStatus.classList.remove("hidden");
+				}
+			} finally {
+				verifyCodeBtn.disabled = false;
+				verifyCodeBtn.innerHTML = "Подтвердить";
+			}
+		};
+		verifyCodeBtn.addEventListener("click", doVerify);
+		verificationCodeInput.addEventListener("keydown", (e) => {
+			if (e.key === "Enter") doVerify();
+		});
+	}
+
 	// Переходы на платформы — stepWelcome (returning user)
 	const btnTgl = document.getElementById("btnTelegram");
 	if (btnTgl) {
