@@ -579,13 +579,14 @@ this.style.background =
         ? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white rounded-br-sm"
         : "bg-gray-800/90 text-gray-100 rounded-bl-sm border border-white/5");
 
-    // SECURITY (DOM-XSS): Пользовательский текст — только textContent.
-    // HTML от бэкенда (воронка/ИИ) санитизируем: удаляем скрипты и on* обработчики.
+    // SECURITY (DOM-XSS): Сначала textContent (браузер экранирует всё),
+    // затем безопасно возвращаем разрешённое форматирование.
     if (isHTML && typeof text === "string") {
-      let processedText = text.replace(/\n/g, "<br>");
-      processedText = processedText.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-      processedText = processedText.replace(/\son\w+="[^"]*"/gi, '');
-      bubble.innerHTML = processedText;
+      bubble.textContent = text;
+      bubble.innerHTML = bubble.innerHTML
+        .replace(/\n/g, "<br>")
+        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+        .replace(/\*(.*?)\*/g, "<i>$1</i>");
     } else {
       bubble.textContent = text;
     }
