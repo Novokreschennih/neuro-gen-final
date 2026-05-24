@@ -140,9 +140,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const urlStep = urlParams.get("step");
 	const storedEmail = Storage.get("neurogen_email");
-	const emailVerified =
-		Storage.get("neurogen_email_verified") === "true" ||
-		Storage.get("neurogen_email_submitted") === "true";
+	const isVerified = Storage.get("neurogen_email_verified") === "true";
+	const isSubmitted = Storage.get("neurogen_email_submitted") === "true";
 
 	function openModal() {
 		// --- СБРОС СОСТОЯНИЙ (Фикс наложения) ---
@@ -164,13 +163,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		}, 10);
 
 		// --- ЛОГИКА ОТОБРАЖЕНИЯ НУЖНОГО ШАГА ---
-		const isReturning = emailVerified && storedEmail;
 		const userName = Storage.get("neurogen_name");
 
 		if (urlStep === "channels") {
 			stepChoice.classList.remove("hidden");
-		} else if (isReturning) {
-			// Returning user — приветствие + выбор каналов
+		} else if (isVerified && storedEmail) {
+			// Returning verified user — приветствие + выбор каналов
 			const welcomeBlock = document.getElementById("stepWelcome");
 			if (welcomeBlock) {
 				welcomeBlock.classList.remove("hidden");
@@ -179,6 +177,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			} else {
 				// Fallback: если welcomeBlock ещё не создан — показываем stepChoice
 				stepChoice.classList.remove("hidden");
+			}
+		} else if (isSubmitted && storedEmail) {
+			// Email отправлен, но не подтверждён — показываем «Проверь почту»
+			const emailSubmittedEl = document.getElementById("email-submitted");
+			if (emailSubmittedEl) {
+				emailSubmittedEl.classList.remove("hidden");
+				const emailDisplay = document.getElementById("submitted-email-value");
+				if (emailDisplay) emailDisplay.textContent = storedEmail;
 			}
 		} else {
 			// New user — ввод Email
@@ -202,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	if (urlStep === "channels") {
-		if (!emailVerified || !storedEmail) {
+		if (!isVerified || !storedEmail) {
 			window.location.href = "/";
 		} else {
 			openModal();
@@ -256,12 +262,60 @@ document.addEventListener("DOMContentLoaded", () => {
 			stepChoice.classList.add("hidden");
 			const emailSubmittedEl = document.getElementById("email-submitted");
 			if (emailSubmittedEl) {
-		emailSubmittedEl.classList.remove("hidden");
-		emailSubmittedEl.innerHTML = `<div class="text-center mb-6"><div class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-green-500/20">✉️</div><h3 class="text-2xl font-bold text-white mb-2">Проверь свою почту!</h3><p class="text-sm text-gray-400 mb-2">Мы отправили ссылку для подтверждения на:</p><p class="text-lg font-bold text-green-400 mb-4" id="submitted-email-value"></p><p class="text-xs text-gray-500">Перейди по ссылке в письме, чтобы подтвердить email и продолжить настройку.</p></div>`;
-		const emailDisplay = document.getElementById("submitted-email-value");
-		if (emailDisplay) emailDisplay.textContent = email;
+				emailSubmittedEl.classList.remove("hidden");
+				const emailDisplay = document.getElementById("submitted-email-value");
+				if (emailDisplay) emailDisplay.textContent = email;
 			}
 		});
+	}
+
+	// === ПЕРЕОТПРАВКА ПИСЬМА ===
+	const resendBtn = document.getElementById("resendEmailBtn");
+	if (resendBtn) {
+		resendBtn.addEventListener("click", async () => {
+			const email = Storage.get("neurogen_email");
+			if (!email) return;
+			resendBtn.disabled = true;
+			resendBtn.innerHTML = '<span class="animate-pulse">⏳ Отправка...</span>';
+			const statusEl = document.getElementById("resendStatus");
+			try {
+				const res = await fetch(API_URL, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ action: "resend-verification", email, sessionId: currentSessionId }),
+				});
+				const data = await res.json();
+				if (statusEl) {
+					statusEl.textContent = data.success ? "✅ Письмо отправлено!" : "❌ Ошибка, попробуй позже";
+					statusEl.classList.remove("hidden");
+				}
+			} catch {
+				if (statusEl) {
+					statusEl.textContent = "❌ Ошибка сети, попробуй позже";
+					statusEl.classList.remove("hidden");
+				}
+			} finally {
+				resendBtn.disabled = false;
+				resendBtn.innerHTML = "🔄 Отправить ещё раз";
+			}
+		});
+	}
+
+	// === СМЕНА EMAIL ===
+	const changeBtn = document.getElementById("changeEmailBtn");
+	if (changeBtn) {
+		changeBtn.addEventListener("click", () => {
+			const emailSubmitEl = document.getElementById("email-submitted");
+			if (emailSubmitEl) emailSubmitEl.classList.add("hidden");
+			stepEmail.classList.remove("hidden");
+			const storedEmail = Storage.get("neurogen_email");
+			if (storedEmail && emailInput) emailInput.value = storedEmail;
+			const storedName = Storage.get("neurogen_name");
+			const nameInput = document.getElementById("userName");
+			if (storedName && nameInput) nameInput.value = storedName;
+			emailInput?.focus();
+		});
+	}
 	}
 
 	// Переходы на платформы — stepWelcome (returning user)
