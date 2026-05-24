@@ -194,9 +194,11 @@ eleventyExcludeFromCollections: true
       // ⚠️ УКАЖИ СВОЙ URL API GATEWAY ⚠️
       const BACKEND_URL = "https://d5dsbah1d4ju0glmp9d0.3zvepvee.apigw.yandexcloud.net";
 
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-      tg.expand();
+      const tg = window.Telegram?.WebApp;
+      if (tg) {
+        tg.ready();
+        tg.expand();
+      }
 
       const API_HOST = BACKEND_URL;
 
@@ -252,7 +254,7 @@ eleventyExcludeFromCollections: true
             const bodyText = await res.text();
             let bodyParsed;
             try { bodyParsed = JSON.parse(bodyText); } catch (e) { bodyParsed = null; }
-            if (bodyParsed && bodyParsed.token) localStorage.setItem("neurogen_jwt", bodyParsed.token);
+            if (bodyParsed && bodyParsed.token) { try { localStorage.setItem("neurogen_jwt", bodyParsed.token); } catch(e) {} }
             if (bodyParsed && bodyParsed.expired) { document.getElementById("expiredOverlay").classList.remove("hidden"); return; }
             if (!res.ok) throw new Error(bodyText || `HTTP ${res.status}`);
 

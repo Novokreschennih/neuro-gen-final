@@ -624,13 +624,20 @@ eleventyExcludeFromCollections: true
         let currentLinkMode = "universal";
         let authHeaders = { "Content-Type": "application/json" };
         let webAppJwt = "";
-        let currentSessionId = localStorage.getItem("neurogen_web_session");
+        // === Безопасная обёртка для localStorage (не падает в приватном режиме Safari) ===
+        const Storage = {
+          get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
+          set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) {} },
+          remove: (key) => { try { localStorage.removeItem(key); } catch(e) {} }
+        };
+
+        let currentSessionId = Storage.get("neurogen_web_session");
         
         const urlParamsAPI = new URLSearchParams(window.location.search);
         const BACKEND_URL = urlParamsAPI.get("api") || "https://d5dsbah1d4ju0glmp9d0.3zvepvee.apigw.yandexcloud.net";
 
         function showAuthExpiredError() {
-            localStorage.removeItem("neurogen_jwt");
+            Storage.remove("neurogen_jwt");
             document.getElementById("expiredOverlay").classList.remove("hidden");
         }
 
@@ -658,10 +665,10 @@ eleventyExcludeFromCollections: true
 
         async function initUser() {
             const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get("token") || localStorage.getItem("neurogen_jwt");
+            const token = urlParams.get("token") || Storage.get("neurogen_jwt");
             
             if (token && token !== "null") {
-                webAppJwt = token; authHeaders["Authorization"] = `Bearer ${token}`; localStorage.setItem("neurogen_jwt", token);
+                webAppJwt = token; authHeaders["Authorization"] = `Bearer ${token}`; Storage.set("neurogen_jwt", token);
                 window.history.replaceState({}, "", window.location.pathname + (urlParams.get("api") ? `?api=${urlParams.get("api")}` : ""));
             } else if (tg?.initData) {
                 authHeaders["x-telegram-initdata"] = tg.initData;
@@ -672,12 +679,12 @@ eleventyExcludeFromCollections: true
             try {
                 const res = await fetch(`${BACKEND_URL}/?action=get_partner_link`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "get_partner_link" }) });
                 const data = await res.json();
-                if (data.token) localStorage.setItem("neurogen_jwt", data.token);
+                if (data.token) Storage.set("neurogen_jwt", data.token);
                 if (data.success) { userData = data.user; initUI(); }
                 else if (data.expired) { showAuthExpiredError(); }
                 else throw new Error(data.error);
             } catch (error) {
-                localStorage.removeItem("neurogen_jwt");
+                Storage.remove("neurogen_jwt");
                 document.getElementById("loadingBlock").innerHTML = `<p class="text-red-500 font-bold">⚠️ ${error.message}</p>`;
             }
         }
@@ -1084,18 +1091,38 @@ eleventyExcludeFromCollections: true
             } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
         }
 
+        // Вспомогательная функция для безопасного добавления сообщений (DOM-XSS Prevention)
+        function appendSafeMessage(area, text, isUser, isError = false) {
+          const div = document.createElement("div");
+          if (isUser) {
+            div.className = "p-4 text-sm rounded-2xl max-w-[85%] bg-gradient-to-br from-cyan-600 to-blue-600 text-white self-end shadow-md";
+            div.textContent = "Вы: " + text;
+          } else if (isError) {
+            div.className = "p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-red-400 self-start shadow-md";
+            div.textContent = "⚠️ " + text;
+          } else {
+            div.className = "p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-gray-200 self-start shadow-md border border-white/5";
+            // ИИ-ответ: можно использовать innerHTML, но с санитизацией
+            const sanitized = (text || "Сбой связи.").replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').replace(/\son\w+="[^"]*"/gi, '');
+            div.innerHTML = "🤖 " + sanitized.replace(/\n/g, "<br>");
+          }
+          area.appendChild(div);
+          area.scrollTop = area.scrollHeight;
+        }
+
         async function sendTestMessage() {
             const inp = document.getElementById("testChatInput"); const txt = inp.value.trim(); if(!txt) return; inp.value = "";
             const area = document.getElementById("testChatArea");
-            area.insertAdjacentHTML("beforeend", `<div class="p-4 text-sm rounded-2xl max-w-[85%] bg-gradient-to-br from-cyan-600 to-blue-600 text-white self-end shadow-md">Вы: ${txt}</div>`);
-            area.scrollTop = area.scrollHeight;
+            appendSafeMessage(area, txt, true);
             const btn = document.getElementById("testSendBtn"); btn.disabled = true;
             try {
                 const res = await fetch(`${BACKEND_URL}/?action=web-chat`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "web-chat", message: txt, partner_id: userData.partner_id, sessionId: currentSessionId }) });
                 const d = await res.json();
-                area.insertAdjacentHTML("beforeend", `<div class="p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-gray-200 self-start shadow-md border border-white/5">🤖 ${d.answer || 'Сбой связи.'}</div>`);
-            } catch(e) { area.insertAdjacentHTML("beforeend", `<div class="p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-red-400 self-start">⚠️ Ошибка.</div>`); }
-            finally { btn.disabled = false; area.scrollTop = area.scrollHeight; }
+                appendSafeMessage(area, d.answer, false);
+            } catch(e) {
+                appendSafeMessage(area, "Ошибка сети.", false, true);
+            }
+            finally { btn.disabled = false; }
         }
 
         window.addEventListener("DOMContentLoaded", initUser);

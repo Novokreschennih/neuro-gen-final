@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	const WEB_CHAT_URL = "/ai/";
 	const VK_COMMUNITY_URL = "https://vk.me/club237421168";
 
+	// === Безопасная обёртка для localStorage (не падает в приватном режиме Safari) ===
+	const Storage = {
+		get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
+		set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) {} },
+	};
+
 	// === CSS TOGGLE LOGIC (Динамический контент) ===
 	const urlParams = new URLSearchParams(window.location.search);
 	const userRole = urlParams.get("role");
@@ -33,10 +39,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	let partnerId = null;
 	let partnerAfid = null;
 	let refBot = null;
-	let currentSessionId = localStorage.getItem("neurogen_web_session");
+	let currentSessionId = Storage.get("neurogen_web_session");
 	if (!currentSessionId) {
 		currentSessionId = `web_${Math.random().toString(36).substring(2, 15)}_${Date.now()}`;
-		localStorage.setItem("neurogen_web_session", currentSessionId);
+		Storage.set("neurogen_web_session", currentSessionId);
 	}
 
 	let encodedId = urlParams.get("page");
@@ -61,28 +67,28 @@ document.addEventListener("DOMContentLoaded", () => {
 		const decoded = fromHex(encodedId);
 		partnerId =
 			decoded && decoded.length > 1 ? decoded.trim() : encodedId.trim();
-		if (partnerId) localStorage.setItem("neurogen_partner_id", partnerId);
+		if (partnerId) Storage.set("neurogen_partner_id", partnerId);
 	} else if (refFromUrl) {
 		partnerId = refFromUrl.trim();
-		if (partnerId) localStorage.setItem("neurogen_partner_id", partnerId);
+		if (partnerId) Storage.set("neurogen_partner_id", partnerId);
 	}
 
 	if (!partnerId) {
 		partnerId =
-			localStorage.getItem("neurogen_partner_id") || DEFAULT_PARTNER_ID;
+			Storage.get("neurogen_partner_id") || DEFAULT_PARTNER_ID;
 	}
 
 	if (afidFromUrl && /^\d{1,10}$/.test(afidFromUrl)) {
 		partnerAfid = afidFromUrl.trim();
-		localStorage.setItem("neurogen_partner_afid", partnerAfid);
+		Storage.set("neurogen_partner_afid", partnerAfid);
 	}
 
 	if (!partnerAfid) {
 		partnerAfid =
-			localStorage.getItem("neurogen_partner_afid") || DEFAULT_PARTNER_AFID;
+			Storage.get("neurogen_partner_afid") || DEFAULT_PARTNER_AFID;
 	}
 
-	const storedBot = localStorage.getItem("neurogen_partner_bot");
+	const storedBot = Storage.get("neurogen_partner_bot");
 	refBot = storedBot && storedBot !== "sethubble_bot" ? storedBot : DEFAULT_BOT;
 
 	// === ДИНАМИЧЕСКИЕ КАНАЛЫ (Запрос к API) ===
@@ -133,10 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (!modal) return;
 
 	const urlStep = urlParams.get("step");
-	const storedEmail = localStorage.getItem("neurogen_email");
+	const storedEmail = Storage.get("neurogen_email");
 	const emailVerified =
-		localStorage.getItem("neurogen_email_verified") === "true" ||
-		localStorage.getItem("neurogen_email_submitted") === "true";
+		Storage.get("neurogen_email_verified") === "true" ||
+		Storage.get("neurogen_email_submitted") === "true";
 
 	function openModal() {
 		// --- СБРОС СОСТОЯНИЙ (Фикс наложения) ---
@@ -159,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		// --- ЛОГИКА ОТОБРАЖЕНИЯ НУЖНОГО ШАГА ---
 		const isReturning = emailVerified && storedEmail;
-		const userName = localStorage.getItem("neurogen_name");
+		const userName = Storage.get("neurogen_name");
 
 		if (urlStep === "channels") {
 			stepChoice.classList.remove("hidden");
@@ -238,20 +244,22 @@ document.addEventListener("DOMContentLoaded", () => {
 				});
 				if (res.ok) {
 					const data = await res.json();
-					if (data.token) localStorage.setItem("neurogen_jwt", data.token);
+					if (data.token) Storage.set("neurogen_jwt", data.token);
 				}
 			} catch (err) {}
 
-			localStorage.setItem("neurogen_email", email);
-			localStorage.setItem("neurogen_name", name);
-			localStorage.setItem("neurogen_email_submitted", "true");
+			Storage.set("neurogen_email", email);
+			Storage.set("neurogen_name", name);
+			Storage.set("neurogen_email_submitted", "true");
 
 			stepEmail.classList.add("hidden");
 			stepChoice.classList.add("hidden");
 			const emailSubmittedEl = document.getElementById("email-submitted");
 			if (emailSubmittedEl) {
-				emailSubmittedEl.classList.remove("hidden");
-				emailSubmittedEl.innerHTML = `<div class="text-center mb-6"><div class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-green-500/20">✉️</div><h3 class="text-2xl font-bold text-white mb-2">Проверь свою почту!</h3><p class="text-sm text-gray-400 mb-2">Мы отправили ссылку для подтверждения на:</p><p class="text-lg font-bold text-green-400 mb-4">${email}</p><p class="text-xs text-gray-500">Перейди по ссылке в письме, чтобы подтвердить email и продолжить настройку.</p></div>`;
+		emailSubmittedEl.classList.remove("hidden");
+		emailSubmittedEl.innerHTML = `<div class="text-center mb-6"><div class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-green-500/20">✉️</div><h3 class="text-2xl font-bold text-white mb-2">Проверь свою почту!</h3><p class="text-sm text-gray-400 mb-2">Мы отправили ссылку для подтверждения на:</p><p class="text-lg font-bold text-green-400 mb-4" id="submitted-email-value"></p><p class="text-xs text-gray-500">Перейди по ссылке в письме, чтобы подтвердить email и продолжить настройку.</p></div>`;
+		const emailDisplay = document.getElementById("submitted-email-value");
+		if (emailDisplay) emailDisplay.textContent = email;
 			}
 		});
 	}

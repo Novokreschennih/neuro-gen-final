@@ -144,9 +144,9 @@ eleventyExcludeFromCollections: true
         const data = await res.json();
 
         if (data.valid) {
-          localStorage.setItem("neurogen_email", email);
-          localStorage.setItem("neurogen_email_verified", "true");
-          localStorage.setItem("neurogen_email_submitted", "true");
+          try { localStorage.setItem("neurogen_email", email); } catch(e) {}
+          try { localStorage.setItem("neurogen_email_verified", "true"); } catch(e) {}
+          try { localStorage.setItem("neurogen_email_submitted", "true"); } catch(e) {}
           loadingEl.classList.add("hidden");
           successEl.classList.remove("hidden");
           setTimeout(() => {

@@ -150,6 +150,10 @@ eleventyExcludeFromCollections: true
   </div>
 
   <script>
+    const Storage = {
+      get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
+      set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) {} }
+    };
     const params = new URLSearchParams(window.location.search);
     const API_BASE = params.get("api") || "https://d5dsbah1d4ju0glmp9d0.3zvepvee.apigw.yandexcloud.net";
     const REDIRECT_URL = params.get("redirect");
@@ -223,7 +227,7 @@ eleventyExcludeFromCollections: true
         const data = await res.json();
 
         if (res.status === 200 && data.success) {
-          localStorage.setItem("neurogen_jwt", data.token);
+          if (data.token) Storage.set("neurogen_jwt", data.token);
           successBox.classList.remove("hidden");
           tokenDisplay.textContent = data.token;
           tokenDisplay.classList.remove("hidden");

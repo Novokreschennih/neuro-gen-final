@@ -154,13 +154,19 @@ eleventyExcludeFromCollections: true
     <script>
         const { PDFDocument, rgb } = PDFLib;
         
+        const Storage = {
+            get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
+            set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) {} },
+            remove: (key) => { try { localStorage.removeItem(key); } catch(e) {} }
+        };
+
         async function checkAuth() {
             const params = new URLSearchParams(window.location.search);
             let token = params.get('token');
             const linkParam = params.get('link');
             const apiParam = params.get('api');
             if (linkParam) document.getElementById('qr-link').value = decodeURIComponent(linkParam);
-            if (!token) token = localStorage.getItem('qr2pdf_auth_token');
+            if (!token) token = Storage.get('qr2pdf_auth_token');
             if (!token) { showAuthError("Доступ запрещен. Откройте приложение из Promo-Kit."); return; }
             const api = apiParam || 'https://d5dsbah1d4ju0glmp9d0.3zvepvee.apigw.yandexcloud.net';
             try {
@@ -171,8 +177,8 @@ eleventyExcludeFromCollections: true
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    localStorage.setItem('qr2pdf_auth_token', token);
-                    if (data.token) localStorage.setItem('neurogen_jwt', data.token);
+                    Storage.set('qr2pdf_auth_token', token);
+                    if (data.token) Storage.set('neurogen_jwt', data.token);
                     if (data.user) {
                         document.getElementById('user-name').innerText = data.user.first_name || 'Партнер';
                         document.getElementById('user-avatar').innerText = (data.user.first_name || 'P')[0].toUpperCase();
@@ -188,7 +194,7 @@ eleventyExcludeFromCollections: true
                     }
                     if (document.getElementById('qr-link').value) update();
                 } else {
-                    localStorage.removeItem('qr2pdf_auth_token');
+                    Storage.remove('qr2pdf_auth_token');
                     const errData = await res.json().catch(() => ({}));
                     if (errData.expired) {
                         document.getElementById('auth-loader').classList.add('hidden');
