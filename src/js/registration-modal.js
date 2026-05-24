@@ -316,7 +316,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			emailInput?.focus();
 		});
 	}
-	}
 
 	// Переходы на платформы — stepWelcome (returning user)
 	const btnTgl = document.getElementById("btnTelegram");
