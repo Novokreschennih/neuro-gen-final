@@ -1048,17 +1048,6 @@ eleventyExcludeFromCollections: true
 
             toggleProModal();
         }
-        };
-
-        function showProModal(channel) {
-            const data = PRO_BENEFITS[channel];
-            if (!data) return;
-            document.getElementById("proModalTitle").textContent = data.title;
-            document.getElementById("proModalBody").innerHTML = data.lines.map(l =>
-                `<div class="flex items-start gap-3 text-sm"><span class="text-purple-400 mt-0.5 shrink-0">✦</span><span class="text-gray-300">${l}</span></div>`
-            ).join("");
-            toggleProModal();
-        }
 
         // ==========================================
         // ACTIONS & LOGIC
@@ -1184,6 +1173,7 @@ eleventyExcludeFromCollections: true
                 if (data.valid) {
                     showToast("Email успешно изменён и подтверждён!");
                     userData.email = newEmail;
+                    Storage.set("neurogen_email", newEmail);
                     document.getElementById("email-verification-block").classList.add("hidden");
                     codeInput.value = "";
                     setLinkMode(currentLinkMode);
