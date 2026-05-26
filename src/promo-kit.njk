@@ -316,6 +316,17 @@ eleventyExcludeFromCollections: true
                                 <button onclick="saveProfile()" id="saveProfileBtn" class="btn w-full bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 border border-cyan-500/30 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider mt-4">
                                     Сохранить изменения
                                 </button>
+
+                                <!-- Блок подтверждения email -->
+                                <div id="email-verification-block" class="hidden mt-4 p-4 bg-cyan-900/20 border border-cyan-500/20 rounded-xl">
+                                    <p class="text-xs text-cyan-300 font-bold mb-3">✉️ Подтверждение нового email</p>
+                                    <p class="text-[11px] text-gray-400 mb-3">Мы отправили код подтверждения на новый адрес. Введите его ниже:</p>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="email-verification-code" class="flex-1 bg-[#0a0a1a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-cyan-500 uppercase tracking-widest text-center" placeholder="XXXXX" maxlength="8">
+                                        <button onclick="confirmNewEmail()" id="confirmNewEmailBtn" class="btn bg-cyan-600/40 hover:bg-cyan-600/60 text-cyan-300 border border-cyan-500/30 px-4 rounded-xl font-bold text-xs whitespace-nowrap">Подтвердить</button>
+                                    </div>
+                                    <p id="email-verification-status" class="hidden text-[11px] text-red-400 mt-2"></p>
+                                </div>
                             </div>
                         </div>
 
@@ -865,37 +876,140 @@ eleventyExcludeFromCollections: true
         // ACTIONS & LOGIC
         // ==========================================
         async function saveProfile() {
-            const btn = document.getElementById("saveProfileBtn");
-            btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = "⏳ СОХРАНЕНИЕ...";
-
             const first_name = document.getElementById("edit-firstName").value.trim();
             const sh_user_id = document.getElementById("edit-shId").value.trim();
             const sh_ref_tail = document.getElementById("edit-shTail").value.trim();
-            const email = document.getElementById("edit-email").value.trim();
+            const email = document.getElementById("edit-email").value.trim().toLowerCase();
 
             if (!first_name || !sh_user_id || !sh_ref_tail) {
                 showToast("Имя, ID и Хвост обязательны!", "error");
-                btn.disabled = false; btn.innerHTML = orig; return;
+                return;
             }
+
+            const profileChanged = first_name !== userData.first_name ||
+                                   sh_user_id !== userData.sh_user_id ||
+                                   sh_ref_tail !== userData.partner_id;
+
+            const emailChanged = email !== (userData.email || "").toLowerCase();
+
+            if (profileChanged && !emailChanged) {
+                const confirmed = window.confirm("Вы действительно хотите изменить имя, ID или реферальный хвост?\n\n⚠️ Внимание: это повлияет на работу ваших партнерских ссылок.");
+                if (!confirmed) return;
+            }
+
+            // 1. Save text profile fields (name, IDs) — without email
+            if (profileChanged) {
+                const saved = await saveProfileInternal();
+                if (!saved) return;
+            } else if (!emailChanged) {
+                showToast("Изменений не обнаружено", "info");
+                return;
+            }
+
+            // 2. If email changed — start OTP verification flow
+            if (emailChanged) {
+                const block = document.getElementById("email-verification-block");
+                block.classList.remove("hidden");
+                block.scrollIntoView({ behavior: 'smooth' });
+
+                const btn = document.getElementById("saveProfileBtn");
+                btn.disabled = true;
+                const orig = btn.innerHTML;
+                btn.innerHTML = "⏳ ОТПРАВКА КОДА...";
+
+                try {
+                    const res = await fetch(`${BACKEND_URL}/?action=send-email-otp`, {
+                        method: "POST",
+                        headers: authHeaders,
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast("Код подтверждения отправлен на новый адрес!", "info");
+                    } else {
+                        showToast("Ошибка отправки кода: " + data.error, "error");
+                    }
+                } catch (e) {
+                    showToast("Ошибка связи при отправке кода", "error");
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = orig;
+                }
+            } else if (profileChanged) {
+                showToast("Профиль успешно сохранен!");
+                setLinkMode(currentLinkMode);
+                initUI();
+            }
+        }
+
+        async function saveProfileInternal() {
+            const first_name = document.getElementById("edit-firstName").value.trim();
+            const sh_user_id = document.getElementById("edit-shId").value.trim();
+            const sh_ref_tail = document.getElementById("edit-shTail").value.trim();
 
             try {
                 const res = await fetch(`${BACKEND_URL}/?action=update_profile`, {
                     method: "POST",
                     headers: authHeaders,
-                    body: JSON.stringify({ action: "update_profile", first_name, sh_user_id, sh_ref_tail, email })
+                    body: JSON.stringify({ action: "update_profile", first_name, sh_user_id, sh_ref_tail })
                 });
                 const d = await res.json();
-                if(d.success) {
-                    showToast("Профиль успешно сохранен!");
+                if (d.success) {
                     userData.first_name = first_name;
                     userData.sh_user_id = sh_user_id;
                     userData.partner_id = sh_ref_tail;
-                    userData.email = email;
+                    return true;
+                } else {
+                    showToast("Ошибка сохранения профиля: " + d.error, "error");
+                    return false;
+                }
+            } catch (e) {
+                showToast("Ошибка сети при сохранении профиля", "error");
+                return false;
+            }
+        }
+
+        async function confirmNewEmail() {
+            const codeInput = document.getElementById("email-verification-code");
+            const code = codeInput.value.trim().toUpperCase();
+            const newEmail = document.getElementById("edit-email").value.trim().toLowerCase();
+            const status = document.getElementById("email-verification-status");
+            const btn = document.getElementById("confirmNewEmailBtn");
+
+            if (!code) {
+                status.textContent = "Введите код из письма!";
+                status.classList.remove("hidden");
+                return;
+            }
+
+            btn.disabled = true;
+            status.classList.add("hidden");
+
+            try {
+                const res = await fetch(`${BACKEND_URL}/?action=verify-email`, {
+                    method: "POST",
+                    headers: authHeaders,
+                    body: JSON.stringify({ email: newEmail, code })
+                });
+                const data = await res.json();
+
+                if (data.valid) {
+                    showToast("Email успешно изменён и подтверждён!");
+                    userData.email = newEmail;
+                    document.getElementById("email-verification-block").classList.add("hidden");
+                    codeInput.value = "";
                     setLinkMode(currentLinkMode);
                     initUI();
-                } else throw new Error(d.error);
-            } catch(e) { showToast("Ошибка сохранения: " + e.message, "error"); }
-            finally { btn.disabled = false; btn.innerHTML = orig; }
+                } else {
+                    status.textContent = data.error || "Неверный код подтверждения";
+                    status.classList.remove("hidden");
+                }
+            } catch (e) {
+                status.textContent = "Ошибка сети при подтверждении";
+                status.classList.remove("hidden");
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         function getActiveLink() {
