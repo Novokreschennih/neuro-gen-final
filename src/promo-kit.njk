@@ -459,8 +459,8 @@ eleventyExcludeFromCollections: true
             <!-- ========================================== -->
             <div id="content-ai" class="hidden space-y-6 animate-fadeInUp">
                 
-                <!-- Конструктор -->
-                <div id="ai-constructor" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Верхний ряд: Настройки (2 колонки) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="space-y-6">
                         
                         <!-- Инженерия промпта (ВВЕРХУ) -->
@@ -535,7 +535,9 @@ eleventyExcludeFromCollections: true
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="space-y-6">
                         <!-- Состояние ядра -->
                         <div class="glass-panel p-5 rounded-[2rem] border-t border-cyan-500/20">
                             <h3 class="text-xs font-black uppercase text-cyan-400 tracking-widest mb-3">📋 Состояние ядра</h3>
@@ -563,29 +565,27 @@ eleventyExcludeFromCollections: true
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Тестовый полигон -->
-                    <div class="h-full">
-                        <div class="glass-panel rounded-[2rem] flex flex-col h-full min-h-[600px] border-t border-green-500/30">
-                            <div class="p-5 border-b border-white/5 bg-black/40 rounded-t-[2rem] flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
-                                    <span class="text-xs font-black uppercase text-white tracking-widest">Чат Симулятор</span>
-                                </div>
-                                <span id="status-date" class="text-[10px] font-bold text-gray-500">Активен</span>
-                            </div>
-                            <div id="testChatArea" class="flex-1 overflow-y-auto p-5 space-y-4 bg-[#05050f] flex flex-col scroll-smooth">
-                                <div class="p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-gray-300 self-start border border-white/5 shadow-md">
-                                    Ядро инициализировано. Сохрани настройки характера и напиши мне что-нибудь.
-                                </div>
-                            </div>
-                            <div class="p-4 bg-black/60 rounded-b-[2rem] flex items-center gap-2 border-t border-white/5">
-                                <input type="text" id="testChatInput" placeholder="Введите сообщение..." class="flex-1 bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white outline-none focus:border-green-500 transition-colors" />
-                                <button onclick="sendTestMessage()" id="testSendBtn" class="btn w-12 h-12 bg-green-600 hover:bg-green-500 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.3)] transition-colors">
-                                    <svg class="w-5 h-5 text-white ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                                </button>
-                            </div>
+                <!-- Нижний ряд: Чат во всю ширину -->
+                <div class="glass-panel rounded-[2rem] flex flex-col min-h-[300px] border-t border-green-500/30">
+                    <div class="p-5 border-b border-white/5 bg-black/40 rounded-t-[2rem] flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
+                            <span class="text-xs font-black uppercase text-white tracking-widest">Чат Симулятор</span>
                         </div>
+                        <span id="status-date" class="text-[10px] font-bold text-gray-500">Активен</span>
+                    </div>
+                    <div id="testChatArea" class="flex-1 overflow-y-auto p-5 space-y-4 bg-[#05050f] flex flex-col scroll-smooth" style="max-height:50vh">
+                        <div class="p-4 text-sm rounded-2xl max-w-[85%] bg-gray-800/80 text-gray-300 self-start border border-white/5 shadow-md">
+                            Ядро инициализировано. Сохрани настройки характера и напиши мне что-нибудь.
+                        </div>
+                    </div>
+                    <div class="p-4 bg-black/60 rounded-b-[2rem] flex items-center gap-2 border-t border-white/5">
+                        <input type="text" id="testChatInput" placeholder="Введите сообщение..." class="flex-1 bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white outline-none focus:border-green-500 transition-colors" />
+                        <button onclick="sendTestMessage()" id="testSendBtn" class="btn w-12 h-12 bg-green-600 hover:bg-green-500 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.3)] transition-colors">
+                            <svg class="w-5 h-5 text-white ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        </button>
                     </div>
                 </div>
             </div>
