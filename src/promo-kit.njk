@@ -546,7 +546,7 @@ eleventyExcludeFromCollections: true
                                 </div>
                                 <div class="bg-black/40 rounded-lg p-3 border border-white/5">
                                     <span class="text-gray-500 block">Модель</span>
-                                    <span id="core-model" class="text-white font-bold">—</span>
+                                    <span id="core-model" class="text-white font-bold">deepseek-v4-flash</span>
                                 </div>
                                 <div class="bg-black/40 rounded-lg p-3 border border-white/5">
                                     <span class="text-gray-500 block">Провайдер</span>
@@ -661,16 +661,25 @@ eleventyExcludeFromCollections: true
         let AI_PRO_LIMIT = 10;
 
         // === Заполняем индикатор лимитов (вызывается после загрузки userData) ===
-        function updateAiLimitDisplay(isSaasActive, isPro) {
+        function updateAiLimitDisplay(isSaasActive, isPro, hasApiKey) {
             const el = document.getElementById("ai-limit-display");
             if (!el) return;
             if (isSaasActive) {
-                el.innerHTML = `
-                    <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-purple-500/20">
-                        <span class="text-[11px] text-gray-400">Ваш тариф:</span>
-                        <span class="text-xs font-bold text-purple-400">SaaS ♾️ Безлимит</span>
-                    </div>
-                `;
+                if (hasApiKey) {
+                    el.innerHTML = `
+                        <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-purple-500/20">
+                            <span class="text-[11px] text-gray-400">Ваш тариф:</span>
+                            <span class="text-xs font-bold text-purple-400">SaaS ♾️ Безлимит</span>
+                        </div>
+                    `;
+                } else {
+                    el.innerHTML = `
+                        <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-amber-500/20">
+                            <span class="text-[11px] text-gray-400">Ваш тариф:</span>
+                            <span class="text-xs font-bold"><span class="text-purple-400">SaaS ♾️</span> <span class="text-gray-500">·</span> <span class="text-amber-400">триал ${AI_PRO_LIMIT}/день</span></span>
+                        </div>
+                    `;
+                }
             } else if (isPro) {
                 el.innerHTML = `
                     <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-white/5">
@@ -688,7 +697,7 @@ eleventyExcludeFromCollections: true
             }
         }
 
-        function updateCoreInfo(isSaasActive, isPro) {
+        function updateCoreInfo(isSaasActive, isPro, hasApiKey) {
             const role = userData?.ai_ui_state?.role || "";
             const personaMap = { "Волк с Уолл-Стрит в крипте":"shark","Опытный наставник":"mentor","AI-инженер":"techie","Заботливый друг":"friend","Визионер будущего":"visionary" };
             const personaNames = { shark:"Акула 🦈", mentor:"Наставник 🎓", techie:"Технарь 🤖", friend:"Друг 🤝", visionary:"Визионер 🌌" };
@@ -703,7 +712,15 @@ eleventyExcludeFromCollections: true
             const persEl = document.getElementById("core-persona");
             if (persEl) persEl.textContent = personaName;
             const limitEl = document.getElementById("core-limit");
-            if (limitEl) limitEl.textContent = isSaasActive ? "Безлимит ♾️" : `${isPro ? AI_PRO_LIMIT : AI_FREE_LIMIT} запросов/день`;
+            if (limitEl) {
+                if (isSaasActive && !hasApiKey) {
+                    limitEl.textContent = `${AI_PRO_LIMIT}/день (триал)`;
+                } else if (isSaasActive && hasApiKey) {
+                    limitEl.textContent = "Безлимит ♾️";
+                } else {
+                    limitEl.textContent = `${isPro ? AI_PRO_LIMIT : AI_FREE_LIMIT} запросов/день`;
+                }
+            }
         }
 
         function enableAiConstructor(enabled) {
@@ -916,8 +933,9 @@ eleventyExcludeFromCollections: true
             const aiUntil = parseInt(userData.ai_active_until) || 0;
             const isSaasActive = aiUntil > Date.now();
             const isPro = userData.bought_tripwire;
+            const hasApiKey = !!userData.custom_api_key;
 
-            updateAiLimitDisplay(isSaasActive, isPro);
+            updateAiLimitDisplay(isSaasActive, isPro, hasApiKey);
 
             // Баннер "триал истёк" — только если была установлена дата (триал или подписка), но уже прошла
             const trialBanner = document.getElementById("trialExpiredBanner");
@@ -950,7 +968,7 @@ eleventyExcludeFromCollections: true
             compilePrompt();
 
             // Core Info Block
-            updateCoreInfo(isSaasActive, isPro);
+            updateCoreInfo(isSaasActive, isPro, hasApiKey);
 
             // Личные каналы связи (Statuses)
             renderPersonalChannels();
@@ -1471,6 +1489,25 @@ eleventyExcludeFromCollections: true
               CHAT_MODELS_PREFIXES.some(p => m.id.startsWith(p))
             );
           }
+
+          // Приводим pricing к единому формату
+          filtered = filtered.map(m => {
+            // Маппинг input/output → prompt/completion
+            if (m.pricing) {
+              if (m.pricing.input !== undefined && m.pricing.prompt === undefined) m.pricing.prompt = m.pricing.input;
+              if (m.pricing.output !== undefined && m.pricing.completion === undefined) m.pricing.completion = m.pricing.output;
+              // Парсим строки
+              if (typeof m.pricing.prompt === 'string') m.pricing.prompt = parseFloat(m.pricing.prompt) || 0;
+              if (typeof m.pricing.completion === 'string') m.pricing.completion = parseFloat(m.pricing.completion) || 0;
+            }
+            // Если после нормализации pricing нет или цены = 0 — подтягиваем из fallback
+            if (!m.pricing || (!m.pricing.prompt && !m.pricing.completion)) {
+              const fallback = FALLBACK_MODELS[provider].find(f => f.id === m.id);
+              if (fallback) m.pricing = { ...fallback.pricing };
+              else m.pricing = { prompt: 0, completion: 0 };
+            }
+            return m;
+          });
           filtered = filtered.filter(m => {
             const p = (m.pricing?.prompt || 0) + (m.pricing?.completion || 0);
             return m.id && m.id !== "N/A";
@@ -1535,7 +1572,7 @@ eleventyExcludeFromCollections: true
           }
         }
 
-        // Событие: ввод API-ключа обновляет список моделей
+        // Событие: ввод API-ключа обновляет список моделей + core info
         document.addEventListener("DOMContentLoaded", () => {
           const keyInput = document.getElementById("ai-api-key");
           if (keyInput) {
@@ -1550,6 +1587,14 @@ eleventyExcludeFromCollections: true
                 const pre = sel?.value || null;
                 updateModelsList(pre);
               }, 50);
+            });
+            keyInput.addEventListener("input", () => {
+              const hasKey = !!keyInput.value.trim();
+              const aiUntil = parseInt(userData?.ai_active_until) || 0;
+              const isSaas = aiUntil > Date.now();
+              const isPro = userData?.bought_tripwire || false;
+              updateCoreInfo(isSaas, isPro, hasKey);
+              updateAiLimitDisplay(isSaas, isPro, hasKey);
             });
           }
           const provSelect = document.getElementById("ai-provider");
@@ -1581,7 +1626,9 @@ eleventyExcludeFromCollections: true
                     userData.ai_ui_state.role = document.getElementById("ui-role").value;
                     userData.ai_ui_state.tone = document.getElementById("ui-tone").value;
                     userData.ai_ui_state.goal = document.getElementById("ui-goal").value;
-                    updateCoreInfo((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire);
+                    const _apiKey = !!document.getElementById("ai-api-key").value.trim();
+                    updateCoreInfo((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire, _apiKey);
+                    updateAiLimitDisplay((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire, _apiKey);
                     showToast("Ядро обновлено");
                 } else throw new Error();
             } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
@@ -1594,7 +1641,9 @@ eleventyExcludeFromCollections: true
                 if((await res.json()).success) {
                     userData.ai_provider = document.getElementById("ai-provider").value;
                     userData.ai_model = document.getElementById("ai-model").value;
-                    updateCoreInfo((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire);
+                    const _apiKey = !!document.getElementById("ai-api-key").value.trim();
+                    updateCoreInfo((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire, _apiKey);
+                    updateAiLimitDisplay((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire, _apiKey);
                     showToast("Настройки API сохранены");
                 } else throw new Error();
             } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
