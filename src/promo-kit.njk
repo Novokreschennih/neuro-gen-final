@@ -1452,33 +1452,17 @@ eleventyExcludeFromCollections: true
         const FALLBACK_MODELS = {
           polza: [
             { id: "deepseek/deepseek-v4-flash", pricing: { prompt: 0, completion: 0 } },
-            { id: "openai/gpt-4o-mini", pricing: { prompt: 0.15e-6, completion: 0.6e-6 } },
-            { id: "anthropic/claude-3.5-sonnet", pricing: { prompt: 3e-6, completion: 15e-6 } },
-            { id: "google/gemini-2.0-flash", pricing: { prompt: 0.1e-6, completion: 0.4e-6 } },
-            { id: "qwen/qwen-2.5-72b-instruct", pricing: { prompt: 0.35e-6, completion: 0.4e-6 } },
-          ],
+            ],
           openrouter: [
             { id: "deepseek/deepseek-v4-flash", pricing: { prompt: 0, completion: 0 } },
-            { id: "deepseek/deepseek-chat", pricing: { prompt: 0.27e-6, completion: 1.1e-6 } },
-            { id: "openai/gpt-4o-mini", pricing: { prompt: 0.15e-6, completion: 0.6e-6 } },
-            { id: "openai/gpt-4o", pricing: { prompt: 2.5e-6, completion: 10e-6 } },
-            { id: "anthropic/claude-3.5-sonnet", pricing: { prompt: 3e-6, completion: 15e-6 } },
-            { id: "anthropic/claude-3-haiku", pricing: { prompt: 0.25e-6, completion: 1.25e-6 } },
-            { id: "google/gemini-2.0-flash", pricing: { prompt: 0.1e-6, completion: 0.4e-6 } },
-            { id: "google/gemini-2.0-pro", pricing: { prompt: 1.25e-6, completion: 5e-6 } },
-            { id: "qwen/qwen-2.5-72b-instruct", pricing: { prompt: 0.35e-6, completion: 0.4e-6 } },
-            { id: "qwen/qwen-max", pricing: { prompt: 0.4e-6, completion: 0.6e-6 } },
-            { id: "mistralai/mistral-large", pricing: { prompt: 2e-6, completion: 6e-6 } },
-            { id: "meta-llama/llama-3.1-8b-instruct", pricing: { prompt: 0.05e-6, completion: 0.08e-6 } },
-            { id: "meta-llama/llama-3.1-70b-instruct", pricing: { prompt: 0.4e-6, completion: 0.8e-6 } },
-            { id: "cohere/command-r-plus", pricing: { prompt: 2.5e-6, completion: 10e-6 } },
+            
           ],
         };
 
         function renderModels(sel, models, pre) {
           const key = document.getElementById("ai-api-key").value.trim();
           if (!key) {
-            sel.innerHTML = '<option value="deepseek/deepseek-v4-flash">DeepSeek V4 Flash 🆓</option>';
+            sel.innerHTML = '<option value="deepseek/deepseek-v4-flash">DeepSeek V4 Flash</option>';
             if (pre) sel.value = pre;
             return;
           }
@@ -1520,7 +1504,7 @@ eleventyExcludeFromCollections: true
           sel.innerHTML = filtered.map(m => {
             const pricePerM = ((m.pricing?.prompt || 0) + (m.pricing?.completion || 0)) * 1_000_000;
             const short = m.id.split("/").pop();
-            const label = pricePerM === 0 ? `${short} 🆓` : `${short} \$${pricePerM < 0.01 ? pricePerM.toFixed(2) : pricePerM.toFixed(2)}/1M`;
+            const label = pricePerM === 0 ? `${short}` : `${short} \$${pricePerM < 0.01 ? pricePerM.toFixed(2) : pricePerM.toFixed(2)}/1M`;
             return `<option value="${m.id}">${label}</option>`;
           }).join("");
           if (pre && filtered.some(m => m.id === pre)) sel.value = pre;
@@ -1536,7 +1520,7 @@ eleventyExcludeFromCollections: true
           if (!key) {
             provEl.value = "polza";
             provEl.disabled = true;
-            sel.innerHTML = '<option value="deepseek/deepseek-v4-flash">DeepSeek V4 Flash 🆓</option>';
+            sel.innerHTML = '<option value="deepseek/deepseek-v4-flash">DeepSeek V4 Flash</option>';
             if (pre) sel.value = pre;
             return;
           }
