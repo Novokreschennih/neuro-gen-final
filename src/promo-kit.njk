@@ -607,6 +607,21 @@ eleventyExcludeFromCollections: true
         </div>
     </div>
 
+    <!-- PRO Upgrade Modal -->
+    <div id="proUpgradeModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="glass-panel rounded-3xl max-w-md w-full p-6 md:p-8 animate-fadeInUp border-t border-purple-500/30">
+            <div class="flex items-center justify-between mb-6">
+                <h3 id="proModalTitle" class="text-lg font-black uppercase tracking-tight text-white">💎 Функция PRO</h3>
+                <button onclick="toggleProModal()" class="text-gray-500 hover:text-white text-lg">✕</button>
+            </div>
+            <div id="proModalBody" class="space-y-4"></div>
+            <div class="grid grid-cols-2 gap-3 mt-6">
+                <button onclick="toggleProModal()" class="btn bg-white/10 hover:bg-white/20 py-3 rounded-xl text-xs font-bold uppercase">Закрыть</button>
+                <button onclick="document.querySelector('.glass-panel.rounded-\\[2\\.5rem\\]')?.scrollIntoView({behavior:'smooth', block:'center'}); toggleProModal()" class="btn bg-gradient-to-r from-purple-600 to-cyan-600 hover:opacity-95 py-3 rounded-xl text-xs font-bold uppercase text-white">🔥 Улучшить до PRO</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Скрипты -->
     <script>
         // ==========================================
@@ -829,7 +844,7 @@ eleventyExcludeFromCollections: true
             } else {
                 tgContainer.innerHTML = `
                     <div class="flex items-center gap-3"><span class="text-2xl grayscale">📱</span><div><p class="text-xs font-bold text-gray-500">Телеграм бот-клон</p><p class="text-[10px] text-gray-600">Не подключен ${isPro ? '' : '(Нужен PRO)'}</p></div></div>
-                    <button onclick="${isPro ? "window.open('https://t.me/sethubble_biz_bot?start=add_bot', '_blank')" : "showToast('💎 Нужен статус PRO!', 'error')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
+                    <button onclick="${isPro ? "window.open('https://t.me/sethubble_biz_bot?start=add_bot', '_blank')" : "showProModal('tg')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
                 `;
             }
 
@@ -843,7 +858,7 @@ eleventyExcludeFromCollections: true
             } else {
                 vkContainer.innerHTML = `
                     <div class="flex items-center gap-3"><span class="text-2xl grayscale">📢</span><div><p class="text-xs font-bold text-gray-500">VK бот-клон</p><p class="text-[10px] text-gray-600">Не подключен ${isPro ? '' : '(Нужен PRO)'}</p></div></div>
-                    <button onclick="${isPro ? "window.open('https://t.me/sethubble_biz_bot', '_blank')" : "showToast('💎 Нужен статус PRO!', 'error')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
+                    <button onclick="${isPro ? "window.open('https://t.me/sethubble_biz_bot', '_blank')" : "showProModal('vk')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
                 `;
             }
 
@@ -861,7 +876,7 @@ eleventyExcludeFromCollections: true
             } else {
                 webContainer.innerHTML = `
                     <div class="flex items-center gap-3"><span class="text-2xl grayscale">🌐</span><div><p class="text-xs font-bold text-gray-500">Веб-чат виджет</p><p class="text-[10px] text-gray-600">Не настроен ${isPro ? '' : '(Нужен PRO)'}</p></div></div>
-                    <button onclick="${isPro ? "toggleWidgetModal()" : "showToast('💎 Нужен статус PRO!', 'error')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
+                    <button onclick="${isPro ? "toggleWidgetModal()" : "showProModal('web')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
                 `;
             }
         }
@@ -870,6 +885,52 @@ eleventyExcludeFromCollections: true
             const m = document.getElementById("widgetModal");
             if (m.classList.contains("hidden")) { m.classList.remove("hidden"); m.classList.add("flex"); } 
             else { m.classList.add("hidden"); m.classList.remove("flex"); }
+        }
+
+        function toggleProModal() {
+            const m = document.getElementById("proUpgradeModal");
+            if (m.classList.contains("hidden")) { m.classList.remove("hidden"); m.classList.add("flex"); }
+            else { m.classList.add("hidden"); m.classList.remove("flex"); }
+        }
+
+        const PRO_BENEFITS = {
+            tg: {
+                title: "💎 Персональный Telegram бот",
+                lines: [
+                    "🤖 Бот под вашим брендом и именем",
+                    "🎯 Полный контроль над аудиторией",
+                    "🔗 Собственные реферальные ссылки",
+                    "📊 Доступ к статистике и аналитике",
+                ]
+            },
+            vk: {
+                title: "💎 Персональный VK бот",
+                lines: [
+                    "📢 Сообщество с ИИ под вашим брендом",
+                    "👥 Управление собственной базой клиентов",
+                    "🔗 Белые ссылки на ваше сообщество",
+                    "📊 Доступ к статистике и аналитике",
+                ]
+            },
+            web: {
+                title: "💎 Веб-виджет для вашего сайта",
+                lines: [
+                    "🌐 ИИ-помощник на вашем домене",
+                    "⚡ Сбор лидов 24/7 без выходных",
+                    "🎨 Персонализация дизайна под ваш сайт",
+                    "📊 Полный доступ к статистике и CRM",
+                ]
+            }
+        };
+
+        function showProModal(channel) {
+            const data = PRO_BENEFITS[channel];
+            if (!data) return;
+            document.getElementById("proModalTitle").textContent = data.title;
+            document.getElementById("proModalBody").innerHTML = data.lines.map(l =>
+                `<div class="flex items-start gap-3 text-sm"><span class="text-purple-400 mt-0.5 shrink-0">✦</span><span class="text-gray-300">${l}</span></div>`
+            ).join("");
+            toggleProModal();
         }
 
         // ==========================================
