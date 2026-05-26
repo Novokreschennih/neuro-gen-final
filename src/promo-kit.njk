@@ -459,21 +459,8 @@ eleventyExcludeFromCollections: true
             <!-- ========================================== -->
             <div id="content-ai" class="hidden space-y-6 animate-fadeInUp">
                 
-                <!-- Пейволл SaaS -->
-                <div id="ai-paywall" class="hidden glass-panel rounded-[3rem] p-12 text-center border-t border-purple-500/30 relative overflow-hidden">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-purple-600/20 blur-3xl -z-10"></div>
-                    <div class="text-7xl mb-8">🧠</div>
-                    <h2 class="text-3xl md:text-4xl font-black text-white mb-4 uppercase tracking-tight">SaaS <span class="gradient-text-purple">Интеллект</span></h2>
-                    <p class="text-sm md:text-base text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-                        Подключите нейроядро к вашему боту. ИИ-ассистент будет сам консультировать лидов, отрабатывать возражения и закрывать сделки 24/7. Активация убирает системные лимиты сообщений и дает доступ к конструктору личности бота.
-                    </p>
-                    <a id="btn-upgrade-ai" href="#" target="_blank" class="btn inline-block bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black py-4 px-10 rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.3)] text-sm uppercase tracking-wide">
-                        🚀 Активировать за $3/мес
-                    </a>
-                </div>
-
                 <!-- Конструктор -->
-                <div id="ai-constructor" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div id="ai-constructor" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="space-y-6">
                         
                         <!-- Инженерия промпта (ВВЕРХУ) -->
@@ -624,7 +611,7 @@ eleventyExcludeFromCollections: true
             <div id="proModalBody" class="space-y-4"></div>
             <div class="grid grid-cols-2 gap-3 mt-6">
                 <button onclick="toggleProModal()" class="btn bg-white/10 hover:bg-white/20 py-3 rounded-xl text-xs font-bold uppercase">Закрыть</button>
-                <button onclick="document.querySelector('.glass-panel.rounded-\\[2\\.5rem\\]')?.scrollIntoView({behavior:'smooth', block:'center'}); toggleProModal()" class="btn bg-gradient-to-r from-purple-600 to-cyan-600 hover:opacity-95 py-3 rounded-xl text-xs font-bold uppercase text-white">🔥 Улучшить до PRO</button>
+                <button id="proModalCta" onclick="document.querySelector('.glass-panel.rounded-\\[2\\.5rem\\]')?.scrollIntoView({behavior:'smooth', block:'center'}); toggleProModal()" class="btn bg-gradient-to-r from-purple-600 to-cyan-600 hover:opacity-95 py-3 rounded-xl text-xs font-bold uppercase text-white">🔥 Улучшить до PRO</button>
             </div>
         </div>
     </div>
@@ -633,20 +620,89 @@ eleventyExcludeFromCollections: true
     <script>
         // === Константы лимитов ИИ ===
         const AI_FREE_LIMIT = 3;
-        const AI_PRO_LIMIT = 30;
+        const AI_PRO_LIMIT = 10;
 
-        // === Заполняем индикатор лимитов ===
-        document.addEventListener("DOMContentLoaded", () => {
+        // === Заполняем индикатор лимитов (вызывается после загрузки userData) ===
+        function updateAiLimitDisplay(isSaasActive, isPro) {
             const el = document.getElementById("ai-limit-display");
-            if (el) {
+            if (!el) return;
+            if (isSaasActive) {
+                el.innerHTML = `
+                    <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-purple-500/20">
+                        <span class="text-[11px] text-gray-400">Ваш тариф:</span>
+                        <span class="text-xs font-bold text-purple-400">SaaS ♾️ Безлимит</span>
+                    </div>
+                `;
+            } else if (isPro) {
                 el.innerHTML = `
                     <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-white/5">
                         <span class="text-[11px] text-gray-400">Ежедневный лимит:</span>
-                        <span class="text-xs font-bold"><span class="text-gray-400">${AI_FREE_LIMIT}</span> <span class="text-gray-500">·</span> <span class="text-purple-400">${AI_PRO_LIMIT} PRO</span></span>
+                        <span class="text-xs font-bold"><span class="text-cyan-400">${AI_PRO_LIMIT}</span> <span class="text-gray-500">·</span> <span class="text-purple-400">SaaS ♾️</span></span>
+                    </div>
+                `;
+            } else {
+                el.innerHTML = `
+                    <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-white/5">
+                        <span class="text-[11px] text-gray-400">Ежедневный лимит:</span>
+                        <span class="text-xs font-bold"><span class="text-gray-400">${AI_FREE_LIMIT}</span> <span class="text-gray-500">·</span> <span class="text-cyan-400">${AI_PRO_LIMIT} PRO</span> <span class="text-gray-500">·</span> <span class="text-purple-400">SaaS ♾️</span></span>
                     </div>
                 `;
             }
-        });
+        }
+
+        function enableAiConstructor(enabled) {
+            const inputs = ["ui-role", "ui-tone", "ui-goal"];
+            const btns = ["saveAiBtn"];
+
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = !enabled;
+            });
+
+            btns.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (enabled) {
+                        el.disabled = false;
+                        el.onclick = null;
+                        el.innerHTML = "💾 ЗАГРУЗИТЬ В ЯДРО";
+                        el.className = "btn w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-black text-sm uppercase tracking-wide mt-6 shadow-xl hover:opacity-90 transition-opacity";
+                    } else {
+                        el.disabled = true;
+                        el.onclick = (e) => { e.preventDefault(); showProModal('saas'); };
+                        el.innerHTML = "🔒 Доступно в SaaS";
+                        el.className = "btn w-full bg-gray-700/30 text-gray-500 border border-white/10 py-4 rounded-xl font-black text-sm uppercase tracking-wide mt-6 cursor-pointer";
+                    }
+                }
+            });
+
+            // Preset buttons
+            document.querySelectorAll("#content-ai .preset-btn, #content-ai button[onclick*='applyAiPreset']").forEach(el => {
+                if (enabled) {
+                    el.style.opacity = "";
+                    el.style.pointerEvents = "";
+                } else {
+                    el.style.opacity = "0.4";
+                    el.style.pointerEvents = "none";
+                }
+            });
+
+            // Character panel overlay for click-to-upgrade
+            const charPanel = document.querySelector("#content-ai .glass-panel .rounded-\\[2rem\\]");
+            if (charPanel) {
+                if (!enabled && !charPanel.querySelector(".saas-overlay")) {
+                    const overlay = document.createElement("div");
+                    overlay.className = "saas-overlay absolute inset-0 z-10 cursor-pointer rounded-[2rem]";
+                    overlay.onclick = (e) => { e.stopPropagation(); showProModal('saas'); };
+                    charPanel.style.position = "relative";
+                    charPanel.appendChild(overlay);
+                } else if (enabled) {
+                    const overlay = charPanel.querySelector(".saas-overlay");
+                    if (overlay) overlay.remove();
+                    charPanel.style.position = "";
+                }
+            }
+        }
 
         // ==========================================
         // БАЗА ЗНАНИЙ ОФФЕРОВ (ДЛЯ САЙТА И PDF)
@@ -799,16 +855,19 @@ eleventyExcludeFromCollections: true
             renderPosts();
 
             // AI Status
-            const isAiActive = (parseInt(userData.ai_active_until) || 0) > Date.now();
-            if(isAiActive) {
-                document.getElementById("ai-constructor").classList.remove("hidden");
-                document.getElementById("ai-paywall").classList.add("hidden");
+            const isSaasActive = (parseInt(userData.ai_active_until) || 0) > Date.now();
+            const isPro = userData.bought_tripwire;
+
+            updateAiLimitDisplay(isSaasActive, isPro);
+
+            // Конструктор всегда виден
+            if (isSaasActive) {
                 const fDate = new Date(parseInt(userData.ai_active_until)).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
-                document.getElementById("status-date").textContent = `Подписка до ${fDate}`;
+                document.getElementById("status-date").textContent = `SaaS до ${fDate}`;
+                enableAiConstructor(true);
             } else {
-                document.getElementById("ai-constructor").classList.add("hidden");
-                document.getElementById("ai-paywall").classList.remove("hidden");
-                document.getElementById("btn-upgrade-ai").href = `https://hubblepay.net/${userData.ai_product_id || "150_3ca87"}&afid=${inviterId}`;
+                document.getElementById("status-date").textContent = isPro ? `PRO: 10/день` : `FREE: 3/день`;
+                enableAiConstructor(false);
             }
 
             // AI Settings Load
@@ -944,7 +1003,51 @@ eleventyExcludeFromCollections: true
                     "🎨 Персонализация дизайна под ваш сайт",
                     "📊 Полный доступ к статистике и CRM",
                 ]
+            },
+            saas: {
+                title: "🧠 SaaS Интеллект — $3/мес",
+                lines: [
+                    "🔗 Подключение своих нейросетей (API ключ)",
+                    "♾️ Безлимитные запросы в нейроядро",
+                    "🎭 Конструктор характера ассистента",
+                    "📊 Полный доступ к статистике и CRM",
+                ]
             }
+        };
+
+        function toggleProModal() {
+            const m = document.getElementById("proUpgradeModal");
+            if (m.classList.contains("hidden")) { m.classList.remove("hidden"); m.classList.add("flex"); }
+            else { m.classList.add("hidden"); m.classList.remove("flex"); }
+        }
+
+        function showProModal(channel) {
+            const data = PRO_BENEFITS[channel];
+            if (!data) return;
+            document.getElementById("proModalTitle").textContent = data.title;
+            document.getElementById("proModalBody").innerHTML = data.lines.map(l =>
+                `<div class="flex items-start gap-3 text-sm"><span class="text-purple-400 mt-0.5 shrink-0">✦</span><span class="text-gray-300">${l}</span></div>`
+            ).join("");
+
+            // Update CTA button based on channel
+            const ctaBtn = document.getElementById("proModalCta");
+            if (channel === "saas") {
+                ctaBtn.innerHTML = "🚀 Подключить за $3/мес";
+                ctaBtn.onclick = () => {
+                    const link = `https://hubblepay.net/${userData?.ai_product_id || "150_3ca87"}&afid=${userData?.sh_user_id || ''}`;
+                    window.open(link, '_blank');
+                    toggleProModal();
+                };
+            } else {
+                ctaBtn.innerHTML = "🔥 Улучшить до PRO";
+                ctaBtn.onclick = () => {
+                    document.querySelector('.glass-panel.rounded-\\[2\\.5rem\\]')?.scrollIntoView({behavior:'smooth', block:'center'});
+                    toggleProModal();
+                };
+            }
+
+            toggleProModal();
+        }
         };
 
         function showProModal(channel) {
