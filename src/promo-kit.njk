@@ -515,6 +515,7 @@ eleventyExcludeFromCollections: true
                         <div class="glass-panel p-6 rounded-[2rem] border-t border-gray-700/50 opacity-80 hover:opacity-100 transition-opacity">
                             <h3 class="text-xs font-black uppercase text-gray-400 tracking-widest mb-4">⚙️ Системные параметры API</h3>
                             <div class="space-y-4">
+                                <div id="ai-limit-display"></div>
                                 <div>
                                     <select id="ai-provider" onchange="updateModelsList()" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs font-medium text-white outline-none cursor-pointer">
                                         <option value="polza">Polza.ai (РФ, Карты)</option>
@@ -526,6 +527,12 @@ eleventyExcludeFromCollections: true
                                 </div>
                                 <div>
                                     <input type="password" id="ai-api-key" placeholder="Свой API Ключ (Безлимит)" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs font-medium text-white outline-none focus:border-gray-500 transition-colors" />
+                                </div>
+                                <button onclick="saveApiSettings()" id="saveApiBtn" class="btn w-full bg-gray-700/30 hover:bg-gray-700/50 text-gray-300 border border-white/10 py-3 rounded-xl font-bold text-xs uppercase tracking-wider">
+                                    💾 СОХРАНИТЬ API
+                                </button>
+                                <div class="text-[10px] text-gray-600 text-center pt-3 border-t border-white/5">
+                                    Нет аккаунта Polza? <a href="https://neuro-gen.ru/go-polza" target="_blank" class="text-cyan-400 hover:text-cyan-300 underline font-bold">Зарегистрироваться →</a>
                                 </div>
                             </div>
                         </div>
@@ -624,6 +631,23 @@ eleventyExcludeFromCollections: true
 
     <!-- Скрипты -->
     <script>
+        // === Константы лимитов ИИ ===
+        const AI_FREE_LIMIT = 3;
+        const AI_PRO_LIMIT = 30;
+
+        // === Заполняем индикатор лимитов ===
+        document.addEventListener("DOMContentLoaded", () => {
+            const el = document.getElementById("ai-limit-display");
+            if (el) {
+                el.innerHTML = `
+                    <div class="flex items-center justify-between p-3 bg-black/40 rounded-lg border border-white/5">
+                        <span class="text-[11px] text-gray-400">Ежедневный лимит:</span>
+                        <span class="text-xs font-bold"><span class="text-gray-400">${AI_FREE_LIMIT}</span> <span class="text-gray-500">·</span> <span class="text-purple-400">${AI_PRO_LIMIT} PRO</span></span>
+                    </div>
+                `;
+            }
+        });
+
         // ==========================================
         // БАЗА ЗНАНИЙ ОФФЕРОВ (ДЛЯ САЙТА И PDF)
         // ==========================================
@@ -1261,8 +1285,16 @@ eleventyExcludeFromCollections: true
         async function saveAiSettings() {
             const btn = document.getElementById("saveAiBtn"); btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = "⏳ СОХРАНЕНИЕ...";
             try {
-                const res = await fetch(`${BACKEND_URL}/?action=update_ai_settings`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "update_ai_settings", custom_prompt: document.getElementById("ai-prompt-hidden").value, ai_provider: document.getElementById("ai-provider").value, ai_model: document.getElementById("ai-model").value, custom_api_key: document.getElementById("ai-api-key").value.trim(), ai_ui_state: { role: document.getElementById("ui-role").value, tone: document.getElementById("ui-tone").value, goal: document.getElementById("ui-goal").value } }) });
+                const res = await fetch(`${BACKEND_URL}/?action=update_ai_settings`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "update_ai_settings", custom_prompt: document.getElementById("ai-prompt-hidden").value, ai_provider: "polza", ai_model: "deepseek/deepseek-v4-flash", custom_api_key: document.getElementById("ai-api-key").value.trim(), ai_ui_state: { role: document.getElementById("ui-role").value, tone: document.getElementById("ui-tone").value, goal: document.getElementById("ui-goal").value } }) });
                 if((await res.json()).success) showToast("Ядро обновлено"); else throw new Error();
+            } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
+        }
+
+        async function saveApiSettings() {
+            const btn = document.getElementById("saveApiBtn"); btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = "⏳ СОХРАНЕНИЕ...";
+            try {
+                const res = await fetch(`${BACKEND_URL}/?action=update_ai_settings`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "update_ai_settings", custom_prompt: document.getElementById("ai-prompt-hidden").value, ai_provider: document.getElementById("ai-provider").value, ai_model: document.getElementById("ai-model").value, custom_api_key: document.getElementById("ai-api-key").value.trim() }) });
+                if((await res.json()).success) showToast("Настройки API сохранены"); else throw new Error();
             } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
         }
 
