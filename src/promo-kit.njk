@@ -498,13 +498,25 @@ eleventyExcludeFromCollections: true
                             </button>
                         </div>
 
+                        <!-- Триал истёк (баннер) -->
+                        <div id="trialExpiredBanner" class="hidden glass-panel p-5 rounded-[2rem] border-t border-orange-500/30 bg-gradient-to-r from-orange-500/5 to-transparent">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl shrink-0">⭐</span>
+                                <div>
+                                    <p class="text-sm font-bold text-orange-300">Пробный период закончился</p>
+                                    <p class="text-[11px] text-gray-400 mt-1 leading-relaxed">Твой 3-дневный бесплатный доступ к ИИ-ядру истёк. Безлимитные запросы, конструктор характера и свой API-ключ доступны в SaaS за $3/мес.</p>
+                                    <button onclick="showProModal('saas')" class="mt-3 text-[10px] bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-lg text-white font-bold uppercase tracking-wider transition-colors">🚀 Подключить за $3/мес</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Технические настройки (ВНИЗУ) -->
                         <div class="glass-panel p-6 rounded-[2rem] border-t border-gray-700/50 opacity-80 hover:opacity-100 transition-opacity">
                             <h3 class="text-xs font-black uppercase text-gray-400 tracking-widest mb-4">⚙️ Системные параметры API</h3>
                             <div class="space-y-4">
                                 <div id="ai-limit-display"></div>
                                 <div>
-                                    <select id="ai-provider" onchange="updateModelsList()" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs font-medium text-white outline-none cursor-pointer">
+                                    <select id="ai-provider" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs font-medium text-white outline-none cursor-pointer">
                                         <option value="polza">Polza.ai (РФ, Карты)</option>
                                         <option value="openrouter">OpenRouter (Крипта)</option>
                                     </select>
@@ -519,7 +531,34 @@ eleventyExcludeFromCollections: true
                                     💾 СОХРАНИТЬ API
                                 </button>
                                 <div class="text-[10px] text-gray-600 text-center pt-3 border-t border-white/5">
-                                    Нет аккаунта Polza? <a href="https://neuro-gen.ru/go-polza" target="_blank" class="text-cyan-400 hover:text-cyan-300 underline font-bold">Зарегистрироваться →</a>
+                                    Нет аккаунта Polza? <a href="https://neuro-gen.ru/polza" target="_blank" class="text-cyan-400 hover:text-cyan-300 underline font-bold">Зарегистрироваться →</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Состояние ядра -->
+                        <div class="glass-panel p-5 rounded-[2rem] border-t border-cyan-500/20">
+                            <h3 class="text-xs font-black uppercase text-cyan-400 tracking-widest mb-3">📋 Состояние ядра</h3>
+                            <div id="ai-core-info" class="grid grid-cols-2 gap-2 text-[11px]">
+                                <div class="bg-black/40 rounded-lg p-3 border border-white/5">
+                                    <span class="text-gray-500 block">Тариф</span>
+                                    <span id="core-plan" class="text-white font-bold">—</span>
+                                </div>
+                                <div class="bg-black/40 rounded-lg p-3 border border-white/5">
+                                    <span class="text-gray-500 block">Модель</span>
+                                    <span id="core-model" class="text-white font-bold">—</span>
+                                </div>
+                                <div class="bg-black/40 rounded-lg p-3 border border-white/5">
+                                    <span class="text-gray-500 block">Провайдер</span>
+                                    <span id="core-provider" class="text-white font-bold">—</span>
+                                </div>
+                                <div class="bg-black/40 rounded-lg p-3 border border-white/5">
+                                    <span class="text-gray-500 block">Характер</span>
+                                    <span id="core-persona" class="text-white font-bold">—</span>
+                                </div>
+                                <div class="bg-black/40 rounded-lg p-3 border border-white/5 col-span-2">
+                                    <span class="text-gray-500 block">Лимит сегодня</span>
+                                    <span id="core-limit" class="text-white font-bold">—</span>
                                 </div>
                             </div>
                         </div>
@@ -579,7 +618,6 @@ eleventyExcludeFromCollections: true
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -618,9 +656,9 @@ eleventyExcludeFromCollections: true
 
     <!-- Скрипты -->
     <script>
-        // === Константы лимитов ИИ ===
-        const AI_FREE_LIMIT = 3;
-        const AI_PRO_LIMIT = 10;
+        // === Константы лимитов ИИ (заменяются из userData при загрузке) ===
+        let AI_FREE_LIMIT = 3;
+        let AI_PRO_LIMIT = 10;
 
         // === Заполняем индикатор лимитов (вызывается после загрузки userData) ===
         function updateAiLimitDisplay(isSaasActive, isPro) {
@@ -648,6 +686,24 @@ eleventyExcludeFromCollections: true
                     </div>
                 `;
             }
+        }
+
+        function updateCoreInfo(isSaasActive, isPro) {
+            const role = userData?.ai_ui_state?.role || "";
+            const personaMap = { "Волк с Уолл-Стрит в крипте":"shark","Опытный наставник":"mentor","AI-инженер":"techie","Заботливый друг":"friend","Визионер будущего":"visionary" };
+            const personaNames = { shark:"Акула 🦈", mentor:"Наставник 🎓", techie:"Технарь 🤖", friend:"Друг 🤝", visionary:"Визионер 🌌" };
+            const personaKey = personaMap[role] || "";
+            const personaName = personaNames[personaKey] || role || "Своя сборка";
+            const planEl = document.getElementById("core-plan");
+            if (planEl) planEl.textContent = isSaasActive ? "SaaS ♾️" : isPro ? `PRO ${AI_PRO_LIMIT}/день` : `FREE ${AI_FREE_LIMIT}/день`;
+            const modelEl = document.getElementById("core-model");
+            if (modelEl) modelEl.textContent = (userData?.ai_model || "deepseek/deepseek-v4-flash").split("/").pop();
+            const provEl = document.getElementById("core-provider");
+            if (provEl) provEl.textContent = userData?.ai_provider === "openrouter" ? "OpenRouter" : "Polza.ai";
+            const persEl = document.getElementById("core-persona");
+            if (persEl) persEl.textContent = personaName;
+            const limitEl = document.getElementById("core-limit");
+            if (limitEl) limitEl.textContent = isSaasActive ? "Безлимит ♾️" : `${isPro ? AI_PRO_LIMIT : AI_FREE_LIMIT} запросов/день`;
         }
 
         function enableAiConstructor(enabled) {
@@ -855,10 +911,21 @@ eleventyExcludeFromCollections: true
             renderPosts();
 
             // AI Status
-            const isSaasActive = (parseInt(userData.ai_active_until) || 0) > Date.now();
+            AI_FREE_LIMIT = userData.ai_free_limit || 3;
+            AI_PRO_LIMIT = userData.ai_pro_limit || 10;
+            const aiUntil = parseInt(userData.ai_active_until) || 0;
+            const isSaasActive = aiUntil > Date.now();
             const isPro = userData.bought_tripwire;
 
             updateAiLimitDisplay(isSaasActive, isPro);
+
+            // Баннер "триал истёк" — только если была установлена дата (триал или подписка), но уже прошла
+            const trialBanner = document.getElementById("trialExpiredBanner");
+            if (aiUntil > 0 && !isSaasActive) {
+                trialBanner.classList.remove("hidden");
+            } else {
+                trialBanner.classList.add("hidden");
+            }
 
             // Конструктор всегда виден
             if (isSaasActive) {
@@ -872,8 +939,8 @@ eleventyExcludeFromCollections: true
 
             // AI Settings Load
             if (userData.ai_provider) document.getElementById("ai-provider").value = userData.ai_provider;
-            updateModelsList(userData.ai_model);
             if (userData.custom_api_key) document.getElementById("ai-api-key").value = userData.custom_api_key;
+            updateModelsList(userData.ai_model);
             if (userData.ai_ui_state) {
                 const state = userData.ai_ui_state;
                 if (state.role) document.getElementById("ui-role").value = state.role;
@@ -881,6 +948,9 @@ eleventyExcludeFromCollections: true
                 if (state.goal) document.getElementById("ui-goal").value = state.goal;
             }
             compilePrompt();
+
+            // Core Info Block
+            updateCoreInfo(isSaasActive, isPro);
 
             // Личные каналы связи (Statuses)
             renderPersonalChannels();
@@ -1355,13 +1425,140 @@ eleventyExcludeFromCollections: true
             } finally { btn.disabled = false; btn.innerHTML = orig; }
         }
 
-        // AI Config
-        const MODELS = { polza: ["openai/gpt-4o-mini", "deepseek/deepseek-v4-flash", "anthropic/claude-3.5-sonnet"], openrouter: ["openai/gpt-4o-mini", "deepseek/deepseek-v4-flash", "anthropic/claude-3.5-sonnet", "openai/gpt-4o"] };
-        function updateModelsList(pre = null) {
-            const p = document.getElementById("ai-provider").value; const s = document.getElementById("ai-model"); s.innerHTML = "";
-            MODELS[p].forEach(m => { const o = document.createElement("option"); o.value = m; o.textContent = m.split('/').pop(); s.appendChild(o); });
-            if(pre) s.value = pre;
+        // AI Config — модели и цены
+        const CHAT_MODELS_PREFIXES = [
+          "deepseek", "openai/gpt", "anthropic/claude", "google/gemini",
+          "qwen", "mistralai", "meta-llama", "cohere/command",
+        ];
+
+        const FALLBACK_MODELS = {
+          polza: [
+            { id: "deepseek/deepseek-v4-flash", pricing: { prompt: 0, completion: 0 } },
+            { id: "openai/gpt-4o-mini", pricing: { prompt: 0.15e-6, completion: 0.6e-6 } },
+            { id: "anthropic/claude-3.5-sonnet", pricing: { prompt: 3e-6, completion: 15e-6 } },
+            { id: "google/gemini-2.0-flash", pricing: { prompt: 0.1e-6, completion: 0.4e-6 } },
+            { id: "qwen/qwen-2.5-72b-instruct", pricing: { prompt: 0.35e-6, completion: 0.4e-6 } },
+          ],
+          openrouter: [
+            { id: "deepseek/deepseek-v4-flash", pricing: { prompt: 0, completion: 0 } },
+            { id: "deepseek/deepseek-chat", pricing: { prompt: 0.27e-6, completion: 1.1e-6 } },
+            { id: "openai/gpt-4o-mini", pricing: { prompt: 0.15e-6, completion: 0.6e-6 } },
+            { id: "openai/gpt-4o", pricing: { prompt: 2.5e-6, completion: 10e-6 } },
+            { id: "anthropic/claude-3.5-sonnet", pricing: { prompt: 3e-6, completion: 15e-6 } },
+            { id: "anthropic/claude-3-haiku", pricing: { prompt: 0.25e-6, completion: 1.25e-6 } },
+            { id: "google/gemini-2.0-flash", pricing: { prompt: 0.1e-6, completion: 0.4e-6 } },
+            { id: "google/gemini-2.0-pro", pricing: { prompt: 1.25e-6, completion: 5e-6 } },
+            { id: "qwen/qwen-2.5-72b-instruct", pricing: { prompt: 0.35e-6, completion: 0.4e-6 } },
+            { id: "qwen/qwen-max", pricing: { prompt: 0.4e-6, completion: 0.6e-6 } },
+            { id: "mistralai/mistral-large", pricing: { prompt: 2e-6, completion: 6e-6 } },
+            { id: "meta-llama/llama-3.1-8b-instruct", pricing: { prompt: 0.05e-6, completion: 0.08e-6 } },
+            { id: "meta-llama/llama-3.1-70b-instruct", pricing: { prompt: 0.4e-6, completion: 0.8e-6 } },
+            { id: "cohere/command-r-plus", pricing: { prompt: 2.5e-6, completion: 10e-6 } },
+          ],
+        };
+
+        function renderModels(sel, models, pre) {
+          const key = document.getElementById("ai-api-key").value.trim();
+          if (!key) {
+            sel.innerHTML = '<option value="deepseek/deepseek-v4-flash">DeepSeek V4 Flash 🆓</option>';
+            if (pre) sel.value = pre;
+            return;
+          }
+          const provider = document.getElementById("ai-provider").value;
+          let filtered = models;
+          if (provider === "openrouter") {
+            filtered = models.filter(m =>
+              CHAT_MODELS_PREFIXES.some(p => m.id.startsWith(p))
+            );
+          }
+          filtered = filtered.filter(m => {
+            const p = (m.pricing?.prompt || 0) + (m.pricing?.completion || 0);
+            return m.id && m.id !== "N/A";
+          });
+          filtered.sort((a, b) => {
+            const aPrice = (a.pricing?.prompt || 0) + (a.pricing?.completion || 0);
+            const bPrice = (b.pricing?.prompt || 0) + (b.pricing?.completion || 0);
+            return aPrice - bPrice;
+          });
+          sel.innerHTML = filtered.map(m => {
+            const pricePerM = ((m.pricing?.prompt || 0) + (m.pricing?.completion || 0)) * 1_000_000;
+            const short = m.id.split("/").pop();
+            const label = pricePerM === 0 ? `${short} 🆓` : `${short} \$${pricePerM < 0.01 ? pricePerM.toFixed(2) : pricePerM.toFixed(2)}/1M`;
+            return `<option value="${m.id}">${label}</option>`;
+          }).join("");
+          if (pre && filtered.some(m => m.id === pre)) sel.value = pre;
         }
+
+        async function updateModelsList(pre = null) {
+          const key = document.getElementById("ai-api-key").value.trim();
+          const provider = document.getElementById("ai-provider").value;
+          const sel = document.getElementById("ai-model");
+          const provEl = document.getElementById("ai-provider");
+
+          // Блокируем/разблокируем выбор провайдера
+          if (!key) {
+            provEl.value = "polza";
+            provEl.disabled = true;
+            sel.innerHTML = '<option value="deepseek/deepseek-v4-flash">DeepSeek V4 Flash 🆓</option>';
+            if (pre) sel.value = pre;
+            return;
+          }
+          provEl.disabled = false;
+
+          // sessionStorage cache (5 мин)
+          const cacheKey = `models_${provider}`;
+          const cached = sessionStorage.getItem(cacheKey);
+          if (cached) {
+            try {
+              const { data, ts } = JSON.parse(cached);
+              if (Date.now() - ts < 300_000) {
+                renderModels(sel, data, pre);
+                return;
+              }
+            } catch (e) {}
+          }
+
+          try {
+            const url = provider === "polza"
+              ? "https://polza.ai/api/v1/models"
+              : "https://openrouter.ai/api/v1/models";
+            const headers = { "Content-Type": "application/json" };
+            if (provider === "polza") headers["Authorization"] = `Bearer ${key}`;
+
+            const res = await fetch(url, { headers });
+            const json = await res.json();
+            const models = json.data || [];
+            sessionStorage.setItem(cacheKey, JSON.stringify({ data: models, ts: Date.now() }));
+            renderModels(sel, models, pre);
+          } catch (e) {
+            renderModels(sel, FALLBACK_MODELS[provider], pre);
+          }
+        }
+
+        // Событие: ввод API-ключа обновляет список моделей
+        document.addEventListener("DOMContentLoaded", () => {
+          const keyInput = document.getElementById("ai-api-key");
+          if (keyInput) {
+            keyInput.addEventListener("change", () => {
+              const sel = document.getElementById("ai-model");
+              const pre = sel?.value || null;
+              updateModelsList(pre);
+            });
+            keyInput.addEventListener("paste", () => {
+              setTimeout(() => {
+                const sel = document.getElementById("ai-model");
+                const pre = sel?.value || null;
+                updateModelsList(pre);
+              }, 50);
+            });
+          }
+          const provSelect = document.getElementById("ai-provider");
+          if (provSelect) {
+            provSelect.addEventListener("change", () => {
+              updateModelsList(null);
+            });
+          }
+        });
 
         function compilePrompt() {
             const r = document.getElementById("ui-role").value || "Консультант"; const t = document.getElementById("ui-tone").value; const g = document.getElementById("ui-goal").value;
@@ -1379,7 +1576,14 @@ eleventyExcludeFromCollections: true
             const btn = document.getElementById("saveAiBtn"); btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = "⏳ СОХРАНЕНИЕ...";
             try {
                 const res = await fetch(`${BACKEND_URL}/?action=update_ai_settings`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "update_ai_settings", custom_prompt: document.getElementById("ai-prompt-hidden").value, ai_provider: "polza", ai_model: "deepseek/deepseek-v4-flash", custom_api_key: document.getElementById("ai-api-key").value.trim(), ai_ui_state: { role: document.getElementById("ui-role").value, tone: document.getElementById("ui-tone").value, goal: document.getElementById("ui-goal").value } }) });
-                if((await res.json()).success) showToast("Ядро обновлено"); else throw new Error();
+                if((await res.json()).success) {
+                    if (!userData.ai_ui_state) userData.ai_ui_state = {};
+                    userData.ai_ui_state.role = document.getElementById("ui-role").value;
+                    userData.ai_ui_state.tone = document.getElementById("ui-tone").value;
+                    userData.ai_ui_state.goal = document.getElementById("ui-goal").value;
+                    updateCoreInfo((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire);
+                    showToast("Ядро обновлено");
+                } else throw new Error();
             } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
         }
 
@@ -1387,7 +1591,12 @@ eleventyExcludeFromCollections: true
             const btn = document.getElementById("saveApiBtn"); btn.disabled = true; const orig = btn.innerHTML; btn.innerHTML = "⏳ СОХРАНЕНИЕ...";
             try {
                 const res = await fetch(`${BACKEND_URL}/?action=update_ai_settings`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "update_ai_settings", custom_prompt: document.getElementById("ai-prompt-hidden").value, ai_provider: document.getElementById("ai-provider").value, ai_model: document.getElementById("ai-model").value, custom_api_key: document.getElementById("ai-api-key").value.trim() }) });
-                if((await res.json()).success) showToast("Настройки API сохранены"); else throw new Error();
+                if((await res.json()).success) {
+                    userData.ai_provider = document.getElementById("ai-provider").value;
+                    userData.ai_model = document.getElementById("ai-model").value;
+                    updateCoreInfo((parseInt(userData.ai_active_until)||0)>Date.now(), userData.bought_tripwire);
+                    showToast("Настройки API сохранены");
+                } else throw new Error();
             } catch(e) { showToast("Ошибка", "error"); } finally { btn.disabled = false; btn.innerHTML = orig; }
         }
 
