@@ -15,8 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let particlesArray;
 
     // Настраиваем размер канваса
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     // Объект мыши
     let mouse = {
@@ -117,8 +117,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         for (let i = 0; i < numberOfParticles; i++) {
             let size = (Math.random() * 3) + 1;
-            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let x = (Math.random() * ((canvas.width - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((canvas.height - size * 2) - (size * 2)) + size * 2);
             let directionX = (Math.random() * 1) - 0.5; // Скорость по X
             let directionY = (Math.random() * 1) - 0.5; // Скорость по Y
             let color = colors[Math.floor(Math.random() * colors.length)];
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function animate() {
         requestAnimationFrame(animate);
-        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
@@ -139,10 +139,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Ресайз окна
     window.addEventListener('resize', function() {
         if (window.innerWidth < 992) {
-            canvas.width = 0; // Скрываем/очищаем на мобильных
+            canvas.width = 0;
         } else {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
             init();
         }
     });
