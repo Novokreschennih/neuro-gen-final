@@ -585,11 +585,15 @@ this.style.background =
       bubble.textContent = text;
       bubble.innerHTML = bubble.innerHTML
         .replace(/\n/g, "<br>")
+        .replace(/&lt;b&gt;/gi, "<b>")
+        .replace(/&lt;\/b&gt;/gi, "</b>")
+        .replace(/&lt;i&gt;/gi, "<i>")
+        .replace(/&lt;\/i&gt;/gi, "</i>")
+        .replace(/&lt;code&gt;/gi, "<code>")
+        .replace(/&lt;\/code&gt;/gi, "</code>")
+        .replace(/&lt;br&gt;/gi, "<br>")
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-        .replace(/\*(.*?)\*/g, "<i>$1</i>")
-        .replace(/&lt;b&gt;(.*?)&lt;\/b&gt;/g, "<b>$1</b>")
-        .replace(/&lt;i&gt;(.*?)&lt;\/i&gt;/g, "<i>$1</i>")
-        .replace(/&lt;br&gt;/g, "<br>");
+        .replace(/\*(.*?)\*/g, "<i>$1</i>");
     } else {
       bubble.textContent = text;
     }
