@@ -69,13 +69,14 @@ body {
 .show-agent .role-agent { display: block; }
 .show-online .role-online { display: block; }
 .show-offline .role-offline { display: block; }
-.inline-role {
+
+.role-badge {
   display: none;
 }
-.show-universal .inline-role.role-universal,
-.show-agent .inline-role.role-agent,
-.show-online .inline-role.role-online,
-.show-offline .inline-role.role-offline {
+.show-universal .role-badge.role-universal,
+.show-agent .role-badge.role-agent,
+.show-online .role-badge.role-online,
+.show-offline .role-badge.role-offline {
   display: inline-block;
 }
 
@@ -140,7 +141,7 @@ body {
           <a href="#faq" class="hidden md:block hover:text-cyan-400 transition-colors">FAQ</a>
         </div>
         <div class="flex items-center gap-3">
-          <a href="https://neuro-gen.ru/" class="bg-white text-black px-5 py-2 rounded-full text-xs font-black uppercase hover:bg-cyan-400 transition-all shadow-lg">🚀 Войти</a>
+          <div class="js-open-modal cursor-pointer bg-white text-black px-5 py-2 rounded-full text-xs font-black uppercase hover:bg-cyan-400 transition-all shadow-lg" role="button" tabindex="0">🚀 Войти</div>
         </div>
       </div>
     </nav>
@@ -152,17 +153,17 @@ body {
       <!-- ============================================== -->
       <section class="min-h-screen flex flex-col items-center justify-center text-center px-4 pt-24 pb-10">
         <div class="max-w-4xl mx-auto">
-          <div class="role-universal inline-role inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
-            🔥 Платформа SetHubble v6.0 | Мультиканальная ИИ-система
+          <div class="role-universal role-badge inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
+            🤖 Мультиканальный ИИ-агент + Партнёрская сеть
           </div>
-          <div class="role-agent inline-role inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
-            🕵️‍♂️ Бизнес без вложений | Партнерская экосистема SetHubble
+          <div class="role-agent role-badge inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
+            🕵️‍♂️ Стань партнёром любого бизнеса без вложений
           </div>
-          <div class="role-online inline-role inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
-            💻 EdTech & E-commerce | Эквайринг и автоматизация SetHubble
+          <div class="role-online role-badge inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
+            💻 Монетизируй трафик и зарабатывай на отказах
           </div>
-          <div class="role-offline inline-role inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
-            🏢 HoReCa & Услуги | Офлайн-маркетинг SetHubble O2O
+          <div class="role-offline role-badge inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
+            🏢 Преврати гостей в агентов без затрат на рекламу
           </div>
 
           <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight leading-tight">
@@ -473,6 +474,7 @@ body {
     <script src="/js/registration-modal.js" defer></script>
     <script>
     (function() {
+      document.getElementById("body-container").classList.add("show-universal");
       const Storage = {
         set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) {} }
       };
