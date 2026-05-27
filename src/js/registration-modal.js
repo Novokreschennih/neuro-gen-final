@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const bodyContainer = document.getElementById("body-container");
 
 	if (bodyContainer) {
+		bodyContainer.classList.remove("show-universal", "show-agent", "show-online", "show-offline");
 		if (userRole === "agent") {
 			bodyContainer.classList.add("show-agent");
 		} else if (userRole === "online") {
