@@ -113,11 +113,13 @@ eleventyExcludeFromCollections: true
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Размер</label>
-                                <input type="range" id="qr-size" min="50" max="250" value="120" oninput="update()" class="w-full">
+                                <input type="range" id="qr-size" min="50" max="250" value="120" oninput="update(); updateSliderDisplay()" class="w-full">
+                                <div class="flex justify-between text-[10px] text-slate-500 mt-1"><span>50</span><span id="qr-size-value" class="text-purple-400 font-bold">120</span><span>250</span></div>
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Отступ</label>
-                                <input type="range" id="qr-margin" min="10" max="100" value="30" oninput="update()" class="w-full">
+                                <input type="range" id="qr-margin" min="10" max="100" value="30" oninput="update(); updateSliderDisplay()" class="w-full">
+                                <div class="flex justify-between text-[10px] text-slate-500 mt-1"><span>10</span><span id="qr-margin-value" class="text-purple-400 font-bold">30</span><span>100</span></div>
                             </div>
                         </div>
                         <div>
@@ -173,7 +175,7 @@ eleventyExcludeFromCollections: true
                         </div>
                         <div id="preview-loading" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center z-10 gap-3"><div class="w-10 h-10 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div><div id="progress-text" class="text-sm text-purple-300/80 font-bold"></div></div>
                         <iframe id="preview-iframe" class="hidden w-full h-full"></iframe>
-                        <div id="preview-ios-fallback" class="hidden absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                        <div id="preview-mobile-fallback" class="hidden absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
                             <div class="text-6xl mb-4">📱</div>
                             <p class="text-slate-400 text-sm font-bold mb-1">Предпросмотр недоступен</p>
                             <p class="text-slate-500 text-xs">Нажмите «Скачать PDF» — файл откроется в штатном просмотрщике.</p>
@@ -246,7 +248,7 @@ eleventyExcludeFromCollections: true
             document.getElementById('error-message').innerText = msg;
         }
 
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const isMobileFallback = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || navigator.maxTouchPoints > 1;
         let currentTab = 'pdf';
         let pdfFileBuffer = null;
         let pdfBlob = null;
@@ -285,6 +287,11 @@ eleventyExcludeFromCollections: true
         function togglePageInput() {
             const el = document.getElementById('qr-pages-custom');
             el.classList.toggle('hidden', document.getElementById('qr-pages').value !== 'custom');
+        }
+
+        function updateSliderDisplay() {
+            document.getElementById('qr-size-value').innerText = document.getElementById('qr-size').value;
+            document.getElementById('qr-margin-value').innerText = document.getElementById('qr-margin').value;
         }
 
         function parseCustomPages(str, total) {
@@ -377,13 +384,13 @@ eleventyExcludeFromCollections: true
                 pdfBlob = new Blob([bytes], { type: 'application/pdf' });
                 if (previewBlobUrl) URL.revokeObjectURL(previewBlobUrl);
                 previewBlobUrl = URL.createObjectURL(pdfBlob);
-                if (isIOS) {
-                    document.getElementById('preview-ios-fallback').classList.remove('hidden');
+                if (isMobileFallback) {
+                    document.getElementById('preview-mobile-fallback').classList.remove('hidden');
                     document.getElementById('preview-iframe').classList.add('hidden');
                 } else {
                     document.getElementById('preview-iframe').src = previewBlobUrl;
                     document.getElementById('preview-iframe').classList.remove('hidden');
-                    document.getElementById('preview-ios-fallback').classList.add('hidden');
+                    document.getElementById('preview-mobile-fallback').classList.add('hidden');
                 }
                 document.getElementById('preview-empty').classList.add('hidden');
                 document.getElementById('btn-download').classList.remove('hidden');
@@ -418,6 +425,7 @@ eleventyExcludeFromCollections: true
             catch { return false; }
         }
 
+        updateSliderDisplay();
         checkAuth();
     </script>
 </body>
