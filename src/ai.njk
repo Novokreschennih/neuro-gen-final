@@ -674,6 +674,13 @@ this.style.background =
         const data = await response.json();
         removeTyping();
         if (data.token) Storage.set("neurogen_jwt", data.token);
+        if (data.image) {
+          const img = document.createElement("img");
+          img.src = data.image; img.alt = "";
+          img.className = "w-full rounded-2xl shadow-lg border border-gray-800 mb-3";
+          document.getElementById("trainingContent").appendChild(img);
+          document.getElementById("trainingContent").scrollTop = document.getElementById("trainingContent").scrollHeight;
+        }
         addMessage(
           data.answer || "🤖 Я немного задумался. Повтори, пожалуйста!",
           false,
