@@ -16,9 +16,10 @@ eleventyExcludeFromCollections: true
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
         .bg-glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        input[type="range"] { -webkit-appearance: none; appearance: none; background: #1e293b; height: 6px; border-radius: 3px; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; background: #a855f7; border-radius: 50%; cursor: pointer; transition: all 0.2s; border: 2px solid #fff; }
+        input[type="range"] { -webkit-appearance: none; appearance: none; background: #1e293b; height: 6px; border-radius: 3px; min-height: 44px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; background: #a855f7; border-radius: 50%; cursor: pointer; transition: all 0.2s; border: 3px solid #fff; }
         input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.1); box-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
+        input[type="range"]::-moz-range-thumb { width: 28px; height: 28px; background: #a855f7; border-radius: 50%; cursor: pointer; border: 3px solid #fff; }
         .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
     </style>
@@ -46,6 +47,8 @@ eleventyExcludeFromCollections: true
             </div>
         </div>
     </div>
+
+    <div id="error-toast" class="hidden fixed bottom-8 right-4 sm:right-8 bg-red-500/90 backdrop-blur text-white px-5 py-4 rounded-2xl shadow-2xl border border-red-400/50 z-50 max-w-sm text-sm font-bold animate-pulse-slow">⚠️ <span id="error-toast-text"></span></div>
 
     <div id="app-content" class="hidden min-h-screen p-4 sm:p-8 max-w-[1440px] mx-auto">
         <header class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
@@ -125,6 +128,31 @@ eleventyExcludeFromCollections: true
                                 <option value="top-left">Слева вверху</option>
                             </select>
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Страницы</label>
+                            <select id="qr-pages" onchange="togglePageInput(); update()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 focus:ring-2 focus:ring-purple-500 outline-none">
+                                <option value="all">На всех страницах</option>
+                                <option value="first">Только первая</option>
+                                <option value="last">Только последняя</option>
+                                <option value="all-except-first">На всех кроме первой</option>
+                                <option value="custom">Выборочно...</option>
+                            </select>
+                            <input type="text" id="qr-pages-custom" placeholder="1, 3, 5-10" oninput="update()" class="hidden mt-2 w-full bg-slate-900 border border-slate-700 rounded-xl p-3 focus:ring-2 focus:ring-purple-500 outline-none font-mono text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Цвет QR</label>
+                                <input type="color" id="qr-color" value="#000000" oninput="update()" class="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Фон QR</label>
+                                <input type="color" id="qr-bgcolor" value="#ffffff" oninput="update()" class="w-full h-10 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Подпись</label>
+                            <input type="text" id="qr-caption" placeholder="Нажми для перехода" oninput="update()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 focus:ring-2 focus:ring-purple-500 outline-none">
+                        </div>
                     </div>
                 </section>
             </div>
@@ -143,8 +171,13 @@ eleventyExcludeFromCollections: true
                             <div class="text-6xl mb-4 grayscale opacity-20">🖨️</div>
                             <p class="text-slate-500 text-sm">Загрузите или введите текст</p>
                         </div>
-                        <div id="preview-loading" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-10"><div class="w-10 h-10 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div></div>
+                        <div id="preview-loading" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center z-10 gap-3"><div class="w-10 h-10 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div><div id="progress-text" class="text-sm text-purple-300/80 font-bold"></div></div>
                         <iframe id="preview-iframe" class="hidden w-full h-full"></iframe>
+                        <div id="preview-ios-fallback" class="hidden absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                            <div class="text-6xl mb-4">📱</div>
+                            <p class="text-slate-400 text-sm font-bold mb-1">Предпросмотр недоступен</p>
+                            <p class="text-slate-500 text-xs">Нажмите «Скачать PDF» — файл откроется в штатном просмотрщике.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -152,7 +185,7 @@ eleventyExcludeFromCollections: true
     </div>
 
     <script>
-        const { PDFDocument, rgb } = PDFLib;
+        const { PDFDocument } = PDFLib;
         
         const Storage = {
             get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
@@ -213,9 +246,12 @@ eleventyExcludeFromCollections: true
             document.getElementById('error-message').innerText = msg;
         }
 
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
         let currentTab = 'pdf';
         let pdfFileBuffer = null;
         let pdfBlob = null;
+        let previewBlobUrl = null;
+        let originalFileName = 'presentation_qr.pdf';
         let updateTimeout = null;
 
         function setTab(tab) {
@@ -232,6 +268,7 @@ eleventyExcludeFromCollections: true
             if (!file) return;
             const arrayBuffer = await file.arrayBuffer();
             pdfFileBuffer = arrayBuffer.slice(0);
+            originalFileName = file.name.replace(/\.pdf$/i, '_qr.pdf');
             document.getElementById('file-placeholder').classList.add('hidden');
             document.getElementById('file-info').classList.remove('hidden');
             document.getElementById('file-name').innerText = file.name;
@@ -245,46 +282,124 @@ eleventyExcludeFromCollections: true
             updateTimeout = setTimeout(generatePreview, 500);
         }
 
+        function togglePageInput() {
+            const el = document.getElementById('qr-pages-custom');
+            el.classList.toggle('hidden', document.getElementById('qr-pages').value !== 'custom');
+        }
+
+        function parseCustomPages(str, total) {
+            const set = new Set();
+            const parts = str.split(',');
+            for (const part of parts) {
+                const trimmed = part.trim();
+                if (!trimmed) continue;
+                const range = trimmed.split('-').map(Number);
+                if (range.length === 2 && !isNaN(range[0]) && !isNaN(range[1])) {
+                    const start = Math.max(1, Math.min(range[0], range[1]));
+                    const end = Math.min(total, Math.max(range[0], range[1]));
+                    for (let p = start; p <= end; p++) set.add(p - 1);
+                } else if (!isNaN(range[0])) {
+                    const idx = range[0] - 1;
+                    if (idx >= 0 && idx < total) set.add(idx);
+                }
+            }
+            return [...set].sort((a, b) => a - b);
+        }
+
+        function getPageIndices(total) {
+            const mode = document.getElementById('qr-pages').value;
+            switch (mode) {
+                case 'first': return [0];
+                case 'last': return [total - 1];
+                case 'all-except-first': return Array.from({ length: total - 1 }, (_, i) => i + 1);
+                case 'custom': return parseCustomPages(document.getElementById('qr-pages-custom').value, total);
+                default: return Array.from({ length: total }, (_, i) => i);
+            }
+        }
+
+        async function generateQrDataUri(link, caption, color, bgColor) {
+            const w = 300;
+            const qrCanvas = document.createElement('canvas');
+            await QRCode.toCanvas(qrCanvas, link, { width: w, margin: 1, color: { dark: color, light: bgColor } });
+            if (!caption) return qrCanvas.toDataURL('image/png');
+            const fs = Math.max(14, Math.min(24, w / 10));
+            const capH = fs + 16;
+            const c = document.createElement('canvas');
+            c.width = w; c.height = w + capH;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = bgColor; ctx.fillRect(0, 0, c.width, c.height);
+            ctx.fillStyle = color; ctx.font = `bold ${fs}px Inter, -apple-system, sans-serif`;
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(caption, w / 2, capH / 2);
+            ctx.drawImage(qrCanvas, 0, capH, w, w);
+            return c.toDataURL('image/png');
+        }
+
         async function generatePreview() {
             const link = document.getElementById('qr-link').value;
             if (!link || (currentTab === 'pdf' && !pdfFileBuffer) || (currentTab === 'text' && !document.getElementById('text-content').value)) return;
+            if (!validateUrl(link)) { showError('Некорректная ссылка. Убедитесь, что URL начинается с http:// или https://'); return; }
             document.getElementById('preview-loading').classList.remove('hidden');
+            document.getElementById('progress-text').innerText = 'Генерация QR...';
             try {
                 const qrSize = parseInt(document.getElementById('qr-size').value);
                 const qrMargin = parseInt(document.getElementById('qr-margin').value);
                 const pos = document.getElementById('qr-position').value;
+                const qrColor = document.getElementById('qr-color').value || '#000000';
+                const qrBgColor = document.getElementById('qr-bgcolor').value || '#ffffff';
+                const caption = document.getElementById('qr-caption').value.trim();
                 let pdfDoc = currentTab === 'pdf' ? await PDFDocument.load(pdfFileBuffer.slice(0)) : await PDFDocument.create();
                 if (currentTab === 'text') {
                     const page = pdfDoc.addPage([842, 595]);
                     page.drawText(document.getElementById('text-title').value || '', { x: 50, y: 530, size: 30 });
                     page.drawText(document.getElementById('text-content').value, { x: 50, y: 480, size: 14 });
                 }
-                const qrDataUri = await QRCode.toDataURL(link, { margin: 1, width: 300 });
+                const qrDataUri = await generateQrDataUri(link, caption, qrColor, qrBgColor);
                 const qrImage = await pdfDoc.embedPng(qrDataUri);
-                pdfDoc.getPages().forEach((page) => {
-                    const { width, height } = page.getSize();
+                const { width: imgW, height: imgH } = qrImage;
+                const blockW = qrSize;
+                const blockH = qrSize * (imgH / imgW);
+                const pages = pdfDoc.getPages();
+                const indices = getPageIndices(pages.length);
+                const total = indices.length;
+                for (let idx = 0; idx < total; idx++) {
+                    const page = pages[indices[idx]];
+                    const { width: pw, height: ph } = page.getSize();
                     let x = qrMargin, y = qrMargin;
-                    if (pos === 'top-left') y = height - qrSize - qrMargin;
-                    else if (pos === 'top-right') { x = width - qrSize - qrMargin; y = height - qrSize - qrMargin; }
-                    else if (pos === 'bottom-right') x = width - qrSize - qrMargin;
-                    page.drawImage(qrImage, { x, y, width: qrSize, height: qrSize });
-                });
-                const bytes = await pdfDoc.save();
-                pdfBlob = new Blob([bytes], { type: 'application/pdf' });
-                document.getElementById('preview-iframe').src = URL.createObjectURL(pdfBlob);
-                document.getElementById('preview-iframe').classList.remove('hidden');
-                document.getElementById('preview-empty').classList.add('hidden');
-                document.getElementById('btn-download').classList.remove('hidden');
-            } catch (e) { console.error(e); } finally { document.getElementById('preview-loading').classList.add('hidden'); }
-        }
+                    if (pos === 'top-left') y = ph - blockH - qrMargin;
+                    else if (pos === 'top-right') { x = pw - blockW - qrMargin; y = ph - blockH - qrMargin; }
+                    else if (pos === 'bottom-right') x = pw - blockW - qrMargin;
+                    page.drawImage(qrImage, { x, y, width: blockW, height: blockH });
+                    if (idx % 5 === 0) { document.getElementById('progress-text').innerText = `Страница ${indices[idx] + 1} из ${pages.length}`; await new Promise(r => setTimeout(r, 0)); }
+                }
 
-        function handleDownload() {
-            if (!pdfBlob) return;
-            const url = URL.createObjectURL(pdfBlob);
+        async function handleDownload() {
+            if (!pdfBlob || !previewBlobUrl) return;
+            if (navigator.share && navigator.canShare) {
+                const file = new File([pdfBlob], originalFileName, { type: 'application/pdf' });
+                if (navigator.canShare({ files: [file] })) {
+                    try { await navigator.share({ files: [file], title: originalFileName }); return; }
+                    catch (e) { if (e.name !== 'AbortError') throw e; }
+                }
+            }
             const a = document.createElement('a');
-            a.href = url; a.download = 'presentation_qr.pdf';
+            a.href = previewBlobUrl; a.download = originalFileName;
             a.click();
         }
+
+        function showError(msg) {
+            const el = document.getElementById('error-toast');
+            document.getElementById('error-toast-text').innerText = msg;
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 6000);
+        }
+        function hideError() { document.getElementById('error-toast').classList.add('hidden'); }
+
+        function validateUrl(str) {
+            try { const u = new URL(str); return u.protocol === 'http:' || u.protocol === 'https:'; }
+            catch { return false; }
+        }
+
         checkAuth();
     </script>
 </body>
