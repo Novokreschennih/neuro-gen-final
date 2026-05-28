@@ -372,6 +372,24 @@ eleventyExcludeFromCollections: true
                     page.drawImage(qrImage, { x, y, width: blockW, height: blockH });
                     if (idx % 5 === 0) { document.getElementById('progress-text').innerText = `Страница ${indices[idx] + 1} из ${pages.length}`; await new Promise(r => setTimeout(r, 0)); }
                 }
+                document.getElementById('progress-text').innerText = 'Сохранение...';
+                const bytes = await pdfDoc.save();
+                pdfBlob = new Blob([bytes], { type: 'application/pdf' });
+                if (previewBlobUrl) URL.revokeObjectURL(previewBlobUrl);
+                previewBlobUrl = URL.createObjectURL(pdfBlob);
+                if (isIOS) {
+                    document.getElementById('preview-ios-fallback').classList.remove('hidden');
+                    document.getElementById('preview-iframe').classList.add('hidden');
+                } else {
+                    document.getElementById('preview-iframe').src = previewBlobUrl;
+                    document.getElementById('preview-iframe').classList.remove('hidden');
+                    document.getElementById('preview-ios-fallback').classList.add('hidden');
+                }
+                document.getElementById('preview-empty').classList.add('hidden');
+                document.getElementById('btn-download').classList.remove('hidden');
+                hideError();
+            } catch (e) { console.error(e); showError('Ошибка генерации PDF. Проверьте ссылку и файл.'); } finally { document.getElementById('preview-loading').classList.add('hidden'); }
+        }
 
         async function handleDownload() {
             if (!pdfBlob || !previewBlobUrl) return;
