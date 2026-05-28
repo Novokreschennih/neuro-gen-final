@@ -53,7 +53,7 @@ eleventyExcludeFromCollections: true
         .nav-tab:not(.active):hover { background: rgba(255, 255, 255, 0.05); color: #e2e8f0; }
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: rgba(15, 15, 20, 0.98); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 14px 24px; border-radius: 100px; font-size: 13px; font-weight: 800; opacity: 0; transform: translateY(-20px) scale(0.9); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; items-center gap: 10px; }
+        .toast { background: rgba(15, 15, 20, 0.98); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 14px 24px; border-radius: 16px; font-size: 13px; font-weight: 800; opacity: 0; transform: translateY(-20px) scale(0.9); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; gap: 10px; max-width: min(90vw, 420px); text-align: center; }
         .toast.show { opacity: 1; transform: translateY(0) scale(1); }
 
         input, select, textarea { transition: all 0.3s ease; }
@@ -822,8 +822,17 @@ eleventyExcludeFromCollections: true
         function showToast(message, type = "success") {
             const container = document.getElementById("toast-container");
             const toast = document.createElement("div");
-            toast.className = `toast bg-[#0a0a1a] border border-${type==='success'?'green':type==='error'?'red':'cyan'}-500/30`;
-            toast.innerHTML = `<span class="text-lg">${type==='success'?'✅':type==='error'?'❌':'ℹ️'}</span> <span>${message}</span>`;
+            const colors = { success: '#10b981', error: '#ef4444', warning: '#06b6d4' };
+            const icons = { success: '✅', error: '❌', warning: 'ℹ️' };
+            const color = colors[type] || colors.success;
+            toast.className = 'toast bg-[#0a0a1a]';
+            toast.style.borderColor = `${color}66`;
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'text-lg';
+            iconSpan.textContent = icons[type] || icons.success;
+            const msgSpan = document.createElement('span');
+            msgSpan.textContent = message;
+            toast.append(iconSpan, msgSpan);
             container.appendChild(toast);
             requestAnimationFrame(() => toast.classList.add("show"));
             setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 400); }, 3000);
