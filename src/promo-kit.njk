@@ -102,7 +102,7 @@ eleventyExcludeFromCollections: true
                 <button onclick="switchTab('marketing')" id="tab-marketing" class="nav-tab active flex-1 py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-2 whitespace-nowrap">📊 Воронка</button>
                 <button onclick="switchTab('empire')" id="tab-empire" class="nav-tab flex-1 py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-2 whitespace-nowrap text-gray-400">👤 Кабинет</button>
                 <button onclick="switchTab('ai')" id="tab-ai" class="nav-tab flex-1 py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-2 whitespace-nowrap text-gray-400">🧠 Нейроядро</button>
-                <button onclick="switchTab('hub')" id="tab-hub" class="nav-tab flex-1 py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-2 whitespace-nowrap text-gray-400">🎒 Арсенал</button>
+                <button onclick="switchTab('hub')" id="tab-hub" class="nav-tab flex-1 py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-2 whitespace-nowrap text-gray-400">🎁 Бонусы</button>
             </div>
         </div>
     </header>
@@ -416,6 +416,16 @@ eleventyExcludeFromCollections: true
                             </div>
                         </div>
 
+                        <!-- Кнопки CRM -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="window.open('/crm/?token='+webAppJwt, '_blank')" class="btn w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 py-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
+                                👥 Мои клиенты
+                            </button>
+                            <button onclick="window.open('/crm/demo/', '_blank')" class="btn w-full bg-white/10 hover:bg-white/20 border border-white/10 py-4 rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                                🎬 Демо CRM
+                            </button>
+                        </div>
+
                         <!-- Тариф PRO -->
                         <div class="glass-panel rounded-[2.5rem] p-8 flex flex-col justify-center relative overflow-hidden bg-gradient-to-b from-[#050510] to-[#0a0a1a] border-t border-purple-500/20">
                             <div class="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl"></div>
@@ -427,11 +437,26 @@ eleventyExcludeFromCollections: true
                                 <p class="text-xs text-gray-400 mb-6 leading-relaxed">На бесплатном тарифе ваша комиссия составляет всего 25%, глубина сети урезана, а CRM-система и нейросети заблокированы.</p>
                                 
                                 <div class="bg-black/60 rounded-xl p-4 border border-white/5 mb-6">
-                                    <ul class="space-y-2 text-xs">
-                                        <li class="flex items-center gap-3"><span class="text-green-400">✔</span> <span class="font-bold text-gray-200">50% комиссия с личных продаж</span></li>
-                                        <li class="flex items-center gap-3"><span class="text-green-400">✔</span> <span class="font-bold text-gray-200">Пассив с 5 уровней глубины</span></li>
-                                        <li class="flex items-center gap-3"><span class="text-green-400">✔</span> <span class="font-bold text-gray-200">CRM-Дашборд и экспорт базы</span></li>
-                                    </ul>
+                                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">📊 Ваша комиссия сейчас</p>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                                            <span class="text-gray-300 text-xs">1 уровень (личные продажи)</span>
+                                            <span class="font-black text-red-400">25%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                                            <span class="text-gray-300 text-xs">2 уровень</span>
+                                            <span class="font-black text-red-400">3%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                                            <span class="text-gray-300 text-xs">3 уровень</span>
+                                            <span class="font-black text-red-400">3%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5">
+                                            <span class="text-gray-400 text-xs">4–5 уровни</span>
+                                            <span class="font-black text-gray-600 text-xs">🔒 Закрыты</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-gray-500 mt-3 leading-relaxed">Снимите ограничения — открывайте <b class="text-green-400">50%</b> на 1-м уровне и <b class="text-green-400">5%</b> до 5-го уровня.</p>
                                 </div>
 
                                 <a id="btn-upgrade-pro" href="#" target="_blank" class="btn block w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 py-3.5 rounded-xl font-black text-xs text-center text-white shadow-[0_0_30px_rgba(168,85,247,0.3)] uppercase tracking-wide">
@@ -447,6 +472,35 @@ eleventyExcludeFromCollections: true
                                 <button onclick="window.open('/crm/?token='+webAppJwt, '_blank')" class="btn w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-xl font-black text-xs uppercase shadow-xl transition-colors">
                                     📊 Открыть CRM Дашборд
                                 </button>
+
+                                <div class="mt-6 bg-black/40 rounded-xl p-4 border border-purple-500/20 text-left">
+                                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">📊 Ваша комиссия PRO</p>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                                            <span class="text-gray-300 text-xs">1 уровень (личные продажи)</span>
+                                            <span class="font-black text-green-400">50%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                                            <span class="text-gray-300 text-xs">2 уровень</span>
+                                            <span class="font-black text-green-400">5%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                                            <span class="text-gray-300 text-xs">3 уровень</span>
+                                            <span class="font-black text-green-400">5%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                                            <span class="text-gray-300 text-xs">4 уровень</span>
+                                            <span class="font-black text-green-400">5%</span>
+                                            <span class="text-[9px] text-gray-500">🚀</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5">
+                                            <span class="text-gray-300 text-xs">5 уровень</span>
+                                            <span class="font-black text-green-400">5%</span>
+                                            <span class="text-[9px] text-gray-500">🚀</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-3 leading-relaxed">Уровни 4–5 доступны при активном тарифе <b class="text-cyan-400">SetHubble «Ракета» и «Шаттл»</b>.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
