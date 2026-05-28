@@ -926,8 +926,10 @@ eleventyExcludeFromCollections: true
                 document.getElementById("theoryStatus").className = "text-[10px] font-black text-yellow-500";
                 document.getElementById("theoryStatus").textContent = "⏳ В процессе";
             }
-            const practiceXp = Math.max(0, xp - (theoryFinished ? 10 : 0));
-            document.getElementById("practiceStatus").textContent = `${practiceXp}/90 🪙`;
+            const practiceXp = Math.min(Math.max(0, xp - (theoryFinished ? 10 : 0)), 90);
+            const practiceFinished = practiceXp >= 90;
+            document.getElementById("practiceStatus").textContent = practiceFinished ? "✅ Пройдено" : `${practiceXp}/90 🪙`;
+            document.getElementById("practiceStatus").className = `text-[10px] font-black ${practiceFinished ? 'text-green-400' : 'text-gray-500'}`;
 
             // Hub Apps
             renderApps(userData.is_pro, webAppJwt);
