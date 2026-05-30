@@ -561,11 +561,11 @@ eleventyExcludeFromCollections: true
 
       <!-- BLOCK 2: Network -->
       <div class="glass-panel">
-        <div class="section-label">&#x1F465; Ваша сеть</div>
+        <div class="section-label">&#x1F465; Как будет расти ваша сеть</div>
 
         <div class="slider-row">
           <div class="slider-label">
-            <span>Сколько человек вы привели лично</span>
+            <span>Сколько человек пригласишь ТЫ (1 уровень)</span>
             <span class="slider-val" id="net-personal-val">3</span>
           </div>
           <input type="range" id="net-personal" min="0" max="100" value="3">
@@ -573,50 +573,50 @@ eleventyExcludeFromCollections: true
 
         <div class="slider-row">
           <div class="slider-label">
-            <span>Сколько приводит каждый из них</span>
+            <span>Сколько пригласит каждый из них в глубину</span>
             <span class="slider-val" id="net-viral-val">2</span>
           </div>
           <input type="range" id="net-viral" min="0" max="100" value="2">
         </div>
 
-        <div class="slider-row" style="margin-bottom: 0;">
-          <div class="slider-label">
-            <span>&#x1F3AF; Коэффициент реалистичности</span>
-            <span class="slider-val" id="net-realism-val">50%</span>
-          </div>
-          <input type="range" id="net-realism" min="1" max="100" value="50">
-          <div class="slider-hint">
-            <span>1% (максимальный пессимизм)</span>
-            <span>100% (теоретический идеал)</span>
-          </div>
-          <div style="font-size: 10px; color: #6b7280; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 6px;">
-            &#x2139;&#xFE0F; Не влияет на 1 уровень. Чем глубже уровень — тем сильнее воздействие.
-          </div>
-        </div>
-      </div>
+        <details style="margin-top: 16px;">
+          <summary style="font-size: 11px; color: #6b7280; cursor: pointer; user-select: none; outline: none;">&#x2699;&#xFE0F; Продвинутые настройки конверсии</summary>
+          <div style="padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 12px;">
+            <div class="slider-row">
+              <div class="slider-label">
+                <span>% купят NeuroGen PRO ($20)</span>
+                <span class="slider-val" id="conv-pro-val">10%</span>
+              </div>
+              <input type="range" id="conv-pro" min="1" max="100" value="10">
+            </div>
 
-      <!-- BLOCK 3: Conversion -->
-      <div class="glass-panel">
-        <div class="section-label">&#x1F4C8; Конверсия в продажи</div>
+            <div class="slider-row">
+              <div class="slider-label">
+                <span>% купят тариф SetHubble</span>
+                <span class="slider-val" id="conv-sh-val">5%</span>
+              </div>
+              <input type="range" id="conv-sh" min="1" max="100" value="5">
+              <div style="font-size: 10px; color: #6b7280; margin-top: 4px;">
+                Не зависит от продаж PRO — в сети могут быть люди, не связанные с NeuroGen
+              </div>
+            </div>
 
-        <div class="slider-row">
-          <div class="slider-label">
-            <span>% людей в сети купят NeuroGen PRO ($20)</span>
-            <span class="slider-val" id="conv-pro-val">10%</span>
+            <div class="slider-row" style="margin-bottom: 0;">
+              <div class="slider-label">
+                <span>Коэффициент затухания сети</span>
+                <span class="slider-val" id="net-realism-val">50%</span>
+              </div>
+              <input type="range" id="net-realism" min="1" max="100" value="50">
+              <div class="slider-hint">
+                <span>1% (быстрое затухание)</span>
+                <span>100% (без затухания)</span>
+              </div>
+              <div style="font-size: 10px; color: #6b7280; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 6px;">
+                &#x2139;&#xFE0F; Не влияет на 1 уровень. Чем глубже — тем сильнее затухание сети.
+              </div>
+            </div>
           </div>
-          <input type="range" id="conv-pro" min="1" max="100" value="10">
-        </div>
-
-        <div class="slider-row" style="margin-bottom: 0;">
-          <div class="slider-label">
-            <span>% людей в сети купят тариф SetHubble</span>
-            <span class="slider-val" id="conv-sh-val">5%</span>
-          </div>
-          <input type="range" id="conv-sh" min="1" max="100" value="5">
-          <div style="font-size: 10px; color: #6b7280; margin-top: 4px;">
-            Не зависит от продаж PRO — в сети могут быть люди, не связанные с NeuroGen
-          </div>
-        </div>
+        </details>
       </div>
 
       <!-- BLOCK 4: Tariff (secondary) -->
@@ -652,6 +652,10 @@ eleventyExcludeFromCollections: true
 
         <div id="tariff-warning" class="warning-block hidden">
           &#x26A0;&#xFE0F; <strong>Конфликт статусов:</strong> Вы купили PRO, чтобы получать комиссию с 5 уровней. Но тариф <strong>Plane</strong> обрезает выплаты на 3-м уровне. Вы теряете деньги на 4-м и 5-м уровнях. Перейдите на Rocket или Shuttle, чтобы раскрыть полный потенциал PRO.
+        </div>
+
+        <div id="cap-warning" class="warning-block hidden" style="border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.12);">
+          &#x1F6D1; <strong>Потолок дохода!</strong> Ваша сеть заработала бы больше, но тариф обрезает пассивный доход. Перейдите на тариф выше, чтобы забрать сгоревшие деньги.
         </div>
       </div>
 
@@ -700,11 +704,11 @@ eleventyExcludeFromCollections: true
         <p>Купив PRO, вы получаете бонус к ставкам (50% вместо 25%) и дополнительный уровень глубины (5 вместо 3) &#x2192; доход удваивается. Первая же продажа PRO окупает ваши вложения.</p>
       </div>
 
-      <!-- BLOCK 5d: Missed profit SH (PRO+Plane users) -->
+      <!-- BLOCK 5d: Missed profit SH (PRO+Plane or PRO+Rocket+capped) -->
       <div id="missed-sh-block" class="missed-block-sm hidden">
-        <h4>&#x26A0;&#xFE0F; PRO не раскрыт — нужен Rocket</h4>
+        <h4 id="missed-sh-title">&#x26A0;&#xFE0F; PRO не раскрыт — нужен Rocket</h4>
         <div class="loss-val" id="missed-sh-amt">$0</div>
-        <div style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Вы уже купили PRO, но Plane обрезает 4-5 уровни. Rocket за $110/год открывает полную глубину PRO (5 ур.) + доход с тарифов до 10 ур.</div>
+        <div id="missed-sh-text" style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Вы уже купили PRO, но Plane обрезает 4-5 уровни. Rocket за $110/год открывает полную глубину PRO (5 ур.) + доход с тарифов до 10 ур.</div>
       </div>
 
       <!-- BLOCK 5e: Optimal -->

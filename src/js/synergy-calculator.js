@@ -7,9 +7,9 @@
       pro:   { l1: 0.50, l2: 0.05, depth: 5 },
     },
     sh: {
-      plane:  { depth: 3,  price: 0   },
-      rocket: { depth: 10, price: 110 },
-      shuttle:{ depth: 10, price: 350 },
+      plane:  { depth: 3,  price: 0,   cap: 10000 },
+      rocket: { depth: 10, price: 110, cap: 100000 },
+      shuttle:{ depth: 10, price: 350, cap: 12000000 },
       commL1: 0.40,
       commL2: 0.03,
     },
@@ -40,7 +40,7 @@
       'conv-pro', 'conv-pro-val',
       'conv-sh', 'conv-sh-val',
       'tariff-plane', 'tariff-rocket', 'tariff-shuttle',
-      'tariff-warning',
+      'tariff-warning', 'cap-warning',
       'pro-price-display',
       'result-people', 'result-pro-buy', 'result-sh-buy',
       'result-pro-inc', 'result-sh-inc', 'result-total',
@@ -122,43 +122,33 @@
 
   function calc(v) {
     var current = calcScenario(v, v.status, v.tariff);
+    var optimal = null;
     var missedPro = 0;
     var missedSh = 0;
-    var optimal = null;
 
     if (v.status === 'free') {
-      optimal = calcScenario(v, 'pro', v.tariff);
-      missedPro = optimal.totalIncome - current.totalIncome;
-    } else if (v.status === 'pro' && v.tariff === 'plane') {
+      var withPro = calcScenario(v, 'pro', v.tariff);
       optimal = calcScenario(v, 'pro', 'rocket');
+      missedPro = withPro.totalIncome - current.totalIncome;
+      missedSh = optimal.totalIncome - withPro.totalIncome;
+    } else if (v.tariff === 'plane') {
+      optimal = calcScenario(v, 'pro', 'rocket');
+      missedSh = optimal.totalIncome - current.totalIncome;
+    } else if (v.tariff === 'rocket' && current.isCapped) {
+      optimal = calcScenario(v, 'pro', 'shuttle');
       missedSh = optimal.totalIncome - current.totalIncome;
     }
 
-    return {
-      levels: current.levels,
-      byLevel: current.byLevel,
-      proIncome: current.proIncome,
-      shIncome: current.shIncome,
-      totalIncome: current.totalIncome,
-      proDepth: current.proDepth,
-      shDepth: current.shDepth,
-      proPrice: current.proPrice,
-      totalPeople: current.totalPeople,
-      totalProBuyers: current.totalProBuyers,
-      totalShBuyers: current.totalShBuyers,
-      missedPro: missedPro,
-      missedSh: missedSh,
-      optimal: optimal,
-    };
+    return { current: current, optimal: optimal, missedPro: missedPro, missedSh: missedSh };
   }
 
   function calcScenario(v, status, tariff) {
     var ngCfg = CFG.ng[status];
     var shCfg = CFG.sh[tariff];
     var proPrice = 20;
+    var maxDepth = 10;
     var proDepth = Math.min(ngCfg.depth, shCfg.depth);
     var shDepth = shCfg.depth;
-    var maxDepth = Math.max(proDepth, shDepth);
 
     var levels = [];
     for (var l = 1; l <= maxDepth; l++) {
@@ -173,141 +163,204 @@
       levels.push({ level: l, people: people });
     }
 
-    var proIncome = 0;
-    var shIncome = 0;
+    var proIncomeL1 = 0, proIncomeL2plus = 0;
+    var shIncomeL1 = 0, shIncomeL2plus = 0;
     var byLevel = [];
-    var totalPeople = 0;
-    var totalProBuyers = 0;
-    var totalShBuyers = 0;
+    var totalPeople = 0, totalProBuyers = 0, totalShBuyers = 0;
 
     for (var i = 0; i < levels.length; i++) {
       var lv = levels[i];
+      var levelNum = i + 1;
       totalPeople += lv.people;
       var proB = lv.people * v.convPro / 100;
       var shB = lv.people * v.convSh / 100;
       totalProBuyers += proB;
       totalShBuyers += shB;
-      var pInc = 0;
-      var sInc = 0;
 
-      if (i < proDepth) {
-        var rate = i === 0 ? ngCfg.l1 : ngCfg.l2;
+      var pInc = 0, sInc = 0;
+
+      if (levelNum <= proDepth) {
+        var rate = levelNum === 1 ? ngCfg.l1 : ngCfg.l2;
         pInc = proB * proPrice * rate;
-        proIncome += pInc;
+        if (levelNum === 1) proIncomeL1 += pInc; else proIncomeL2plus += pInc;
       }
-      if (i < shDepth) {
-        var rateSH = i === 0 ? CFG.sh.commL1 : CFG.sh.commL2;
+      if (levelNum <= shDepth) {
+        var rateSH = levelNum === 1 ? CFG.sh.commL1 : CFG.sh.commL2;
         sInc = shB * shCfg.price * rateSH;
-        shIncome += sInc;
+        if (levelNum === 1) shIncomeL1 += sInc; else shIncomeL2plus += sInc;
       }
       byLevel.push({ pro: pInc, sh: sInc, total: pInc + sInc });
     }
 
+    // Caps on L2+ only — L1 всегда uncapped
+    var isCapped = false;
+    var l2plusTotal = proIncomeL2plus + shIncomeL2plus;
+    if (l2plusTotal > shCfg.cap && shCfg.cap > 0) {
+      isCapped = true;
+      var ratio = shCfg.cap / l2plusTotal;
+      proIncomeL2plus *= ratio;
+      shIncomeL2plus *= ratio;
+    }
+
+    var totalPro = Math.round(proIncomeL1 + proIncomeL2plus);
+    var totalSh = Math.round(shIncomeL1 + shIncomeL2plus);
+
     return {
       levels: levels,
       byLevel: byLevel,
-      proIncome: proIncome,
-      shIncome: shIncome,
-      totalIncome: proIncome + shIncome,
-      proDepth: proDepth,
-      shDepth: shDepth,
-      proPrice: proPrice,
+      proIncome: totalPro,
+      shIncome: totalSh,
+      totalIncome: totalPro + totalSh,
+      isCapped: isCapped,
+      capLimit: shCfg.cap,
       totalPeople: totalPeople,
-      totalProBuyers: totalProBuyers,
-      totalShBuyers: totalShBuyers,
+      totalProBuyers: Math.round(totalProBuyers),
+      totalShBuyers: Math.round(totalShBuyers),
+      l1Income: Math.round(proIncomeL1 + shIncomeL1),
     };
   }
 
-  function render(result, v, dom) {
+  function render(res, v, dom) {
+    var cur = res.current;
     var fmt = function (n) { return Math.round(n).toLocaleString('ru-RU'); };
     var fmtd = function (n) { return '$' + fmt(n); };
-    var pp = (v.status === 'pro' || v.hasCoins) ? 20 : 40;
 
-    setText(dom['result-people'], fmt(result.totalPeople));
-    setText(dom['result-pro-buy'], fmt(result.totalProBuyers));
-    setText(dom['result-sh-buy'], fmt(result.totalShBuyers));
-    setText(dom['result-pro-inc'], fmtd(result.proIncome));
-    setText(dom['result-sh-inc'], fmtd(result.shIncome));
-    setText(dom['result-total'], fmtd(result.totalIncome));
+    setText(dom['result-people'], fmt(cur.totalPeople));
+    setText(dom['result-pro-buy'], fmt(cur.totalProBuyers));
+    setText(dom['result-sh-buy'], fmt(cur.totalShBuyers));
+    setText(dom['result-pro-inc'], fmtd(cur.proIncome));
+    setText(dom['result-sh-inc'], fmtd(cur.shIncome));
+    setText(dom['result-total'], fmtd(cur.totalIncome));
 
-    if (v.status === 'free') {
-      toggle(dom['missed-pro-block'], true);
-      setText(dom['missed-pro-amt'], fmtd(result.missedPro));
+    // Cap warning
+    if (cur.isCapped) {
+      dom['cap-warning'].innerHTML = '\u{1F6D1} <strong>\u041F\u043E\u0442\u043E\u043B\u043E\u043A \u0434\u043E\u0445\u043E\u0434\u0430!</strong> \u0412\u0430\u0448\u0430 \u0441\u0435\u0442\u044C \u0437\u0430\u0440\u0430\u0431\u043E\u0442\u0430\u043B\u0430 \u0431\u044B \u0431\u043E\u043B\u044C\u0448\u0435, \u043D\u043E \u0442\u0430\u0440\u0438\u0444 \u043E\u0431\u0440\u0435\u0437\u0430\u0435\u0442 \u043F\u0430\u0441\u0441\u0438\u0432\u043D\u044B\u0439 \u0434\u043E\u0445\u043E\u0434 \u043D\u0430 $' + fmt(cur.capLimit) + ' \u0432 \u0433\u043E\u0434. \u041F\u0435\u0440\u0435\u0439\u0434\u0438\u0442\u0435 \u043D\u0430 \u0442\u0430\u0440\u0438\u0444 \u0432\u044B\u0448\u0435, \u0447\u0442\u043E\u0431\u044B \u0437\u0430\u0431\u0440\u0430\u0442\u044C \u0441\u0433\u043E\u0440\u0435\u0432\u0448\u0438\u0435 \u0434\u0435\u043D\u044C\u0433\u0438.';
+      toggle(dom['cap-warning'], true);
     } else {
-      toggle(dom['missed-pro-block'], false);
+      toggle(dom['cap-warning'], false);
     }
 
-    if (v.status === 'pro' && v.tariff === 'plane') {
-      toggle(dom['missed-sh-block'], true);
-      setText(dom['missed-sh-amt'], fmtd(result.missedSh));
-    } else {
-      toggle(dom['missed-sh-block'], false);
+    // Missed PRO
+    toggle(dom['missed-pro-block'], v.status === 'free');
+    if (v.status === 'free') setText(dom['missed-pro-amt'], fmtd(res.missedPro));
+
+    // Missed SH: PRO+Plane или PRO+Rocket+capped
+    var showSh = (v.status === 'pro' && v.tariff === 'plane')
+      || (v.status === 'pro' && v.tariff === 'rocket' && cur.isCapped);
+    toggle(dom['missed-sh-block'], showSh);
+    if (showSh) {
+      setText(dom['missed-sh-amt'], fmtd(res.missedSh));
+      if (v.tariff === 'rocket' && cur.isCapped) {
+        setText(dom['missed-sh-title'], '\u{1F6F8} \u041F\u043E\u0442\u043E\u043B\u043E\u043A Rocket \u043F\u0440\u043E\u0431\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E Shuttle');
+        setText(dom['missed-sh-text'], '\u0412\u044B \u0443\u043F\u0435\u0440\u043B\u0438\u0441\u044C \u0432 \u043F\u043E\u0442\u043E\u043B\u043E\u043A $100K. \u0422\u0430\u0440\u0438\u0444 Shuttle ($350/\u0433\u043E\u0434) \u043F\u043E\u0434\u043D\u0438\u043C\u0430\u0435\u0442 \u043B\u0438\u043C\u0438\u0442 \u0434\u043E $12M \u0438 \u0434\u0430\u0451\u0442 \u043F\u043E\u043B\u043D\u044B\u0439 \u0431\u0438\u043D\u0430\u0440.');
+      } else {
+        setText(dom['missed-sh-title'], '\u26A0\uFE0F PRO \u043D\u0435 \u0440\u0430\u0441\u043A\u0440\u044B\u0442 \u2014 \u043D\u0443\u0436\u0435\u043D Rocket');
+        setText(dom['missed-sh-text'], '\u0412\u044B \u0443\u0436\u0435 \u043A\u0443\u043F\u0438\u043B\u0438 PRO, \u043D\u043E Plane \u043E\u0431\u0440\u0435\u0437\u0430\u0435\u0442 4-5 \u0443\u0440\u043E\u0432\u043D\u0438. Rocket \u0437\u0430 $110/\u0433\u043E\u0434 \u043E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442 \u043F\u043E\u043B\u043D\u0443\u044E \u0433\u043B\u0443\u0431\u0438\u043D\u0443 PRO (5 \u0443\u0440.) + \u0434\u043E\u0445\u043E\u0434 \u0441 \u0442\u0430\u0440\u0438\u0444\u043E\u0432 \u0434\u043E 10 \u0443\u0440.');
+      }
     }
 
-    toggle(dom['optimal-block'], v.status === 'pro' && (v.tariff === 'rocket' || v.tariff === 'shuttle'));
+    // Optimal
+    toggle(dom['optimal-block'], v.status === 'pro' && (v.tariff === 'rocket' || v.tariff === 'shuttle') && !cur.isCapped);
 
+    // CTA — 4 состояния
     if (dom['cta-button']) {
       if (v.status === 'free') {
-        dom['cta-button'].textContent = '\u{1F525} Купить NeuroGen PRO за $' + pp;
+        var pp = v.hasCoins ? 20 : 40;
+        dom['cta-button'].textContent = '\u{1F525} \u0423\u0434\u0432\u043E\u0438\u0442\u044C \u0434\u043E\u0445\u043E\u0434: \u041A\u0443\u043F\u0438\u0442\u044C PRO \u0437\u0430 $' + pp;
         dom['cta-button'].href = 'https://t.me/sethubble_biz_bot?start=buy_pro';
-      } else if (v.status === 'pro' && v.tariff === 'plane') {
-        dom['cta-button'].textContent = '\u{1F525} Купить SetHubble Rocket за $110';
+        dom['cta-button'].className = 'btn-main';
+      } else if (v.tariff === 'plane') {
+        dom['cta-button'].textContent = '\u{1F680} \u0420\u0430\u0437\u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0443\u0440\u043E\u0432\u043D\u0438: \u041A\u0443\u043F\u0438\u0442\u044C Rocket ($110)';
         dom['cta-button'].href = 'https://t.me/sethubble_biz_bot?start=calculator_rocket';
+        dom['cta-button'].className = 'btn-main';
+      } else if (v.tariff === 'rocket' && cur.isCapped) {
+        dom['cta-button'].textContent = '\u{1F6F8} \u041F\u0440\u043E\u0431\u0438\u0442\u044C \u043F\u043E\u0442\u043E\u043B\u043E\u043A: \u041A\u0443\u043F\u0438\u0442\u044C Shuttle ($350)';
+        dom['cta-button'].href = 'https://t.me/sethubble_biz_bot?start=calculator_shuttle';
+        dom['cta-button'].className = 'btn-main';
       } else {
-        dom['cta-button'].textContent = '\u{1F389} Оптимальная конфигурация';
+        dom['cta-button'].textContent = '\u{1F389} \u041E\u043F\u0442\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u043A\u043E\u043D\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044F';
         dom['cta-button'].href = '#';
+        dom['cta-button'].className = 'btn-disabled';
       }
     }
   }
 
   var chartInstance = null;
 
-  function renderChart(result, v, dom) {
+  function renderChart(res, v, dom) {
     if (!dom['income-chart']) return;
     if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
     if (typeof Chart === 'undefined') {
-      setTimeout(function () { renderChart(result, v, dom); }, 300);
+      setTimeout(function () { renderChart(res, v, dom); }, 300);
       return;
     }
 
-    var maxLevels = result.levels.length;
-    if (result.optimal && result.optimal.levels.length > maxLevels) {
-      maxLevels = result.optimal.levels.length;
+    var maxL = 10;
+    var labels = [];
+    for (var l = 1; l <= maxL; l++) labels.push('L' + l);
+
+    function cumCapped(byLevel, capLimit, l1Income) {
+      var data = [];
+      var l2Cum = 0;
+      for (var i = 0; i < maxL; i++) {
+        if (i < byLevel.length) {
+          if (i === 0) {
+            data.push(Math.round(byLevel[0].total));
+          } else {
+            l2Cum += byLevel[i].total;
+            data.push(Math.round(l1Income + Math.min(l2Cum, capLimit)));
+          }
+        } else {
+          data.push(data.length > 0 ? data[data.length - 1] : 0);
+        }
+      }
+      return data;
     }
 
-    var labels = [];
-    for (var l = 1; l <= maxLevels; l++) labels.push('L' + l);
+    function cumUncapped(byLevel) {
+      var data = [];
+      var c = 0;
+      for (var i = 0; i < maxL; i++) {
+        if (i < byLevel.length) {
+          c += byLevel[i].total;
+          data.push(Math.round(c));
+        } else {
+          data.push(c);
+        }
+      }
+      return data;
+    }
 
-    var currentData = labels.map(function (_, i) {
-      if (i < result.byLevel.length) return Math.round(result.byLevel[i].total);
-      return 0;
-    });
+    var isPain = res.missedPro > 0 || res.missedSh > 0 || res.current.isCapped;
+    var currentColor = isPain ? '#ef4444' : '#06b6d4';
+    var currentData = cumCapped(res.current.byLevel, res.current.capLimit, res.current.l1Income);
 
     var datasets = [{
-      label: '\u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u0434\u043E\u0445\u043E\u0434',
+      label: isPain ? '\u0412\u0430\u0448 \u0434\u043E\u0445\u043E\u0434 (\u0441 \u043F\u043E\u0442\u0435\u0440\u044F\u043C\u0438)' : '\u0412\u0430\u0448 \u0434\u043E\u0445\u043E\u0434',
       data: currentData,
-      borderColor: '#06b6d4',
-      backgroundColor: 'rgba(6,182,212,0.08)',
+      borderColor: currentColor,
+      backgroundColor: isPain ? 'rgba(239,68,68,0.08)' : 'rgba(6,182,212,0.08)',
       fill: true,
       tension: 0.3,
       pointRadius: 4,
     }];
 
-    if (result.optimal && result.missedPro + result.missedSh > 0) {
-      var optimalLabel = v.status === 'free' ? '\u0421 PRO' : '\u0421 Rocket';
-      var optimalData = labels.map(function (_, i) {
-        if (i < result.optimal.byLevel.length) return Math.round(result.optimal.byLevel[i].total);
-        return 0;
-      });
+    var hasMissed = res.missedPro > 0 || res.missedSh > 0;
+    if (hasMissed && res.optimal) {
+      var optLabel = (res.current.isCapped && v.tariff === 'rocket')
+        ? '\u0414\u043E\u0445\u043E\u0434 \u0441 Shuttle'
+        : '\u0414\u043E\u0445\u043E\u0434 \u0441 PRO + Rocket';
+      var optData = cumUncapped(res.optimal.byLevel);
       datasets.push({
-        label: optimalLabel,
-        data: optimalData,
-        borderColor: '#a855f7',
-        backgroundColor: 'rgba(168,85,247,0.08)',
+        label: optLabel,
+        data: optData,
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.08)',
         borderDash: [5, 4],
         fill: true,
         tension: 0.3,
         pointRadius: 4,
+        borderWidth: 2,
       });
     }
 
@@ -318,8 +371,13 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: {
-            labels: { color: '#d1d5db', font: { size: 11, weight: 'bold' } },
+          legend: { labels: { color: '#d1d5db', font: { size: 11, weight: 'bold' } } },
+          tooltip: {
+            callbacks: {
+              label: function (ctx) {
+                return ctx.dataset.label + ': $' + Math.round(ctx.parsed.y).toLocaleString('ru-RU');
+              },
+            },
           },
         },
         scales: {
