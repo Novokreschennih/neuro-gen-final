@@ -128,9 +128,14 @@
 
     if (v.status === 'free') {
       var withPro = calcScenario(v, 'pro', v.tariff);
-      optimal = calcScenario(v, 'pro', 'rocket');
       missedPro = withPro.totalIncome - current.totalIncome;
-      missedSh = optimal.totalIncome - withPro.totalIncome;
+      var bestTariff = v.tariff === 'shuttle' ? 'shuttle' : 'rocket';
+      if (bestTariff !== v.tariff) {
+        optimal = calcScenario(v, 'pro', bestTariff);
+        missedSh = optimal.totalIncome - withPro.totalIncome;
+      } else {
+        optimal = withPro;
+      }
     } else if (v.tariff === 'plane') {
       optimal = calcScenario(v, 'pro', 'rocket');
       missedSh = optimal.totalIncome - current.totalIncome;
@@ -278,9 +283,10 @@
         dom['cta-button'].href = 'https://t.me/sethubble_biz_bot?start=calculator_shuttle';
         dom['cta-button'].className = 'btn-main';
       } else {
-        dom['cta-button'].textContent = '\u{1F389} \u041E\u043F\u0442\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u043A\u043E\u043D\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044F';
-        dom['cta-button'].href = '#';
-        dom['cta-button'].className = 'btn-disabled';
+        var tariffName = v.tariff === 'shuttle' ? 'Shuttle' : 'Rocket';
+        dom['cta-button'].textContent = '\u{1F389} \u0410\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0441\u0432\u044F\u0437\u043A\u0443 PRO + ' + tariffName;
+        dom['cta-button'].href = 'https://t.me/sethubble_biz_bot?start=calculator_' + v.tariff;
+        dom['cta-button'].className = 'btn-main';
       }
     }
   }
