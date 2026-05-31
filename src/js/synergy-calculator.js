@@ -213,117 +213,82 @@
   }
 
   function render(scenarios, dom) {
-    var t = dom.table;
-    if (!t) return;
+    var c = dom.table;
+    if (!c) return;
 
     var fmt = function (n) { return Math.round(n).toLocaleString('ru-RU'); };
     var fmd = function (n) { return '$' + fmt(n); };
 
     var keys = ['free', 'pro', 'rocket', 'shuttle'];
-    var keyNames = {
-      free: 'FREE<br><span style="font-size:10px;color:#6b7280;">Plane</span>',
-      pro: 'PRO<br><span style="font-size:10px;color:#6b7280;">Plane</span>',
-      rocket: 'PRO + Rocket<br><span style="font-size:10px;color:#6b7280;">$130/год</span>',
-      shuttle: 'PRO + Shuttle<br><span style="font-size:10px;color:#6b7280;">$370/год</span>',
+    var keyLabels = {
+      free: 'FREE', pro: 'PRO',
+      rocket: 'PRO+Rocket', shuttle: 'PRO+Shuttle',
+    };
+    var keySubs = {
+      free: 'Plane', pro: 'Plane',
+      rocket: '$130/год', shuttle: '$370/год',
     };
 
     var entryCosts = { free: 0, pro: 20, rocket: 130, shuttle: 370 };
     keys.forEach(function (k) { scenarios[k].entryCost = entryCosts[k]; });
 
-    var rows = [];
+    var colors = {
+      free:   { border: 'rgba(59,130,246,0.3)', bg: 'rgba(59,130,246,0.05)', accent: '#3b82f6', netClr: '#f59e0b' },
+      pro:    { border: 'rgba(59,130,246,0.5)', bg: 'rgba(59,130,246,0.08)', accent: '#3b82f6', netClr: '#22c55e' },
+      rocket: { border: 'rgba(34,197,94,0.4)',  bg: 'rgba(34,197,94,0.06)',  accent: '#22c55e', netClr: '#22c55e' },
+      shuttle:{ border: 'rgba(245,158,11,0.4)', bg: 'rgba(245,158,11,0.06)', accent: '#f59e0b', netClr: '#f59e0b' },
+    };
 
-    function cell(key, html, cls) {
-      return '<td class="tc ' + (cls || '') + '" data-key="' + key + '">' + html + '</td>';
-    }
-
-    // Header
-    rows.push('<tr class="tr-header"><td class="tc th"></td>');
-    keys.forEach(function (k) {
-      rows.push(cell(k, keyNames[k], 'col-header'));
-    });
-    rows.push('</tr>');
-
-    // Entry cost
-    rows.push('<tr class="tr-row"><td class="tc th">Стоимость входа</td>');
-    keys.forEach(function (k) {
-      rows.push(cell(k, fmd(entryCosts[k])));
-    });
-    rows.push('</tr>');
-
-    // PRO depth description
-    rows.push('<tr class="tr-row"><td class="tc th">Доход с PRO</td>');
+    var cards = [];
     keys.forEach(function (k) {
       var s = scenarios[k];
-      var txt;
-      if (k === 'free') txt = '25% L1 · 3% L2-L3';
-      else if (k === 'pro') txt = '50% L1 · 5% L2 — 🛑 3 ур. (Plane!)';
-      else txt = '50% L1 · 5% L2-L5 ✅';
-      rows.push(cell(k, txt, s.proDepth < 5 ? 'depth-warn' : 'depth-ok'));
-    });
-    rows.push('</tr>');
-
-    // SH depth
-    rows.push('<tr class="tr-row"><td class="tc th">Доход с тарифов SH</td>');
-    keys.forEach(function (k) {
-      var s = scenarios[k];
-      var txt = s.shDepth < 10 ? '🛑 ' + s.shDepth + ' ур.' : '✅ до 10 ур.';
-      if (k === 'shuttle') txt += ' + бесконечный бинар';
-      rows.push(cell(k, txt, s.shDepth < 10 ? 'depth-warn' : 'depth-ok'));
-    });
-    rows.push('</tr>');
-
-    // Cap
-    rows.push('<tr class="tr-row"><td class="tc th">Лимит (L2+)</td>');
-    keys.forEach(function (k) {
-      rows.push(cell(k, fmd(scenarios[k].capLimit), scenarios[k].isCapped ? 'capped' : ''));
-    });
-    rows.push('</tr>');
-
-    // Fee
-    rows.push('<tr class="tr-row"><td class="tc th">Комиссия вывода</td>');
-    keys.forEach(function (k) {
-      rows.push(cell(k, (scenarios[k].fee * 100) + '%'));
-    });
-    rows.push('</tr>');
-
-    // Gross income
-    rows.push('<tr class="tr-row"><td class="tc th">Грязный доход</td>');
-    keys.forEach(function (k) {
-      rows.push(cell(k, '<span class="gross-val">' + fmd(scenarios[k].grossIncome) + '</span>', 'cell-gross'));
-    });
-    rows.push('</tr>');
-
-    // Missed
-    rows.push('<tr class="tr-row"><td class="tc th">Сгорело 🔴</td>');
-    keys.forEach(function (k) {
-      var m = scenarios[k].missed;
-      var html = m > 0 ? '<span class="missed-val">-' + fmd(m) + '</span>' : '<span style="color:#22c55e;">$0</span>';
-      rows.push(cell(k, html, m > 0 ? 'cell-missed' : ''));
-    });
-    rows.push('</tr>');
-
-    // Binary bonus
-    rows.push('<tr class="tr-row"><td class="tc th">+ Бинар</td>');
-    keys.forEach(function (k) {
-      var bb = scenarios[k].binaryBonus;
-      rows.push(cell(k, bb > 0 ? '<span class="bonus-val">+' + fmd(bb) + '</span>' : '—'));
-    });
-    rows.push('</tr>');
-
-    // Net income
-    rows.push('<tr class="tr-row tr-net"><td class="tc th">Чистыми на руки</td>');
-    keys.forEach(function (k) {
-      var s = scenarios[k];
+      var cl = colors[k];
       var net = Math.round(s.grossIncome * (1 - s.fee) + s.binaryBonus - entryCosts[k]);
-      rows.push(cell(k, '<span class="net-val">' + fmd(net) + '</span>', s.missed > 0 ? 'cell-net-warn' : 'cell-net-ok'));
+
+      var proTxt = k === 'free' ? '25% L1 · 3% L2-L3' : '50% L1 · 5% L2-L' + s.proDepth;
+      var shTxt = s.shDepth < 10 ? '🛑 ' + s.shDepth + ' ур.' : '✅ до 10 ур.';
+      var missed = s.missed > 0
+        ? '<div class="card-missed">🔴 -' + fmd(s.missed) + '</div>'
+        : '';
+      var bonus = s.binaryBonus > 0
+        ? '<div class="card-bonus">+ Бинар: <strong>+' + fmd(s.binaryBonus) + '</strong></div>'
+        : '';
+      var capped = s.isCapped ? ' 🔴 лимит' : '';
+
+      cards.push(
+        '<div class="card" data-key="' + k + '" style="--card-border:' + cl.border + ';--card-bg:' + cl.bg + ';--card-accent:' + cl.accent + '">'
+          + '<div class="card-header">'
+            + '<div>'
+              + '<div class="card-title" style="color:' + cl.accent + '">' + keyLabels[k] + '</div>'
+              + '<div class="card-subtitle">' + keySubs[k] + '</div>'
+            + '</div>'
+            + '<div class="card-entry">' + fmd(entryCosts[k]) + '</div>'
+          + '</div>'
+          + '<div class="card-main">'
+            + '<div class="card-gross-val">' + fmd(s.grossIncome) + '</div>'
+            + '<div class="card-gross-label">грязный доход</div>'
+          + '</div>'
+          + missed
+          + '<div class="card-details">'
+            + '<div class="card-detail">' + proTxt + '</div>'
+            + '<div class="card-detail">SH: ' + shTxt + '</div>'
+            + '<div class="card-detail">Лимит L2+: ' + fmd(s.capLimit) + capped + '</div>'
+            + '<div class="card-detail">Комиссия: ' + (s.fee * 100) + '%</div>'
+          + '</div>'
+          + bonus
+          + '<div class="card-divider"></div>'
+          + '<div class="card-net">'
+            + '<div class="card-net-val" style="color:' + cl.netClr + '">' + fmd(net) + '</div>'
+            + '<div class="card-net-label">чистыми на руки</div>'
+          + '</div>'
+        + '</div>'
+      );
     });
-    rows.push('</tr>');
 
-    t.innerHTML = rows.join('');
+    c.innerHTML = '<div class="cards-grid">' + cards.join('') + '</div>';
 
-    // Click handler for highlight
-    t.querySelectorAll('td[data-key]').forEach(function (td) {
-      td.addEventListener('click', function () {
+    c.querySelectorAll('.card').forEach(function (card) {
+      card.addEventListener('click', function () {
         highlighted = this.getAttribute('data-key');
         applyHighlight(highlighted, scenarios, dom);
       });
@@ -331,15 +296,14 @@
   }
 
   function applyHighlight(key, scenarios, dom) {
-    var t = dom.table;
-    if (!t) return;
-    t.querySelectorAll('.col-active').forEach(function (el) {
-      el.classList.remove('col-active');
+    var c = dom.table;
+    if (!c) return;
+    c.querySelectorAll('.card-active').forEach(function (el) {
+      el.classList.remove('card-active');
     });
-    t.querySelectorAll('td[data-key="' + key + '"]').forEach(function (el) {
-      el.classList.add('col-active');
+    c.querySelectorAll('.card[data-key="' + key + '"]').forEach(function (el) {
+      el.classList.add('card-active');
     });
-
     highlighted = key;
     updateCTA(key, scenarios, dom);
   }
@@ -360,6 +324,24 @@
 
   var chartInstance = null;
 
+  var labelPlugin = {
+    id: 'labelPlugin',
+    afterDraw: function (chart) {
+      var meta = chart.getDatasetMeta(0);
+      var data = chart.data.datasets[0].data;
+      var ctx = chart.ctx;
+      meta.data.forEach(function (bar, i) {
+        var val = data[i];
+        if (!val || val === 0) return;
+        ctx.fillStyle = '#d1d5db';
+        ctx.font = 'bold 11px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('$' + Math.round(val).toLocaleString('ru-RU'), bar.x, bar.y - 6);
+      });
+    },
+  };
+
   function renderChart(scenarios, dom) {
     if (!dom.chart) return;
     if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
@@ -370,38 +352,22 @@
 
     var keys = ['free', 'pro', 'rocket', 'shuttle'];
     var labels = keys.map(function (k) { return k.charAt(0).toUpperCase() + k.slice(1); });
-
     var grossData = keys.map(function (k) { return Math.round(scenarios[k].grossIncome); });
-    var missedData = keys.map(function (k) { return Math.round(scenarios[k].missed); });
-
     var barColors = ['#3b82f6', '#3b82f6', '#22c55e', '#f59e0b'];
-    var missedColors = ['rgba(239,68,68,0.5)', 'rgba(239,68,68,0.5)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)'];
-    var missedBorders = ['rgba(239,68,68,0.9)', 'rgba(239,68,68,0.9)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0)'];
 
     chartInstance = new Chart(dom.chart, {
       type: 'bar',
       data: {
         labels: labels,
-        datasets: [
-          {
-            label: 'Доход',
-            data: grossData,
-            backgroundColor: barColors,
-            borderColor: barColors,
-            borderWidth: 1,
-            borderRadius: 6,
-            barPercentage: 0.65,
-          },
-          {
-            label: 'Сгорело',
-            data: missedData,
-            backgroundColor: missedColors,
-            borderColor: missedBorders,
-            borderWidth: 2,
-            borderRadius: 6,
-            barPercentage: 0.65,
-          },
-        ],
+        datasets: [{
+          label: 'Доход',
+          data: grossData,
+          backgroundColor: barColors,
+          borderColor: barColors,
+          borderWidth: 1,
+          borderRadius: 6,
+          barPercentage: 0.55,
+        }],
       },
       options: {
         responsive: true,
@@ -411,21 +377,17 @@
           tooltip: {
             callbacks: {
               label: function (ctx) {
-                var k = keys[ctx.dataIndex];
-                var s = scenarios[k];
-                return ctx.dataset.label + ': $' + Math.round(ctx.parsed.y).toLocaleString('ru-RU');
+                return '$' + Math.round(ctx.parsed.y).toLocaleString('ru-RU');
               },
             },
           },
         },
         scales: {
           x: {
-            stacked: true,
             ticks: { color: '#d1d5db', font: { size: 11, weight: 'bold' } },
             grid: { display: false },
           },
           y: {
-            stacked: true,
             beginAtZero: true,
             ticks: {
               color: '#6b7280',
@@ -436,6 +398,7 @@
           },
         },
       },
+      plugins: [labelPlugin],
     });
   }
 

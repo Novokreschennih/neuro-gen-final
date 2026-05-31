@@ -152,69 +152,126 @@ eleventyExcludeFromCollections: true
         }
       }
 
-      /* Table */
-      .table-wrap {
-        overflow-x: auto;
-        margin-bottom: 20px;
+      /* Cards */
+      .cards-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
-      #results-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        font-size: 12px;
-        min-width: 600px;
-      }
-      #results-table .tr-header .tc {
-        padding: 14px 10px 10px;
-        font-weight: 900;
-        font-size: 13px;
-        text-align: center;
-        vertical-align: top;
-        line-height: 1.4;
-        border-bottom: 2px solid rgba(255,255,255,0.08);
-      }
-      #results-table .tr-row .tc {
-        padding: 10px;
-        text-align: center;
-        vertical-align: middle;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-        transition: background 0.15s;
+      .card {
+        background: rgba(10,10,26,0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 16px;
         cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
       }
-      #results-table .tr-row .tc.th {
-        text-align: left;
-        color: #9ca3af;
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      }
+      .card-active {
+        border-color: var(--card-accent) !important;
+        box-shadow: 0 0 24px rgba(6,182,212,0.15), inset 0 0 20px var(--card-bg);
+        background: var(--card-bg);
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+      .card-title {
+        font-size: 15px;
+        font-weight: 900;
+        line-height: 1.2;
+      }
+      .card-subtitle {
+        font-size: 10px;
+        color: #6b7280;
+        margin-top: 1px;
+      }
+      .card-entry {
+        font-size: 10px;
         font-weight: 700;
-        font-size: 11px;
+        color: #9ca3af;
+        background: rgba(255,255,255,0.06);
+        padding: 3px 10px;
+        border-radius: 8px;
         white-space: nowrap;
-        padding-left: 4px;
-        cursor: default;
-        min-width: 120px;
       }
-      #results-table .tr-net .tc {
-        border-top: 2px solid rgba(255,255,255,0.08);
-        border-bottom: none;
-        padding: 14px 10px;
+      .card-main {
+        margin-bottom: 6px;
       }
-      #results-table .tc.col-active {
-        background: rgba(6,182,212,0.08);
-        box-shadow: inset 0 0 20px rgba(6,182,212,0.06);
+      .card-gross-val {
+        font-size: 26px;
+        font-weight: 900;
+        color: #d1d5db;
+        line-height: 1.1;
       }
-      #results-table .tc.col-header.col-active {
-        background: rgba(6,182,212,0.12);
+      .card-gross-label {
+        font-size: 9px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        margin-top: 2px;
       }
-      #results-table .tc:hover:not(.th) {
-        background: rgba(255,255,255,0.03);
+      .card-missed {
+        font-size: 11px;
+        font-weight: 700;
+        color: #ef4444;
+        margin-bottom: 8px;
+        padding: 3px 8px;
+        background: rgba(239,68,68,0.08);
+        border-radius: 6px;
+        display: inline-block;
       }
-      .gross-val { color: #d1d5db; font-weight: 700; }
-      .missed-val { color: #ef4444; font-weight: 900; }
-      .bonus-val { color: #22c55e; font-weight: 700; }
-      .net-val { font-size: 14px; font-weight: 900; }
-      .cell-net-warn .net-val { color: #f59e0b; }
-      .cell-net-ok .net-val { color: #22c55e; }
-      .depth-warn { color: #f87171; font-size: 11px; }
-      .depth-ok { color: #22c55e; font-size: 11px; }
-      .capped { color: #f87171; }
+      .card-details {
+        margin-bottom: 8px;
+      }
+      .card-detail {
+        font-size: 10px;
+        color: #9ca3af;
+        padding: 2px 0;
+        line-height: 1.4;
+      }
+      .card-bonus {
+        font-size: 11px;
+        color: #22c55e;
+        margin-bottom: 8px;
+      }
+      .card-bonus strong {
+        font-weight: 900;
+      }
+      .card-divider {
+        height: 1px;
+        background: rgba(255,255,255,0.08);
+        margin-bottom: 10px;
+      }
+      .card-net-label {
+        font-size: 9px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+      .card-net-val {
+        font-size: 20px;
+        font-weight: 900;
+        line-height: 1.1;
+      }
+
+      @media (min-width: 640px) {
+        .cards-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (min-width: 1024px) {
+        .cards-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+      }
 
       /* CTA */
       .btn-main {
@@ -350,10 +407,8 @@ eleventyExcludeFromCollections: true
       <!-- SEPARATOR -->
       <div style="text-align: center; margin: 4px 0 16px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.15);">&#x2500;&#x2500;&#x2500;&#x2500; Сравнение тарифов &#x2500;&#x2500;&#x2500;&#x2500;</div>
 
-      <!-- TABLE (rendered by JS) -->
-      <div class="table-wrap glass-panel" style="padding: 16px; border-top: 1px solid rgba(6,182,212,0.1);">
-        <div id="results-table"></div>
-      </div>
+      <!-- CARDS (rendered by JS) -->
+      <div id="results-table" style="margin-bottom: 16px;"></div>
 
       <!-- CTA -->
       <a id="cta-button" href="#" class="btn-main" style="margin-bottom: 20px;">&#x1F525; Купить PRO за $20</a>
@@ -369,7 +424,7 @@ eleventyExcludeFromCollections: true
       <!-- FOOTER NOTE -->
       <div class="glass-panel" style="text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; background: rgba(5,5,15,0.5);">
         <p style="font-size: 11px; color: #6b7280; line-height: 1.6; margin: 0;">
-          &#x2139;&#xFE0F; Нажмите на любую колонку в таблице, чтобы увидеть следующий шаг апгрейда.<br>
+          &#x2139;&#xFE0F; Нажмите на любую карточку, чтобы увидеть следующий шаг апгрейда.<br>
           Лимиты (Cap) применяются только к пассивному доходу со 2-10 уровней. Доход с 1-го уровня не ограничен.
         </p>
       </div>
