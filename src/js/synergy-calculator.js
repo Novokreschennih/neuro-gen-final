@@ -90,7 +90,7 @@
     var v = read(dom);
     updateDisplay(v, dom);
     var scenarios = calc(v);
-    render(scenarios, dom);
+    render(scenarios, dom, v);
     renderChart(scenarios, dom);
     if (!highlighted) highlighted = 'pro';
     applyHighlight(highlighted, scenarios, dom);
@@ -139,14 +139,12 @@
     var proPrice = CFG.proPrice;
     var proDepth = Math.min(ngCfg.depth, shCfg.depth);
     var shDepth = shCfg.depth;
-    var entryCost = ENTRY_COST[tariff === 'plane' ? (status === 'pro' ? 'pro' : 'free') : (status === 'pro' ? tariff : 'free')];
 
-    // Actually, entry cost is based on the key, not tariff
-    // Let me handle this in the calc function
-    
     var proIncomeL1 = 0, proIncomeL2plus = 0;
     var shIncomeL1 = 0, shIncomeL2plus = 0;
     var totalPeople = 0, totalProB = 0, totalRocketB = 0, totalShuttleB = 0;
+    var proLevels = [], shLevels = [];
+    var capRatio = 1;
 
     for (var i = 0; i < network.length; i++) {
       var lv = network[i];
@@ -159,60 +157,75 @@
       if (levelNum <= proDepth) {
         var rate = levelNum === 1 ? ngCfg.l1 : ngCfg.l2;
         var inc = lv.proBuyers * proPrice * rate;
+        proLevels.push({ level: levelNum, income: inc, rate: rate });
         if (levelNum === 1) proIncomeL1 += inc; else proIncomeL2plus += inc;
       }
       if (levelNum <= shDepth) {
         var rateSH = levelNum === 1 ? CFG.sh.commL1 : CFG.sh.commL2;
         var rInc = lv.rocketBuyers * CFG.sh.rocketPrice * rateSH;
         var sInc = lv.shuttleBuyers * CFG.sh.shuttlePrice * rateSH;
-        if (levelNum === 1) { shIncomeL1 += rInc + sInc; }
-        else { shIncomeL2plus += rInc + sInc; }
+        var incSH = rInc + sInc;
+        shLevels.push({ level: levelNum, income: incSH, rate: rateSH });
+        if (levelNum === 1) { shIncomeL1 += incSH; }
+        else { shIncomeL2plus += incSH; }
       }
     }
 
-    // Caps on L2+
+    // Caps on L2+ — сохраняем ratio для уровней
     var isCapped = false;
     var l2Total = proIncomeL2plus + shIncomeL2plus;
     if (l2Total > shCfg.cap && shCfg.cap > 0) {
       isCapped = true;
-      var ratio = shCfg.cap / l2Total;
-      proIncomeL2plus *= ratio;
-      shIncomeL2plus *= ratio;
+      capRatio = shCfg.cap / l2Total;
+      proIncomeL2plus *= capRatio;
+      shIncomeL2plus *= capRatio;
     }
 
     var gross = Math.round(proIncomeL1 + proIncomeL2plus + shIncomeL1 + shIncomeL2plus);
 
-    // Binary (only for Shuttle tariff)
+    // Бинар: 10 баллов за Rocket, 20 за Shuttle
     var binaryBonus = 0;
     if (tariff === 'shuttle') {
-      var points = totalShuttleB * CFG.sh.shuttlePrice;
+      var points = totalRocketB * 10 + totalShuttleB * 20;
       binaryBonus = Math.floor(points / 1000) * 100;
     }
 
-    // Net after fee + binary + entry
     var net = Math.round(gross * (1 - shCfg.fee) + binaryBonus);
+
+    // Корректируем уровни L2+ по capRatio
+    if (capRatio < 1) {
+      proLevels.forEach(function (lv) {
+        if (lv.level > 1) lv.income *= capRatio;
+      });
+      shLevels.forEach(function (lv) {
+        if (lv.level > 1) lv.income *= capRatio;
+      });
+    }
 
     return {
       proIncome:  Math.round(proIncomeL1 + proIncomeL2plus),
       shIncome:   Math.round(shIncomeL1 + shIncomeL2plus),
       grossIncome: gross,
       netIncome: net,
-      binaryBonus: binaryBonus,
+      binaryBonus: Math.round(binaryBonus),
       fee: shCfg.fee,
       capLimit: shCfg.cap,
       isCapped: isCapped,
-      entryCost: 0, // will be set later
-      missed: 0, // will be set later
+      entryCost: 0,
+      missed: 0,
       proDepth: proDepth,
       shDepth: shDepth,
       totalPeople: totalPeople,
       totalProB: Math.round(totalProB),
       totalRocketB: Math.round(totalRocketB),
       totalShuttleB: Math.round(totalShuttleB),
+      proLevels: proLevels,
+      shLevels: shLevels,
+      capRatio: capRatio,
     };
   }
 
-  function render(scenarios, dom) {
+  function render(scenarios, dom, v) {
     var c = dom.table;
     if (!c) return;
 
@@ -239,50 +252,80 @@
       shuttle:{ border: 'rgba(245,158,11,0.4)', bg: 'rgba(245,158,11,0.06)', accent: '#f59e0b', netClr: '#f59e0b' },
     };
 
+    function levelGroupHtml(levels) {
+      if (!levels || levels.length === 0) return '';
+      var h = '<div class="card-income">';
+      var l1 = levels[0];
+      h += '<div class="card-row"><span>1 ур. (' + (l1.rate * 100) + '%)</span><span>' + fmd(Math.round(l1.income)) + '</span></div>';
+      if (levels.length > 1) {
+        var sum = 0;
+        for (var i = 1; i < levels.length; i++) sum += levels[i].income;
+        var minLv = levels[1].level;
+        var maxLv = levels[levels.length - 1].level;
+        h += '<div class="card-row"><span>' + minLv + '-' + maxLv + ' ур. (' + (levels[1].rate * 100) + '%)</span><span>' + fmd(Math.round(sum)) + '</span></div>';
+      }
+      h += '</div>';
+      return h;
+    }
+
+    function expensesHtml(k) {
+      var h = '<div class="card-section-label">📦 Расходы</div>';
+      if (k === 'free') {
+        h += '<div class="card-row"><span>Вход</span><span>Бесплатно</span></div>';
+      } else {
+        h += '<div class="card-row"><span>PRO-статус</span><span>$' + CFG.proPrice + '</span></div>';
+        if (k === 'rocket') h += '<div class="card-row"><span>Rocket $110/год</span><span>$110</span></div>';
+        if (k === 'shuttle') h += '<div class="card-row"><span>Shuttle $350/год</span><span>$350</span></div>';
+      }
+      return h;
+    }
+
     var cards = [];
     keys.forEach(function (k) {
       var s = scenarios[k];
       var cl = colors[k];
       var net = Math.round(s.grossIncome * (1 - s.fee) + s.binaryBonus - entryCosts[k]);
+      var feeAmt = Math.round(s.grossIncome * s.fee);
 
-      var proTxt = k === 'free' ? '25% L1 · 3% L2-L3' : '50% L1 · 5% L2-L' + s.proDepth;
-      var shTxt = s.shDepth < 10 ? '🛑 ' + s.shDepth + ' ур.' : '✅ до 10 ур.';
-      var missed = s.missed > 0
-        ? '<div class="card-missed">🔴 -' + fmd(s.missed) + '</div>'
-        : '';
-      var bonus = s.binaryBonus > 0
-        ? '<div class="card-bonus">+ Бинар: <strong>+' + fmd(s.binaryBonus) + '</strong></div>'
-        : '';
-      var capped = s.isCapped ? ' 🔴 лимит' : '';
-
-      cards.push(
-        '<div class="card" data-key="' + k + '" style="--card-border:' + cl.border + ';--card-bg:' + cl.bg + ';--card-accent:' + cl.accent + '">'
-          + '<div class="card-header">'
-            + '<div>'
-              + '<div class="card-title" style="color:' + cl.accent + '">' + keyLabels[k] + '</div>'
-              + '<div class="card-subtitle">' + keySubs[k] + '</div>'
-            + '</div>'
-            + '<div class="card-entry">' + fmd(entryCosts[k]) + '</div>'
-          + '</div>'
-          + '<div class="card-main">'
-            + '<div class="card-gross-val">' + fmd(s.grossIncome) + '</div>'
-            + '<div class="card-gross-label">грязный доход</div>'
-          + '</div>'
-          + missed
-          + '<div class="card-details">'
-            + '<div class="card-detail">' + proTxt + '</div>'
-            + '<div class="card-detail">SH: ' + shTxt + '</div>'
-            + '<div class="card-detail">Лимит L2+: ' + fmd(s.capLimit) + capped + '</div>'
-            + '<div class="card-detail">Комиссия: ' + (s.fee * 100) + '%</div>'
-          + '</div>'
-          + bonus
-          + '<div class="card-divider"></div>'
-          + '<div class="card-net">'
-            + '<div class="card-net-val" style="color:' + cl.netClr + '">' + fmd(net) + '</div>'
-            + '<div class="card-net-label">чистыми на руки</div>'
-          + '</div>'
+      var html = ''
+        + '<div class="card" data-key="' + k + '" style="--card-border:' + cl.border + ';--card-bg:' + cl.bg + ';--card-accent:' + cl.accent + '">'
+        + '<div class="card-header">'
+          + '<div><div class="card-title" style="color:' + cl.accent + '">' + keyLabels[k] + '</div>'
+          + '<div class="card-subtitle">' + keySubs[k] + '</div></div>'
+          + '<div class="card-entry">' + fmd(entryCosts[k]) + '</div>'
         + '</div>'
-      );
+        + expensesHtml(k);
+
+      // PRO income
+      html += '<div class="card-section-label">📈 Доход с PRO</div>'
+        + levelGroupHtml(s.proLevels)
+        + '<div class="card-total"><span>Всего PRO</span><span>' + fmd(s.proIncome) + '</span></div>';
+
+      // SH income (только если тоггл включён)
+      if (v.shEnabled && s.shIncome > 0) {
+        html += '<div class="card-section-label">🚀 Доход с SetHubble</div>'
+          + levelGroupHtml(s.shLevels)
+          + '<div class="card-total"><span>Всего SH</span><span>' + fmd(s.shIncome) + '</span></div>';
+        if (s.isCapped) {
+          html += '<div class="card-cap-hit">🔴 Лимит ' + fmd(s.capLimit) + ' превышен</div>';
+        }
+        if (s.binaryBonus > 0) {
+          html += '<div class="card-row card-binary"><span>💎 Бинар (R×10 + S×20)</span><span>+' + fmd(s.binaryBonus) + '</span></div>';
+        }
+      }
+
+      // Fee
+      html += '<div class="card-row card-fee"><span>📊 Комиссия (' + (s.fee * 100) + '%)</span><span>-' + fmd(feeAmt) + '</span></div>';
+
+      // Net
+      html += '<div class="card-divider"></div>'
+        + '<div class="card-net">'
+        + '<div class="card-net-label">Чистыми на руки</div>'
+        + '<div class="card-net-val" style="color:' + cl.netClr + '">' + fmd(net) + '</div>'
+        + '</div>'
+        + '</div>';
+
+      cards.push(html);
     });
 
     c.innerHTML = '<div class="cards-grid">' + cards.join('') + '</div>';
