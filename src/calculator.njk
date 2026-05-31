@@ -131,6 +131,27 @@ eleventyExcludeFromCollections: true
       .sh-block { transition: all 0.3s; }
       .sh-block.hidden { display: none; }
 
+      /* Desktop — компактнее */
+      @media (min-width: 768px) {
+        .inputs-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+        .glass-panel {
+          padding: 20px 24px;
+        }
+        #results-table {
+          font-size: 13px;
+        }
+        .slider-row {
+          margin-bottom: 14px;
+        }
+        .chart-wrap {
+          height: 260px;
+        }
+      }
+
       /* Table */
       .table-wrap {
         overflow-x: auto;
@@ -241,14 +262,14 @@ eleventyExcludeFromCollections: true
   <body>
     <!-- HEADER -->
     <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 2147483647; background: rgba(5,5,5,0.99); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
-      <div style="max-width: 1024px; margin: 0 auto; padding: 0 12px; height: 52px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 12px; height: 52px; display: flex; align-items: center; justify-content: space-between;">
         <a href="/" style="display: flex; align-items: center; gap: 6px; color: rgba(200,200,200,1); text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">&larr; Назад</a>
         <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.3);">NeuroGen &times; SetHubble</span>
       </div>
     </nav>
 
     <!-- MAIN -->
-    <div id="synergy-calculator" style="max-width: 1024px; margin: 0 auto; padding: 24px 16px 80px;">
+    <div id="synergy-calculator" style="max-width: 1200px; margin: 0 auto; padding: 24px 16px 80px;">
 
       <!-- HERO -->
       <div class="glass-panel" style="text-align: center; border-top: 1px solid rgba(6,182,212,0.2);">
@@ -256,6 +277,9 @@ eleventyExcludeFromCollections: true
         <h1 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; margin: 0 0 8px; background: linear-gradient(135deg, #06b6d4, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2;">Калькулятор дохода</h1>
         <p style="color: #9ca3af; font-size: 13px; line-height: 1.6; margin: 0; max-width: 500px; margin-left: auto; margin-right: auto;">Сравните 4 тарифных плана и увидьте, сколько денег сгорает на глубине без Rocket или Shuttle.</p>
       </div>
+
+      <!-- BLOCK A + B: сетка на десктопе -->
+      <div class="inputs-grid">
 
       <!-- BLOCK A: Basic inputs -->
       <div class="glass-panel" style="border-top: 1px solid rgba(6,182,212,0.15);">
@@ -320,6 +344,7 @@ eleventyExcludeFromCollections: true
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <!-- SEPARATOR -->

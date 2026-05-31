@@ -51,9 +51,9 @@
       'inp-shuttle', 'val-shuttle',
     ];
     inputIds.forEach(function (id) { dom[id] = $(id); });
-    dom.table = $('#results-table');
-    dom.chart = $('#income-chart');
-    dom.cta = $('#cta-button');
+    dom.table = $('results-table');
+    dom.chart = $('income-chart');
+    dom.cta = $('cta-button');
     dom.allInputs = [
       dom['inp-personal'], dom['inp-partner'], dom['inp-duplication'],
       dom['inp-rocket'], dom['inp-shuttle'], dom['toggle-sh'],
