@@ -923,6 +923,7 @@ eleventyExcludeFromCollections: true
         let centralVkGroup = "237421168";
         let activeConfig = null;
         let webAppJwt = "";
+        let authHeaders = {};
         // === Безопасная обёртка для localStorage (не падает в приватном режиме Safari) ===
         const Storage = {
           get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
