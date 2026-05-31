@@ -694,20 +694,67 @@ eleventyExcludeFromCollections: true
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПОЛУЧЕНИЯ КОДА ВИДЖЕТА -->
+    <!-- МОДАЛЬНОЕ ОКНО ВИДЖЕТА (код + дизайн) -->
     <div id="widgetModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="glass-panel rounded-3xl max-w-md w-full p-6 md:p-8 animate-fadeInUp border-t border-cyan-500/30">
+        <div class="glass-panel rounded-3xl max-w-lg w-full p-6 md:p-8 animate-fadeInUp border-t border-cyan-500/30">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-black uppercase tracking-tight text-white">🌐 Код виджета для сайта</h3>
+                <h3 class="text-lg font-black uppercase tracking-tight text-white">🌐 Виджет для сайта</h3>
                 <button onclick="toggleWidgetModal()" class="text-gray-500 hover:text-white text-lg">✕</button>
             </div>
-            <p class="text-xs text-gray-400 mb-4 leading-relaxed">Скопируйте этот HTML-код и вставьте его перед закрывающим тегом <code class="text-cyan-400 font-mono">&lt;/body&gt;</code> на любой странице вашего сайта. На ней появится полноценный ИИ-помощник.</p>
-            <div class="bg-black/60 rounded-xl p-4 border border-white/5 mb-6">
+            <p class="text-xs text-gray-400 mb-3 leading-relaxed">Вставьте код перед <code class="text-cyan-400 font-mono">&lt;/body&gt;</code></p>
+            <div class="bg-black/60 rounded-xl p-3 border border-white/5 mb-3">
                 <code id="widgetCodeDisplay" class="text-[11px] text-cyan-300 break-all font-mono leading-normal block"></code>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="copyToClipboard('widgetCodeDisplay')" class="btn bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 border border-cyan-500/30 py-3 rounded-xl text-xs font-bold uppercase">📋 Копировать</button>
-                <button onclick="toggleWidgetModal()" class="btn bg-white/10 hover:bg-white/20 py-3 rounded-xl text-xs font-bold uppercase">Закрыть</button>
+                <button onclick="toggleWidgetDesign()" id="designToggleBtn" class="btn bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 border border-purple-500/30 py-3 rounded-xl text-xs font-bold uppercase">🎨 Дизайн ▾</button>
+            </div>
+
+            <!-- Панель дизайна (скрыта по умолчанию) -->
+            <div id="widgetDesignPanel" class="hidden border-t border-white/5 mt-4 pt-4">
+                <div class="bg-black/40 rounded-xl mb-4 overflow-hidden" style="height:240px">
+                    <iframe id="widgetPreviewFrame" src="/widget-preview/" class="w-full h-full border-0" title="Widget Preview"></iframe>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <label class="text-xs text-gray-400 w-24 shrink-0">Цвет акцента</label>
+                        <input type="color" id="wcAccent" value="#06b6d4" onchange="onWidgetChange()" class="w-10 h-10 rounded-lg border-0 cursor-pointer bg-transparent p-0.5">
+                        <span id="wcAccentText" class="text-xs text-gray-500 font-mono">#06b6d4</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-xs text-gray-400 w-24 shrink-0">Тема</label>
+                        <div class="flex bg-black/40 rounded-lg border border-white/10 p-0.5">
+                            <button onclick="setWidgetTheme('dark')" id="wcThemeDark" class="px-4 py-1.5 text-xs rounded-md font-bold text-white bg-cyan-600/50">Тёмная</button>
+                            <button onclick="setWidgetTheme('light')" id="wcThemeLight" class="px-4 py-1.5 text-xs rounded-md font-bold text-gray-400">Светлая</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-xs text-gray-400 w-24 shrink-0">Позиция</label>
+                        <select id="wcPosition" onchange="onWidgetChange()" class="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white">
+                            <option value="right">Справа</option>
+                            <option value="left">Слева</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-xs text-gray-400 w-24 shrink-0">Заголовок</label>
+                        <input type="text" id="wcTitle" placeholder="NeuroGen" oninput="onWidgetChange()" class="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500">
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label class="text-xs text-gray-400 w-24 shrink-0">Аватар (URL)</label>
+                        <input type="text" id="wcAvatar" placeholder="https://example.com/avatar.jpg" oninput="onWidgetChange()" class="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500">
+                    </div>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="wcMobileFullscreen" checked onchange="onWidgetChange()" class="rounded bg-black/40 border-white/20 w-4 h-4">
+                            <span class="text-xs text-gray-400">На весь экран на телефоне</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="wcHideBadge" onchange="onWidgetChange()" class="rounded bg-black/40 border-white/20 w-4 h-4">
+                            <span class="text-xs text-gray-400">Скрыть бейдж</span>
+                        </label>
+                    </div>
+                </div>
+                <button onclick="resetWidgetConfig()" class="mt-4 text-xs text-gray-500 hover:text-white">↺ Сбросить настройки</button>
             </div>
         </div>
     </div>
@@ -873,8 +920,8 @@ eleventyExcludeFromCollections: true
         // ==========================================
         let tg = null; try { tg = window.Telegram?.WebApp; if(tg){tg.expand(); tg.ready();} } catch(e){}
         let userData = null;
-        let currentLinkMode = "universal";
-        let authHeaders = { "Content-Type": "application/json" };
+        let centralVkGroup = "237421168";
+        let activeConfig = null;
         let webAppJwt = "";
         // === Безопасная обёртка для localStorage (не падает в приватном режиме Safari) ===
         const Storage = {
@@ -941,7 +988,7 @@ eleventyExcludeFromCollections: true
                 const res = await fetch(`${BACKEND_URL}/?action=get_partner_link`, { method: "POST", headers: authHeaders, body: JSON.stringify({ action: "get_partner_link" }) });
                 const data = await res.json();
                 if (data.token) Storage.set("neurogen_jwt", data.token);
-                if (data.success) { userData = data.user; initUI(); }
+                if (data.success) { userData = data.user; centralVkGroup = data.central_vk_group || "237421168"; initUI(); }
                 else if (data.expired) { showAuthExpiredError(); }
                 else throw new Error(data.error);
             } catch (error) {
@@ -1101,7 +1148,7 @@ eleventyExcludeFromCollections: true
             } else {
                 tgContainer.innerHTML = `
                     <div class="flex items-center gap-3"><span class="text-2xl grayscale">📱</span><div><p class="text-xs font-bold text-gray-500">Телеграм бот-клон</p><p class="text-[10px] text-gray-600">Не подключен ${isPro ? '' : '(Нужен PRO)'}</p></div></div>
-                    <button onclick="${isPro ? "window.open('https://t.me/sethubble_biz_bot?start=add_bot', '_blank')" : "showProModal('tg')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
+                    <button onclick="${isPro ? "window.open('https://t.me/sethubble_biz_bot?start=setup:web:' + encodeURIComponent(userData.web_id || '') + ':setup_tg', '_blank')" : "showProModal('tg')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
                 `;
             }
 
@@ -1115,7 +1162,7 @@ eleventyExcludeFromCollections: true
             } else {
                 vkContainer.innerHTML = `
                     <div class="flex items-center gap-3"><span class="text-2xl grayscale">📢</span><div><p class="text-xs font-bold text-gray-500">VK бот-клон</p><p class="text-[10px] text-gray-600">Не подключен ${isPro ? '' : '(Нужен PRO)'}</p></div></div>
-                    <button onclick="${isPro ? "window.open('https://t.me/sethubble_biz_bot', '_blank')" : "showProModal('vk')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
+                    <button onclick="${isPro ? "window.open('https://vk.me/club' + centralVkGroup + '?ref=setup:web:' + encodeURIComponent(userData.web_id || '') + ':setup_vk', '_blank')" : "showProModal('vk')"}" class="text-[10px] bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 text-white font-bold">Настроить</button>
                 `;
             }
 
@@ -1138,10 +1185,132 @@ eleventyExcludeFromCollections: true
             }
         }
 
+        // --- Widget customization ---
         function toggleWidgetModal() {
             const m = document.getElementById("widgetModal");
-            if (m.classList.contains("hidden")) { m.classList.remove("hidden"); m.classList.add("flex"); } 
-            else { m.classList.add("hidden"); m.classList.remove("flex"); }
+            const open = m.classList.contains("hidden");
+            if (open) {
+                m.classList.remove("hidden"); m.classList.add("flex");
+                try{var saved=JSON.parse(localStorage.getItem('neurogen_widget_config'));if(saved)applyWidgetConfig(saved);updateWidgetCode(readWidgetConfig())}catch(e){}
+            }
+            else { m.classList.remove("flex"); m.classList.add("hidden"); toggleWidgetDesign(true); }
+        }
+
+        function toggleWidgetDesign(forceHide) {
+            var p=document.getElementById('widgetDesignPanel'),btn=document.getElementById('designToggleBtn');
+            if(!p||!btn)return;
+            var hide=forceHide===true?!p.classList.contains('hidden'):!p.classList.contains('hidden');
+            if(hide){p.classList.add('hidden');btn.innerHTML='🎨 Дизайн ▾';return}
+            p.classList.remove('hidden');btn.innerHTML='🎨 Дизайн ▴';
+            var c=readWidgetConfig();updateWidgetPreview(c);
+        }
+
+        function darken(hex,p){
+            var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+            r=Math.max(0,Math.min(255,Math.round(r*(1-p/100))));
+            g=Math.max(0,Math.min(255,Math.round(g*(1-p/100))));
+            b=Math.max(0,Math.min(255,Math.round(b*(1-p/100))));
+            return '#'+[r,g,b].map(function(x){return x.toString(16).padStart(2,'0')}).join('');
+        }
+
+        function escCSS(s){return s.replace(/"/g,'\\"').replace(/</g,'\\3C ').replace(/>/g,'\\3E ')}
+
+        function buildWidgetCSS(c){
+            var lines=[];
+            if(c.accent&&c.accent!=='#06b6d4'){
+                var g='linear-gradient(135deg,'+c.accent+','+darken(c.accent,30)+')';
+                lines.push('.neurogen-btn,.neurogen-ava,.neurogen-msg.user,#n-send{background:'+g+'!important}');
+                lines.push('.neurogen-btn{box-shadow:0 4px 20px '+c.accent+'66!important}');
+                lines.push('#n-input:focus{border-color:'+c.accent+'!important;box-shadow:0 0 0 3px '+c.accent+'4d!important}');
+            }
+            if(c.theme==='light'){
+                lines.push('.neurogen-popup{background:#fff!important}');
+                lines.push('.neurogen-hdr,.neurogen-foot{background:rgba(255,255,255,.98)!important}');
+                lines.push('.neurogen-hdr-t{color:#1e293b!important}');
+                lines.push('.neurogen-hdr-s{color:#64748b!important}');
+                lines.push('.neurogen-msg.bot{background:#f1f5f9!important;color:#1e293b!important}');
+                lines.push('.neurogen-close{color:#64748b!important}');
+                lines.push('#n-input{background:#f1f5f9!important;border-color:#e2e8f0!important;color:#1e293b!important}');
+                if(!c.accent||c.accent==='#06b6d4') lines.push('.neurogen-msg.user,.neurogen-ava,.neurogen-btn,#n-send{background:linear-gradient(135deg,#3b82f6,#8b5cf6)!important}');
+            }
+            if(c.position==='left'){
+                lines.push('.neurogen-btn{right:auto!important;left:25px!important}');
+                lines.push('.neurogen-popup{right:auto!important;left:25px!important}');
+            }
+            if(c.title){
+                lines.push('.neurogen-hdr-t{font-size:0!important}');
+                lines.push('.neurogen-hdr-t::after{content:"'+escCSS(c.title)+'"!important;font-size:14px!important;font-weight:700!important;color:'+(c.theme==='light'?'#1e293b':'#e2e8f0')+'!important}');
+            }
+            if(c.avatar){
+                lines.push('.neurogen-ava{background:transparent!important;background-image:url('+c.avatar+')!important;background-size:cover!important;background-position:center!important}');
+            }
+            if(c.mobileFullscreen===false){
+                lines.push('@media(max-width:520px){.neurogen-popup{width:100vw!important;max-width:100vw!important;height:100vh!important;right:0!important;bottom:0!important;border-radius:0!important;max-height:100vh!important}}');
+            }
+            if(c.hideBadge){
+                lines.push('.neurogen-badge{display:none!important}');
+            }
+            return lines.join('\n');
+        }
+
+        function readWidgetConfig(){
+            return {
+                accent: document.getElementById('wcAccent').value,
+                theme: document.getElementById('wcThemeDark').classList.contains('text-white')?'dark':'light',
+                position: document.getElementById('wcPosition').value,
+                title: document.getElementById('wcTitle').value.trim(),
+                avatar: document.getElementById('wcAvatar').value.trim(),
+                mobileFullscreen: document.getElementById('wcMobileFullscreen').checked,
+                hideBadge: document.getElementById('wcHideBadge').checked
+            };
+        }
+
+        function applyWidgetConfig(c){
+            document.getElementById('wcAccent').value=c.accent||'#06b6d4';
+            document.getElementById('wcAccentText').textContent=c.accent||'#06b6d4';
+            if(c.theme==='light')setWidgetTheme('light');else setWidgetTheme('dark');
+            document.getElementById('wcPosition').value=c.position||'right';
+            document.getElementById('wcTitle').value=c.title||'';
+            document.getElementById('wcAvatar').value=c.avatar||'';
+            document.getElementById('wcMobileFullscreen').checked=c.mobileFullscreen!==false;
+            document.getElementById('wcHideBadge').checked=!!c.hideBadge;
+        }
+
+        function setWidgetTheme(t){
+            var d=document.getElementById('wcThemeDark'),l=document.getElementById('wcThemeLight');
+            if(t==='dark'){
+                d.className='px-4 py-1.5 text-xs rounded-md font-bold text-white bg-cyan-600/50';
+                l.className='px-4 py-1.5 text-xs rounded-md font-bold text-gray-400';
+            }else{
+                d.className='px-4 py-1.5 text-xs rounded-md font-bold text-gray-400';
+                l.className='px-4 py-1.5 text-xs rounded-md font-bold text-white bg-cyan-600/50';
+            }
+            onWidgetChange();
+        }
+
+        function onWidgetChange(){
+            var c=readWidgetConfig();
+            try{localStorage.setItem('neurogen_widget_config',JSON.stringify(c))}catch(e){}
+            document.getElementById('wcAccentText').textContent=c.accent;
+            updateWidgetPreview(c);
+            updateWidgetCode(c);
+        }
+
+        function updateWidgetPreview(c){
+            var ifr=document.getElementById('widgetPreviewFrame');
+            if(ifr&&ifr.contentWindow)ifr.contentWindow.postMessage({type:'widget-config',config:c},'*');
+        }
+
+        function updateWidgetCode(c){
+            var base='<script src="https://neuro-gen.ru/js/widget.js" data-bot="'+(userData.sh_user_id||'demo')+'"><\/script>';
+            var css=buildWidgetCSS(c);
+            document.getElementById('widgetCodeDisplay').textContent=css?base+'\n<style>\n'+css+'\n</style>':base;
+        }
+
+        function resetWidgetConfig(){
+            try{localStorage.removeItem('neurogen_widget_config')}catch(e){}
+            applyWidgetConfig({});
+            onWidgetChange();
         }
 
         function toggleProModal() {
