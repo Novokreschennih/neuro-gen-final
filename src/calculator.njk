@@ -9,7 +9,6 @@ eleventyExcludeFromCollections: true
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{{ title }}</title>
-    <meta name="description" content="Калькулятор дохода NeuroGen PRO — узнайте, сколько вы заработаете на ИИ-ботах, как статус PRO удваивает доход и почему тариф SetHubble влияет на глубину выплат.">
     <meta name="robots" content="noindex, nofollow">
     <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content: blob:; script-src * 'self' 'unsafe-inline' 'unsafe-eval'; style-src * 'self' 'unsafe-inline';">
     <link rel="stylesheet" href="/css/style.css">
@@ -28,22 +27,13 @@ eleventyExcludeFromCollections: true
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 32px;
-        padding: 32px;
-        margin-bottom: 24px;
+        border-radius: 28px;
+        padding: 28px;
+        margin-bottom: 20px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       }
-      .glass-panel-thin {
-        background: rgba(10,10,26,0.4);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 24px;
-        padding: 24px;
-        margin-bottom: 24px;
-      }
       .section-label {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 0.1em;
@@ -53,141 +43,10 @@ eleventyExcludeFromCollections: true
         align-items: center;
         gap: 8px;
       }
-      .section-label .badge {
-        font-size: 9px;
-        background: rgba(6,182,212,0.15);
-        color: #06b6d4;
-        padding: 2px 10px;
-        border-radius: 20px;
-        letter-spacing: 0.05em;
-      }
-
-      /* Radio cards */
-      .radio-group {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .radio-option {
-        flex: 1;
-        min-width: 180px;
-        cursor: pointer;
-        background: rgba(0,0,0,0.35);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 16px;
-        padding: 16px 20px;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        user-select: none;
-      }
-      .radio-option:hover {
-        border-color: rgba(255,255,255,0.15);
-        background: rgba(0,0,0,0.45);
-      }
-      .radio-option.active {
-        border-color: #06b6d4;
-        background: rgba(6,182,212,0.08);
-        box-shadow: 0 0 20px rgba(6,182,212,0.08);
-      }
-      .radio-option input[type="radio"] {
-        display: none;
-      }
-      .radio-dot {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        border: 2px solid rgba(255,255,255,0.2);
-        flex-shrink: 0;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .radio-dot-inner {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #06b6d4;
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-      .radio-option.active .radio-dot {
-        border-color: #06b6d4;
-      }
-      .radio-option.active .radio-dot-inner {
-        opacity: 1;
-      }
-      .radio-option .radio-title {
-        font-size: 14px;
-        font-weight: 700;
-        color: #e5e7eb;
-      }
-      .radio-option .radio-sub {
-        font-size: 11px;
-        color: #6b7280;
-        margin-top: 2px;
-      }
-      .radio-option.active .radio-title {
-        color: #06b6d4;
-      }
-      .radio-option.disabled-option {
-        opacity: 0.5;
-        pointer-events: none;
-      }
-
-      /* Coins toggle */
-      .coins-bar {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid rgba(255,255,255,0.06);
-        flex-wrap: wrap;
-      }
-      .coins-bar-label {
-        font-size: 12px;
-        font-weight: 600;
-        color: #9ca3af;
-      }
-      .coins-btn {
-        cursor: pointer;
-        background: rgba(0,0,0,0.35);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 10px;
-        padding: 6px 16px;
-        font-size: 12px;
-        font-weight: 600;
-        color: #9ca3af;
-        transition: all 0.2s;
-        user-select: none;
-      }
-      .coins-btn.active {
-        border-color: #f59e0b;
-        color: #f59e0b;
-        background: rgba(245,158,11,0.1);
-      }
-      .coins-btn.disabled {
-        opacity: 0.3;
-        pointer-events: none;
-      }
-      .coins-btn input { display: none; }
-      .coins-result {
-        font-size: 14px;
-        font-weight: 900;
-        color: #22c55e;
-        margin-left: auto;
-      }
 
       /* Sliders */
-      .slider-row {
-        margin-bottom: 20px;
-      }
-      .slider-row:last-child {
-        margin-bottom: 0;
-      }
+      .slider-row { margin-bottom: 18px; }
+      .slider-row:last-child { margin-bottom: 0; }
       .slider-label {
         display: flex;
         justify-content: space-between;
@@ -196,9 +55,7 @@ eleventyExcludeFromCollections: true
         color: #d1d5db;
         margin-bottom: 8px;
       }
-      .slider-label .slider-val {
-        color: #06b6d4;
-      }
+      .slider-label .slider-val { color: #06b6d4; }
       input[type="range"] {
         -webkit-appearance: none;
         appearance: none;
@@ -227,152 +84,116 @@ eleventyExcludeFromCollections: true
         border: 2px solid rgba(255,255,255,0.3);
         cursor: pointer;
       }
-      .slider-hint {
+
+      /* Toggle */
+      .toggle-wrap {
         display: flex;
-        justify-content: space-between;
-        font-size: 10px;
-        color: #6b7280;
-        margin-top: 4px;
-      }
-
-      /* Warning */
-      .warning-block {
-        background: rgba(239,68,68,0.08);
-        border: 1px solid rgba(239,68,68,0.25);
-        border-radius: 12px;
-        padding: 12px 16px;
-        font-size: 12px;
-        color: #f87171;
-        margin-top: 12px;
-        line-height: 1.5;
-      }
-
-      /* Stats grid */
-      .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        align-items: center;
         gap: 12px;
-        margin-bottom: 20px;
-      }
-      .stat-card {
-        background: rgba(0,0,0,0.4);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 24px;
-        padding: 20px;
-        text-align: center;
-      }
-      .stat-card .stat-icon {
-        font-size: 24px;
-        margin-bottom: 6px;
-      }
-      .stat-card .stat-val {
-        font-size: 1.6rem;
-        font-weight: 900;
-        color: #06b6d4;
-      }
-      .stat-card .stat-label {
-        font-size: 9px;
-        color: #6b7280;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-top: 4px;
-      }
-      .stat-card.purple .stat-val { color: #a855f7; }
-      .stat-card.amber .stat-val { color: #f59e0b; }
-      @media (max-width: 480px) {
-        .stats-grid { grid-template-columns: 1fr; }
-        .stat-card .stat-val { font-size: 1.3rem; }
-        .radio-group { flex-direction: column; }
-        .radio-option { min-width: auto; }
-      }
-
-      /* Income card */
-      .income-card {
-        background: rgba(0,0,0,0.4);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 20px;
-        padding: 20px;
         margin-bottom: 16px;
+        cursor: pointer;
+        user-select: none;
       }
-      .income-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        padding: 6px 0;
+      .toggle-track {
+        width: 44px;
+        height: 24px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 12px;
+        position: relative;
+        transition: background 0.25s;
+        flex-shrink: 0;
+      }
+      .toggle-track .toggle-knob {
+        width: 18px;
+        height: 18px;
+        background: #6b7280;
+        border-radius: 50%;
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        transition: all 0.25s;
+      }
+      #toggle-sh:checked + .toggle-track {
+        background: rgba(6,182,212,0.3);
+      }
+      #toggle-sh:checked + .toggle-track .toggle-knob {
+        left: 23px;
+        background: #06b6d4;
+      }
+      #toggle-sh { display: none; }
+      .toggle-label {
+        font-size: 12px;
+        font-weight: 700;
         color: #d1d5db;
       }
-      .income-row .inc-val {
-        font-weight: 700;
-      }
-      .income-total {
-        display: flex;
-        justify-content: space-between;
-        font-size: 18px;
-        font-weight: 900;
-        padding: 12px 0 0;
-        margin-top: 8px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        color: #22c55e;
-      }
 
-      /* Missed blocks */
-      .missed-block {
-        background: linear-gradient(135deg, rgba(239,68,68,0.1), transparent);
-        border: 1px solid rgba(239,68,68,0.3);
-        border-radius: 24px;
-        padding: 24px;
-        margin-bottom: 16px;
+      /* Hidden SH block */
+      .sh-block { transition: all 0.3s; }
+      .sh-block.hidden { display: none; }
+
+      /* Table */
+      .table-wrap {
+        overflow-x: auto;
+        margin-bottom: 20px;
       }
-      .missed-block h3 {
-        font-size: 16px;
-        font-weight: 900;
-        margin: 0 0 4px;
-        text-transform: uppercase;
-        color: #f87171;
-      }
-      .missed-block .big-loss {
-        font-size: 28px;
-        font-weight: 900;
-        color: #ef4444;
-      }
-      .missed-block p {
+      #results-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
         font-size: 12px;
-        color: #9ca3af;
-        margin: 6px 0 0;
-        line-height: 1.5;
+        min-width: 600px;
       }
-      .missed-block-sm {
-        background: rgba(245,158,11,0.06);
-        border: 1px solid rgba(245,158,11,0.25);
-        border-radius: 16px;
-        padding: 16px 20px;
-        margin-bottom: 16px;
-      }
-      .missed-block-sm h4 {
+      #results-table .tr-header .tc {
+        padding: 14px 10px 10px;
+        font-weight: 900;
         font-size: 13px;
-        font-weight: 900;
-        margin: 0 0 2px;
-        color: #fbbf24;
-      }
-      .missed-block-sm .loss-val {
-        font-size: 20px;
-        font-weight: 900;
-        color: #f59e0b;
-      }
-
-      /* Optimal */
-      .optimal-block {
-        background: rgba(34,197,94,0.06);
-        border: 1px solid rgba(34,197,94,0.25);
-        border-radius: 16px;
-        padding: 20px;
         text-align: center;
-        margin-bottom: 16px;
-        font-size: 15px;
-        font-weight: 700;
-        color: #22c55e;
+        vertical-align: top;
+        line-height: 1.4;
+        border-bottom: 2px solid rgba(255,255,255,0.08);
       }
+      #results-table .tr-row .tc {
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        transition: background 0.15s;
+        cursor: pointer;
+      }
+      #results-table .tr-row .tc.th {
+        text-align: left;
+        color: #9ca3af;
+        font-weight: 700;
+        font-size: 11px;
+        white-space: nowrap;
+        padding-left: 4px;
+        cursor: default;
+        min-width: 120px;
+      }
+      #results-table .tr-net .tc {
+        border-top: 2px solid rgba(255,255,255,0.08);
+        border-bottom: none;
+        padding: 14px 10px;
+      }
+      #results-table .tc.col-active {
+        background: rgba(6,182,212,0.08);
+        box-shadow: inset 0 0 20px rgba(6,182,212,0.06);
+      }
+      #results-table .tc.col-header.col-active {
+        background: rgba(6,182,212,0.12);
+      }
+      #results-table .tc:hover:not(.th) {
+        background: rgba(255,255,255,0.03);
+      }
+      .gross-val { color: #d1d5db; font-weight: 700; }
+      .missed-val { color: #ef4444; font-weight: 900; }
+      .bonus-val { color: #22c55e; font-weight: 700; }
+      .net-val { font-size: 14px; font-weight: 900; }
+      .cell-net-warn .net-val { color: #f59e0b; }
+      .cell-net-ok .net-val { color: #22c55e; }
+      .depth-warn { color: #f87171; font-size: 11px; }
+      .depth-ok { color: #22c55e; font-size: 11px; }
+      .capped { color: #f87171; }
 
       /* CTA */
       .btn-main {
@@ -408,82 +229,13 @@ eleventyExcludeFromCollections: true
         pointer-events: none;
       }
 
-      .hidden { display: none !important; }
-
       /* Chart */
       .chart-wrap {
         position: relative;
-        height: 280px;
+        height: 300px;
       }
 
-      /* Details block */
-      details.glass-panel summary {
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #06b6d4;
-        outline: none;
-        list-style: none;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      details.glass-panel summary::-webkit-details-marker {
-        display: none;
-      }
-      details.glass-panel summary::after {
-        content: '\25BC';
-        font-size: 10px;
-        color: #6b7280;
-        transition: transform 0.2s;
-      }
-      details.glass-panel[open] summary::after {
-        transform: rotate(180deg);
-      }
-      .details-content {
-        margin-top: 16px;
-        font-size: 13px;
-        line-height: 1.7;
-        color: #d1d5db;
-      }
-      .details-content .rate-table {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px 24px;
-        margin: 12px 0;
-        padding: 12px 16px;
-        background: rgba(0,0,0,0.3);
-        border-radius: 12px;
-        font-size: 12px;
-      }
-      .details-content .rate-table .rt-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 4px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-      }
-      .details-content .rate-table .rt-row:last-child {
-        border-bottom: none;
-      }
-      .details-content .rate-table .rt-label { color: #9ca3af; }
-      .details-content .rate-table .rt-val { color: #06b6d4; font-weight: 700; }
-      .details-content .highlight { color: #fbbf24; font-weight: 700; }
-      .details-content .highlight-cyan { color: #06b6d4; font-weight: 700; }
-
-      /* Explanation block */
-      .explain-panel p {
-        font-size: 13px;
-        line-height: 1.7;
-        color: #d1d5db;
-        margin: 0 0 12px;
-      }
-      .explain-panel p:last-child { margin: 0; }
-      .explain-panel .big-num {
-        color: #22c55e;
-        font-weight: 900;
-      }
+      .hidden { display: none !important; }
     </style>
   </head>
   <body>
@@ -498,249 +250,103 @@ eleventyExcludeFromCollections: true
     <!-- MAIN -->
     <div id="synergy-calculator" style="max-width: 1024px; margin: 0 auto; padding: 24px 16px 80px;">
 
-      <!-- BLOCK 0: How it works -->
-      <details open class="glass-panel" style="padding: 20px 24px; border-top: 1px solid rgba(6,182,212,0.15);">
-        <summary>&#x2139;&#xFE0F; Как работает система начислений</summary>
-        <div class="details-content">
-          <p>Вы зарабатываете на двух продуктах: <strong class="highlight-cyan">NeuroGen PRO</strong> (ИИ-подписка за $20) и <strong class="highlight-cyan">SetHubble</strong> (тарифы платформы). Каждый продукт имеет свои ставки, глубину уровней и требования к вашему статусу.</p>
-
-          <div class="rate-table">
-            <div class="rt-row"><span class="rt-label">FREE — PRO (L1)</span><span class="rt-val">25% &rarr; 50%</span></div>
-            <div class="rt-row"><span class="rt-label">FREE — PRO (L2+)</span><span class="rt-val">3% &rarr; 5%</span></div>
-            <div class="rt-row"><span class="rt-label">Глубина FREE</span><span class="rt-val">3 уровня</span></div>
-            <div class="rt-row"><span class="rt-label">Глубина PRO</span><span class="rt-val">5 уровней</span></div>
-            <div class="rt-row"><span class="rt-label">SetHubble L1</span><span class="rt-val">40%</span></div>
-            <div class="rt-row"><span class="rt-label">SetHubble L2+</span><span class="rt-val">3%</span></div>
-          </div>
-
-          <p><strong class="highlight">Важно:</strong> Даже если вы купили PRO (5 уровней), бесплатный тариф SetHubble <strong>Plane</strong> обрезает все выплаты на 3-м уровне. Чтобы открыть 4-й и 5-й уровни PRO, нужен тариф <strong class="highlight">Rocket ($110/год)</strong> или <strong class="highlight">Shuttle ($350/год)</strong> с глубиной 10 уровней.</p>
-
-          <p>Каждая покупка тарифа SetHubble в вашей сети приносит <strong class="highlight-cyan">40% с 1 уровня</strong> и <strong class="highlight-cyan">3% со 2 по 10 уровень</strong>. Чем глубже сеть — тем больше таких покупок.</p>
-        </div>
-      </details>
-
-      <!-- BLOCK 1: Status ★ -->
-      <div class="glass-panel" style="border-top: 2px solid rgba(6,182,212,0.3); background: rgba(6,182,212,0.02); position: relative; overflow: hidden;">
-        <div style="position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(6,182,212,0.05); border-radius: 50%; pointer-events: none;"></div>
-        <div style="position: relative; z-index: 1;">
-          <div class="section-label" style="color: #06b6d4;">&#x2605; Ваш статус в NeuroGen <span class="badge">главное</span></div>
-
-          <div class="radio-group">
-            <label class="radio-option active" id="label-status-free">
-              <input type="radio" name="status" id="status-free" value="free" checked>
-              <span class="radio-dot"><span class="radio-dot-inner"></span></span>
-              <div>
-                <div class="radio-title">Я на FREE</div>
-                <div class="radio-sub">25% c 1 ур. &middot; 3% со 2-3 ур.</div>
-              </div>
-            </label>
-            <label class="radio-option" id="label-status-pro">
-              <input type="radio" name="status" id="status-pro" value="pro">
-              <span class="radio-dot"><span class="radio-dot-inner"></span></span>
-              <div>
-                <div class="radio-title">Я купил PRO</div>
-                <div class="radio-sub">50% c 1 ур. &middot; 5% со 2-5 ур.</div>
-              </div>
-            </label>
-          </div>
-
-          <div class="coins-bar">
-            <span class="coins-bar-label">&#x1F48E; Есть 100+ монет?</span>
-            <label class="coins-btn active" id="label-coins-yes">
-              <input type="radio" name="coins" id="coins-yes" value="1" checked>
-              Да, PRO за $20
-            </label>
-            <label class="coins-btn" id="label-coins-no">
-              <input type="radio" name="coins" id="coins-no" value="0">
-              Нет, PRO за $40
-            </label>
-            <span class="coins-result">&#x2192; <span id="pro-price-display">$20</span></span>
-          </div>
-        </div>
+      <!-- HERO -->
+      <div class="glass-panel" style="text-align: center; border-top: 1px solid rgba(6,182,212,0.2);">
+        <div style="font-size: 40px; margin-bottom: 12px;">&#x1F9E0;</div>
+        <h1 style="font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; margin: 0 0 8px; background: linear-gradient(135deg, #06b6d4, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2;">Калькулятор дохода</h1>
+        <p style="color: #9ca3af; font-size: 13px; line-height: 1.6; margin: 0; max-width: 500px; margin-left: auto; margin-right: auto;">Сравните 4 тарифных плана и увидьте, сколько денег сгорает на глубине без Rocket или Shuttle.</p>
       </div>
 
-      <!-- BLOCK 2: Network -->
-      <div class="glass-panel">
-        <div class="section-label">&#x1F465; Как будет расти ваша сеть</div>
+      <!-- BLOCK A: Basic inputs -->
+      <div class="glass-panel" style="border-top: 1px solid rgba(6,182,212,0.15);">
+        <div class="section-label" style="color: #06b6d4;">&#x1F4B0; Продажи PRO-статуса ($20)</div>
 
         <div class="slider-row">
           <div class="slider-label">
-            <span>Сколько человек пригласишь ТЫ (1 уровень)</span>
-            <span class="slider-val" id="net-personal-val">3</span>
+            <span>Ваши личные продажи (1-й уровень)</span>
+            <span class="slider-val" id="val-personal">10</span>
           </div>
-          <input type="range" id="net-personal" min="0" max="100" value="3">
+          <input type="range" id="inp-personal" min="1" max="1000" value="10">
         </div>
 
         <div class="slider-row">
           <div class="slider-label">
-            <span>Сколько пригласит каждый из них в глубину</span>
-            <span class="slider-val" id="net-viral-val">2</span>
+            <span>Продажи каждого вашего партнёра</span>
+            <span class="slider-val" id="val-partner">3</span>
           </div>
-          <input type="range" id="net-viral" min="0" max="100" value="2">
+          <input type="range" id="inp-partner" min="1" max="1000" value="3">
         </div>
 
-        <details style="margin-top: 16px;">
-          <summary style="font-size: 11px; color: #6b7280; cursor: pointer; user-select: none; outline: none;">&#x2699;&#xFE0F; Продвинутые настройки конверсии</summary>
-          <div style="padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 12px;">
-            <div class="slider-row">
-              <div class="slider-label">
-                <span>% купят NeuroGen PRO ($20)</span>
-                <span class="slider-val" id="conv-pro-val">10%</span>
-              </div>
-              <input type="range" id="conv-pro" min="1" max="100" value="10">
-            </div>
+        <div class="slider-row" style="margin-bottom: 0;">
+          <div class="slider-label">
+            <span>Индекс дупликации сети</span>
+            <span class="slider-val" id="val-duplication">100%</span>
+          </div>
+          <input type="range" id="inp-duplication" min="1" max="200" value="100">
+          <div style="display: flex; justify-content: space-between; font-size: 10px; color: #6b7280; margin-top: 4px;">
+            <span>1% (минимальное повторение)</span>
+            <span>200% (удвоение)</span>
+          </div>
+        </div>
+      </div>
 
-            <div class="slider-row">
-              <div class="slider-label">
-                <span>% купят тариф SetHubble</span>
-                <span class="slider-val" id="conv-sh-val">5%</span>
-              </div>
-              <input type="range" id="conv-sh" min="1" max="100" value="5">
-              <div style="font-size: 10px; color: #6b7280; margin-top: 4px;">
-                Не зависит от продаж PRO — в сети могут быть люди, не связанные с NeuroGen
-              </div>
-            </div>
+      <!-- BLOCK B: SetHubble toggle + conditional sliders -->
+      <div class="glass-panel" style="border-top: 1px solid rgba(168,85,247,0.12);">
+        <div class="section-label" style="color: #a855f7;">&#x1F680; Транзакционная рента SetHubble</div>
 
-            <div class="slider-row" style="margin-bottom: 0;">
-              <div class="slider-label">
-                <span>Коэффициент затухания сети</span>
-                <span class="slider-val" id="net-realism-val">50%</span>
-              </div>
-              <input type="range" id="net-realism" min="1" max="100" value="50">
-              <div class="slider-hint">
-                <span>1% (быстрое затухание)</span>
-                <span>100% (без затухания)</span>
-              </div>
-              <div style="font-size: 10px; color: #6b7280; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 6px;">
-                &#x2139;&#xFE0F; Не влияет на 1 уровень. Чем глубже — тем сильнее затухание сети.
-              </div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="toggle-sh" checked>
+          <div class="toggle-track"><span class="toggle-knob"></span></div>
+          <span class="toggle-label">Учитывать покупки тарифов SetHubble внутри сети</span>
+        </label>
+
+        <div id="sh-block">
+          <div class="slider-row">
+            <div class="slider-label">
+              <span>% сети купит <strong style="color:#f59e0b;">Rocket</strong> ($110)</span>
+              <span class="slider-val" id="val-rocket">5%</span>
+            </div>
+            <input type="range" id="inp-rocket" min="1" max="100" value="5">
+          </div>
+
+          <div class="slider-row" style="margin-bottom: 0;">
+            <div class="slider-label">
+              <span>% сети купит <strong style="color:#a855f7;">Shuttle</strong> ($350)</span>
+              <span class="slider-val" id="val-shuttle">2%</span>
+            </div>
+            <input type="range" id="inp-shuttle" min="1" max="100" value="2">
+            <div style="font-size: 10px; color: #6b7280; margin-top: 4px;">
+              Каждый покупатель Shuttle даёт баллы для бинарного бонуса (1000 баллов = $100)
             </div>
           </div>
-        </details>
-      </div>
-
-      <!-- BLOCK 4: Tariff (secondary) -->
-      <div class="glass-panel" style="opacity: 0.88; border-top: 1px solid rgba(255,255,255,0.05);">
-        <div class="section-label" style="font-size: 11px;">&#x1F680; Тариф SetHubble <span style="color: #6b7280; font-weight: 400; text-transform: none; letter-spacing: 0;">(влияет на глубину комиссий)</span></div>
-
-        <div class="radio-group">
-          <label class="radio-option active" id="label-tariff-plane">
-            <input type="radio" name="tariff" id="tariff-plane" value="plane" checked>
-            <span class="radio-dot"><span class="radio-dot-inner"></span></span>
-            <div>
-              <div class="radio-title">Самолёт</div>
-              <div class="radio-sub">$0 &middot; 3 уровня</div>
-            </div>
-          </label>
-          <label class="radio-option" id="label-tariff-rocket">
-            <input type="radio" name="tariff" id="tariff-rocket" value="rocket">
-            <span class="radio-dot"><span class="radio-dot-inner"></span></span>
-            <div>
-              <div class="radio-title">Ракета</div>
-              <div class="radio-sub">$110/год &middot; 10 ур. + закрепление в бинаре</div>
-            </div>
-          </label>
-          <label class="radio-option" id="label-tariff-shuttle">
-            <input type="radio" name="tariff" id="tariff-shuttle" value="shuttle">
-            <span class="radio-dot"><span class="radio-dot-inner"></span></span>
-            <div>
-              <div class="radio-title">Шаттл</div>
-              <div class="radio-sub">$350/год &middot; 10 ур. + полный бинар + управление ветками</div>
-            </div>
-          </label>
-        </div>
-
-        <div id="tariff-warning" class="warning-block hidden">
-          &#x26A0;&#xFE0F; <strong>Конфликт статусов:</strong> Вы купили PRO, чтобы получать комиссию с 5 уровней. Но тариф <strong>Plane</strong> обрезает выплаты на 3-м уровне. Вы теряете деньги на 4-м и 5-м уровнях. Перейдите на Rocket или Shuttle, чтобы раскрыть полный потенциал PRO.
-        </div>
-
-        <div id="cap-warning" class="warning-block hidden" style="border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.12);">
-          &#x1F6D1; <strong>Потолок дохода!</strong> Ваша сеть заработала бы больше, но тариф обрезает пассивный доход. Перейдите на тариф выше, чтобы забрать сгоревшие деньги.
         </div>
       </div>
 
-      <!-- SEPARATOR: Results -->
-      <div style="text-align: center; margin: 8px 0 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.15);">&#x2500;&#x2500;&#x2500;&#x2500; Результаты &#x2500;&#x2500;&#x2500;&#x2500;</div>
+      <!-- SEPARATOR -->
+      <div style="text-align: center; margin: 4px 0 16px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.15);">&#x2500;&#x2500;&#x2500;&#x2500; Сравнение тарифов &#x2500;&#x2500;&#x2500;&#x2500;</div>
 
-      <!-- BLOCK 5a: Network stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">&#x1F465;</div>
-          <div class="stat-val" id="result-people">0</div>
-          <div class="stat-label">Всего человек в сети</div>
-        </div>
-        <div class="stat-card purple">
-          <div class="stat-icon">&#x1F916;</div>
-          <div class="stat-val" id="result-pro-buy">0</div>
-          <div class="stat-label">Купят NeuroGen PRO</div>
-        </div>
-        <div class="stat-card amber">
-          <div class="stat-icon">&#x1F680;</div>
-          <div class="stat-val" id="result-sh-buy">0</div>
-          <div class="stat-label">Купят тариф SetHubble</div>
-        </div>
-      </div>
-
-      <!-- BLOCK 5b: Income -->
-      <div class="income-card">
-        <div class="income-row">
-          <span>&#x1F4B0; Доход с продажи PRO</span>
-          <span class="inc-val" id="result-pro-inc" style="color: #a855f7;">$0</span>
-        </div>
-        <div class="income-row">
-          <span>&#x1F4B0; Доход с тарифов SetHubble</span>
-          <span class="inc-val" id="result-sh-inc" style="color: #f59e0b;">$0</span>
-        </div>
-        <div class="income-total">
-          <span>ИТОГО</span>
-          <span id="result-total">$0</span>
-        </div>
-      </div>
-
-      <!-- BLOCK 5c: Missed profit PRO (FREE users) -->
-      <div id="missed-pro-block" class="missed-block hidden">
-        <h3>&#x1F534; Вы теряете</h3>
-        <div class="big-loss" id="missed-pro-amt">$0</div>
-        <p>Купив PRO, вы получаете бонус к ставкам (50% вместо 25%) и дополнительный уровень глубины (5 вместо 3) &#x2192; доход удваивается. Первая же продажа PRO окупает ваши вложения.</p>
-      </div>
-
-      <!-- BLOCK 5d: Missed profit SH (PRO+Plane or PRO+Rocket+capped) -->
-      <div id="missed-sh-block" class="missed-block-sm hidden">
-        <h4 id="missed-sh-title">&#x26A0;&#xFE0F; PRO не раскрыт — нужен Rocket</h4>
-        <div class="loss-val" id="missed-sh-amt">$0</div>
-        <div id="missed-sh-text" style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Вы уже купили PRO, но Plane обрезает 4-5 уровни. Rocket за $110/год открывает полную глубину PRO (5 ур.) + доход с тарифов до 10 ур.</div>
-      </div>
-
-      <!-- BLOCK 5e: Optimal -->
-      <div id="optimal-block" class="optimal-block hidden">
-        &#x1F389; Оптимальная конфигурация! Вы получаете максимальный доход с вашей сети.
+      <!-- TABLE (rendered by JS) -->
+      <div class="table-wrap glass-panel" style="padding: 16px; border-top: 1px solid rgba(6,182,212,0.1);">
+        <div id="results-table"></div>
       </div>
 
       <!-- CTA -->
-      <a id="cta-button" href="#" class="btn-main" style="margin-bottom: 24px;">&#x1F525; Купить NeuroGen PRO за $20</a>
+      <a id="cta-button" href="#" class="btn-main" style="margin-bottom: 20px;">&#x1F525; Купить PRO за $20</a>
 
-      <!-- BLOCK 6: Graph -->
+      <!-- CHART -->
       <div class="glass-panel" style="border-top: 1px solid rgba(6,182,212,0.1);">
-        <div class="section-label">&#x1F4CA; Доход по уровням</div>
+        <div class="section-label">&#x1F4CA; Сравнение дохода</div>
         <div class="chart-wrap">
           <canvas id="income-chart"></canvas>
         </div>
       </div>
 
-      <!-- BLOCK 7: Explanation -->
-      <div class="glass-panel explain-panel" style="border-top: 1px solid rgba(168,85,247,0.15);">
-        <div class="section-label" style="color: #a855f7;">&#x1F4A1; Как работает транзакционная рента SetHubble</div>
-
-        <p>Вы приглашаете людей просто пользоваться умными ИИ-ботами за $20. Но когда ваша сеть начинает расти, ваши партнёры видят, что теряют прибыль на глубине, и <strong>вынуждены покупать тарифы</strong> Rocket ($110) или Shuttle ($350).</p>
-
-        <p>Каждая такая покупка в вашей сети приносит вам прямые комиссии:</p>
-
-        <div class="rate-table" style="grid-template-columns: 1fr 1fr; max-width: 400px;">
-          <div class="rt-row"><span class="rt-label">1 уровень (личные)</span><span class="rt-val">40%</span></div>
-          <div class="rt-row"><span class="rt-label">2-10 уровни</span><span class="rt-val">3%</span></div>
-        </div>
-
-        <p style="margin-bottom: 0;"><strong>Вывод:</strong> Оплатив тариф Rocket за $110, вы не просто открываете для себя 4-й и 5-й уровни продаж PRO. Вы получаете право зарабатывать по 3% с каждой оплаты бизнес-тарифов на 10 уровней вниз. Всего несколько таких оплат на глубине вашей сети полностью окупают Rocket.</p>
+      <!-- FOOTER NOTE -->
+      <div class="glass-panel" style="text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px; background: rgba(5,5,15,0.5);">
+        <p style="font-size: 11px; color: #6b7280; line-height: 1.6; margin: 0;">
+          &#x2139;&#xFE0F; Нажмите на любую колонку в таблице, чтобы увидеть следующий шаг апгрейда.<br>
+          Лимиты (Cap) применяются только к пассивному доходу со 2-10 уровней. Доход с 1-го уровня не ограничен.
+        </p>
       </div>
 
     </div>
