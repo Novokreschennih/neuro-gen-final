@@ -30,11 +30,42 @@
     var root = document.getElementById('synergy-calculator');
     if (!root) return;
     var dom = getDOM(root);
-    dom.allInputs.forEach(function (el) {
-      if (!el) return;
-      el.addEventListener('input', function () { return run(dom); });
-      el.addEventListener('change', function () { return run(dom); });
+
+    // Слайдеры → бегунок меняет число
+    var pairs = [
+      { slider: 'inp-personal', num: 'num-personal' },
+      { slider: 'inp-partner',  num: 'num-partner' },
+      { slider: 'inp-duplication', num: 'num-duplication' },
+      { slider: 'inp-rocket',   num: 'num-rocket' },
+      { slider: 'inp-shuttle',  num: 'num-shuttle' },
+    ];
+    pairs.forEach(function (p) {
+      var slider = dom[p.slider];
+      var num = dom[p.num];
+      if (!slider || !num) return;
+      slider.addEventListener('input', function () {
+        num.value = slider.value;
+        run(dom);
+      });
+      num.addEventListener('input', function () {
+        var v = parseInt(num.value, 10);
+        if (isNaN(v)) return;
+        var min = parseInt(num.min, 10);
+        var max = parseInt(num.max, 10);
+        if (v < min) v = min;
+        if (v > max) v = max;
+        num.value = v;
+        slider.value = v;
+        run(dom);
+      });
     });
+
+    // Тоггл SH
+    var toggle = dom['toggle-sh'];
+    if (toggle) {
+      toggle.addEventListener('change', function () { run(dom); });
+    }
+
     run(dom);
   });
 
@@ -42,18 +73,19 @@
     var $ = function (id) { return root.querySelector('#' + id) || document.getElementById(id); };
     var dom = {};
     var inputIds = [
-      'inp-personal', 'val-personal',
-      'inp-partner', 'val-partner',
-      'inp-duplication', 'val-duplication',
+      'inp-personal', 'val-personal', 'num-personal',
+      'inp-partner', 'val-partner', 'num-partner',
+      'inp-duplication', 'val-duplication', 'num-duplication',
       'toggle-sh',
       'sh-block',
-      'inp-rocket', 'val-rocket',
-      'inp-shuttle', 'val-shuttle',
+      'inp-rocket', 'val-rocket', 'num-rocket',
+      'inp-shuttle', 'val-shuttle', 'num-shuttle',
     ];
     inputIds.forEach(function (id) { dom[id] = $(id); });
     dom.table = $('results-table');
     dom.chart = $('income-chart');
-    dom.cta = $('cta-button');
+    dom.ctaPro = $('cta-button-pro');
+    dom.ctaSh = $('cta-button-sh');
     dom.allInputs = [
       dom['inp-personal'], dom['inp-partner'], dom['inp-duplication'],
       dom['inp-rocket'], dom['inp-shuttle'], dom['toggle-sh'],
@@ -77,10 +109,15 @@
     setText(dom['val-personal'], v.personal);
     setText(dom['val-partner'], v.partner);
     setText(dom['val-duplication'], v.duplication + '%');
+    setVal(dom['num-personal'], v.personal);
+    setVal(dom['num-partner'], v.partner);
+    setVal(dom['num-duplication'], v.duplication);
     toggle(dom['sh-block'], v.shEnabled);
     if (v.shEnabled) {
       setText(dom['val-rocket'], v.rocketConv + '%');
       setText(dom['val-shuttle'], v.shuttleConv + '%');
+      setVal(dom['num-rocket'], v.rocketConv);
+      setVal(dom['num-shuttle'], v.shuttleConv);
     }
   }
 
@@ -238,7 +275,7 @@
     };
     var keySubs = {
       free: 'Plane', pro: 'Plane',
-      rocket: '$130/год', shuttle: '$370/год',
+      rocket: '$110/год', shuttle: '$350/год',
     };
 
     var entryCosts = { free: 0, pro: 20, rocket: 130, shuttle: 370 };
@@ -348,21 +385,24 @@
       el.classList.add('card-active');
     });
     highlighted = key;
-    updateCTA(key, scenarios, dom);
+    updateCTA(dom);
   }
 
-  function updateCTA(key, scenarios, dom) {
-    if (!dom.cta) return;
-    var btns = {
-      free:  { text: '\u{1F525} \u041A\u0443\u043F\u0438\u0442\u044C PRO \u0437\u0430 $20',       href: 'https://t.me/sethubble_biz_bot?start=buy_pro' },
-      pro:   { text: '\u{1F680} \u041A\u0443\u043F\u0438\u0442\u044C Rocket \u0437\u0430 $110',  href: 'https://t.me/sethubble_biz_bot?start=calculator_rocket' },
-      rocket:{ text: '\u{1F6F8} \u041A\u0443\u043F\u0438\u0442\u044C Shuttle \u0437\u0430 $350', href: 'https://t.me/sethubble_biz_bot?start=calculator_shuttle' },
-      shuttle:{text: '\u{1F389} \u041E\u043F\u0442\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u043A\u043E\u043D\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044F', href: '#' },
-    };
-    var btn = btns[key] || btns.pro;
-    dom.cta.textContent = btn.text;
-    dom.cta.href = btn.href;
-    dom.cta.className = key === 'shuttle' ? 'btn-disabled' : 'btn-main';
+  function updateCTA(dom) {
+    var cu = window.__CALC_USER || {};
+    var xp = cu.xp || 0;
+    var partnerId = cu.partnerId || '1123';
+    var shRefUrl = cu.shRefUrl || 'https://sethubble.com/ru/p_qdr';
+    var proProduct = xp >= 100 ? '103_97998' : '142_ee4e9';
+    var proPrice = xp >= 100 ? '20' : '40';
+
+    if (dom.ctaPro) {
+      dom.ctaPro.textContent = '\u{1F525} \u041A\u0443\u043F\u0438\u0442\u044C PRO \u0437\u0430 $' + proPrice;
+      dom.ctaPro.href = 'https://hubblepay.net/' + proProduct + '&afid=' + partnerId;
+    }
+    if (dom.ctaSh) {
+      dom.ctaSh.href = shRefUrl;
+    }
   }
 
   var chartInstance = null;
@@ -446,5 +486,6 @@
   }
 
   function setText(el, val) { if (el) el.textContent = val; }
+  function setVal(el, val) { if (el) el.value = val; }
   function toggle(el, show) { if (el) el.classList.toggle('hidden', !show); }
 })();
