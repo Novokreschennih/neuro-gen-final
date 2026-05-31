@@ -294,11 +294,16 @@
       var l1 = levels[0];
       h += '<div class="card-row"><span>1 ур. (' + (l1.rate * 100) + '%)</span><span>' + fmd(Math.round(l1.income)) + '</span></div>';
       if (levels.length > 1) {
-        var sum = 0;
-        for (var i = 1; i < levels.length; i++) sum += levels[i].income;
-        var minLv = levels[1].level;
-        var maxLv = levels[levels.length - 1].level;
-        h += '<div class="card-row"><span>' + minLv + '-' + maxLv + ' ур. (' + (levels[1].rate * 100) + '%)</span><span>' + fmd(Math.round(sum)) + '</span></div>';
+        var sum = 0, lastNonZero = -1;
+        for (var i = 1; i < levels.length; i++) {
+          sum += levels[i].income;
+          if (Math.round(levels[i].income) > 0) lastNonZero = i;
+        }
+        if (lastNonZero >= 1) {
+          var minLv = levels[1].level;
+          var maxLv = levels[lastNonZero].level;
+          h += '<div class="card-row"><span>' + minLv + '-' + maxLv + ' ур. (' + (levels[1].rate * 100) + '%)</span><span>' + fmd(Math.round(sum)) + '</span></div>';
+        }
       }
       h += '</div>';
       return h;
@@ -335,7 +340,8 @@
       // PRO income
       html += '<div class="card-section-label">📈 Доход с PRO</div>'
         + levelGroupHtml(s.proLevels)
-        + '<div class="card-total"><span>Всего PRO</span><span>' + fmd(s.proIncome) + '</span></div>';
+        + '<div class="card-total"><span>Всего PRO</span><span>' + fmd(s.proIncome) + '</span></div>'
+        + (s.isCapped ? '<div class="card-cap-hit">🔴 Лимит ' + fmd(s.capLimit) + ' — доход PRO с уровней 2+ уменьшен</div>' : '');
 
       // SH income (только если тоггл включён)
       if (v.shEnabled && s.shIncome > 0) {
@@ -343,7 +349,7 @@
           + levelGroupHtml(s.shLevels)
           + '<div class="card-total"><span>Всего SH</span><span>' + fmd(s.shIncome) + '</span></div>';
         if (s.isCapped) {
-          html += '<div class="card-cap-hit">🔴 Лимит ' + fmd(s.capLimit) + ' превышен</div>';
+          html += '<div class="card-cap-hit">🔴 Лимит ' + fmd(s.capLimit) + ' — доход SH с уровней 2+ уменьшен</div>';
         }
         if (s.binaryBonus > 0) {
           html += '<div class="card-row card-binary"><span>💎 Бинар (~30% от дохода)</span><span>+' + fmd(s.binaryBonus) + '</span></div>';
