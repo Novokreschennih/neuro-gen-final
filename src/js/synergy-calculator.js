@@ -183,11 +183,10 @@
 
     var gross = Math.round(proIncomeL1 + proIncomeL2plus + shIncomeL1 + shIncomeL2plus);
 
-    // Бинар: 10 баллов за Rocket, 20 за Shuttle
+    // Бинар: ~30% от дохода (точная формула уточняется)
     var binaryBonus = 0;
     if (tariff === 'shuttle') {
-      var points = totalRocketB * 10 + totalShuttleB * 20;
-      binaryBonus = Math.floor(points / 1000) * 100;
+      binaryBonus = Math.round(gross * 0.30);
     }
 
     var net = Math.round(gross * (1 - shCfg.fee) + binaryBonus);
@@ -310,7 +309,8 @@
           html += '<div class="card-cap-hit">🔴 Лимит ' + fmd(s.capLimit) + ' превышен</div>';
         }
         if (s.binaryBonus > 0) {
-          html += '<div class="card-row card-binary"><span>💎 Бинар (R×10 + S×20)</span><span>+' + fmd(s.binaryBonus) + '</span></div>';
+          html += '<div class="card-row card-binary"><span>💎 Бинар (~30% от дохода)</span><span>+' + fmd(s.binaryBonus) + '</span></div>';
+          html += '<div class="card-binary-note">* Точный расчёт зависит от личных продаж и структуры сети. Показана примерная оценка.</div>';
         }
       }
 
