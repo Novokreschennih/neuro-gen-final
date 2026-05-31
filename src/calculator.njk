@@ -476,7 +476,8 @@ eleventyExcludeFromCollections: true
 
     <script>
     try {
-      var t = sessionStorage.getItem('neurogen_token');
+      var t = sessionStorage.getItem('neurogen_token')
+        || (location.hash.match(/jwt=([^&]+)/) || [])[1];
       if (t) {
         var p = t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
         var pad = p.length % 4;
